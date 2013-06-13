@@ -127,6 +127,14 @@ rule "Attribute.BaseInput"
     then
         insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, $v));
 end
+rule "Attribute.BaseInputMissing"
+    // this is mainly to simplify unit tests where we may lack initialization of the ability scores to 10
+    when
+        AttributeName($attname:name)
+        not AttributeInput(name == $attname)
+    then
+        insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, 10));
+end
 
 rule "Attribute.Totals"
     when
@@ -137,7 +145,7 @@ rule "Attribute.Totals"
         )
     then
         insertLogical(new Attribute($attname, $att));
-        insertLogical(new AttributeBonus($attname, $att == 0 ? 0 : $att/2 - 5));
+        insertLogical(new AttributeBonus($attname, $att/2 - 5));
 end
 
 rule "Dex.AC"
