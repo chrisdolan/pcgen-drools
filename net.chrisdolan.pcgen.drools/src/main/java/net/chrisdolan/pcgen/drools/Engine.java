@@ -16,42 +16,42 @@ import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
 
 public class Engine {
-	private WorkingMemory workingMemory;
+    private WorkingMemory workingMemory;
 
-	public void create() throws IOException, DroolsParserException {
-		InputStream rulesStream = getClass().getResourceAsStream("rules.drl");
-		try {
-			PackageBuilder packageBuilder = new PackageBuilder();
-			packageBuilder.addPackageFromDrl(new InputStreamReader(rulesStream));
-			assertNoRuleErrors(packageBuilder);
-	        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-	        ruleBase.addPackage(packageBuilder.getPackage());
-	        workingMemory = ruleBase.newStatefulSession();
-//	        for (Object o : CoreFacts.get())
-//	        	workingMemory.insert(o);
-		} finally {
-			rulesStream.close();
-		}
-	}
+    public void create() throws IOException, DroolsParserException {
+        InputStream rulesStream = getClass().getResourceAsStream("rules.drl");
+        try {
+            PackageBuilder packageBuilder = new PackageBuilder();
+            packageBuilder.addPackageFromDrl(new InputStreamReader(rulesStream));
+            assertNoRuleErrors(packageBuilder);
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage(packageBuilder.getPackage());
+            workingMemory = ruleBase.newStatefulSession();
+//            for (Object o : CoreFacts.get())
+//                workingMemory.insert(o);
+        } finally {
+            rulesStream.close();
+        }
+    }
 
-	public void insert(Object obj) {
-		workingMemory.insert(obj);
-	}
+    public void insert(Object obj) {
+        workingMemory.insert(obj);
+    }
 
-	public void run() {
+    public void run() {
         workingMemory.fireAllRules();
-	}
+    }
 
-	public Collection<Object> query(ObjectFilter filter) {
-		return workingMemory.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
-	}
+    public Collection<Object> query(ObjectFilter filter) {
+        return workingMemory.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
+    }
 
-	public void destroy() {
-		workingMemory.dispose();
-		workingMemory = null;
-	}
-	
-	private void assertNoRuleErrors(PackageBuilder packageBuilder) {
+    public void destroy() {
+        workingMemory.dispose();
+        workingMemory = null;
+    }
+    
+    private void assertNoRuleErrors(PackageBuilder packageBuilder) {
         PackageBuilderErrors errors = packageBuilder.getErrors();
 
         if (errors.getErrors().length > 0) {

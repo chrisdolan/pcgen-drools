@@ -9,17 +9,17 @@ end
 
 rule "Initialization"
     salience 1000 // trigger this rule first of all
-	when
-		not InitializationTrigger()
-	then
-		insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
-		insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
-		insertLogical(new AttributeName(AttributeInput.STR));
-		insertLogical(new AttributeName(AttributeInput.DEX));
-		insertLogical(new AttributeName(AttributeInput.CON));
-		insertLogical(new AttributeName(AttributeInput.INT));
-		insertLogical(new AttributeName(AttributeInput.WIS));
-		insertLogical(new AttributeName(AttributeInput.CHA));
+    when
+        not InitializationTrigger()
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
+        insertLogical(new AttributeName(AttributeInput.STR));
+        insertLogical(new AttributeName(AttributeInput.DEX));
+        insertLogical(new AttributeName(AttributeInput.CON));
+        insertLogical(new AttributeName(AttributeInput.INT));
+        insertLogical(new AttributeName(AttributeInput.WIS));
+        insertLogical(new AttributeName(AttributeInput.CHA));
 end
 
 declare AttributeName
@@ -35,63 +35,63 @@ declare AttributeBonus
 end
 
 rule "FlatFooted"
-	when
-		Condition(type == Condition.TYPE_FLATFOOTED)
-	then
-		insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
-		insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
+    when
+        Condition(type == Condition.TYPE_FLATFOOTED)
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
 end
 rule "not FlatFooted"
-	when
-		not Condition(type == Condition.TYPE_FLATFOOTED)
-	then
-		insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "Sum"));
+    when
+        not Condition(type == Condition.TYPE_FLATFOOTED)
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "Sum"));
 end
 
 rule "Attribute.BaseInput"
-	when
-		AttributeName($attname:name)
-		AttributeInput(name == $attname, $v:value)
-	then
-		insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, $v));
+    when
+        AttributeName($attname:name)
+        AttributeInput(name == $attname, $v:value)
+    then
+        insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, $v));
 end
 
 rule "Attribute.Totals"
-	when
-		AttributeName($attname:name)
-		Number($att : intValue) from accumulate(
-		    Stack($v:value, type == (AttributeInput.TYPE + $attname)),
-		    sum($v)
-		)
-	then
-		insertLogical(new Attribute($attname, $att));
-		insertLogical(new AttributeBonus($attname, $att == 0 ? 0 : $att < 10 ? ($att-11)/2 : ($att-10)/2));
+    when
+        AttributeName($attname:name)
+        Number($att : intValue) from accumulate(
+            Stack($v:value, type == (AttributeInput.TYPE + $attname)),
+            sum($v)
+        )
+    then
+        insertLogical(new Attribute($attname, $att));
+        insertLogical(new AttributeBonus($attname, $att == 0 ? 0 : $att < 10 ? ($att-11)/2 : ($att-10)/2));
 end
 
 rule "AC.Dex"
-	when
-	    AttributeBonus(name == AttributeInput.DEX, $v:value)
-	then
-		insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
+    when
+        AttributeBonus(name == AttributeInput.DEX, $v:value)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
 end
 
 rule "AC.Normal"
-	when
-		Number($ac : intValue) from accumulate(
-		    Stack($v:value, type == ArmorClass.TYPE),
-		    sum($v)
-		)
-	then
-		insertLogical(new ArmorClass(ArmorClass.ACTYPE_NORMAL, $ac));
+    when
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == ArmorClass.TYPE),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_NORMAL, $ac));
 end
 rule "AC.Touch"
-	when
-		Number($ac : intValue) from accumulate(
-		    Stack($v:value, type == ArmorClass.TYPE, subtype not in ( "Armor", "Shield", "Natural" )),
-		    sum($v)
-		)
-	then
-		insertLogical(new ArmorClass(ArmorClass.ACTYPE_TOUCH, $ac));
+    when
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == ArmorClass.TYPE, subtype not in ( "Armor", "Shield", "Natural" )),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_TOUCH, $ac));
 end
 
 declare Stack
@@ -101,20 +101,20 @@ declare Stack
 end
 
 rule "Stack.Max"
-	when
-		$s : Input($t:type, $st:subtype, $v:value)
-		not Input(type == $t, subtype == $st, value > $v)
-		(not StackRule(type == $t, subtype == $st) or StackRule(type == $t, subtype == $st, rulename == "Max"))
-	then
-	    //System.out.println("max of " + $t + "." + $st);
-		insertLogical(new Stack($v,$t,$st));
+    when
+        $s : Input($t:type, $st:subtype, $v:value)
+        not Input(type == $t, subtype == $st, value > $v)
+        (not StackRule(type == $t, subtype == $st) or StackRule(type == $t, subtype == $st, rulename == "Max"))
+    then
+        //System.out.println("max of " + $t + "." + $st);
+        insertLogical(new Stack($v,$t,$st));
 end
 
 rule "Stack.Sum"
-	when
-		StackRule($t:type, $st:subtype, rulename == "Sum")
-		Number($sum : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), sum($v))
-	then
-	    //System.out.println("sum of " + $t + "." + $st);
-		insertLogical(new Stack($sum,$t,$st));
+    when
+        StackRule($t:type, $st:subtype, rulename == "Sum")
+        Number($sum : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), sum($v))
+    then
+        //System.out.println("sum of " + $t + "." + $st);
+        insertLogical(new Stack($sum,$t,$st));
 end
