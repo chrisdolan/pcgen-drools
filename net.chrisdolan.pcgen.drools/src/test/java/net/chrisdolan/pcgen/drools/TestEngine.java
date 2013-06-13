@@ -80,6 +80,31 @@ public class TestEngine {
         engine.destroy();
     }
 
+    @Test
+    public void testACMonk() throws DroolsParserException, IOException {
+        Engine engine = new Engine();
+        engine.create();
+        engine.insert(new AttributeInput(AttributeInput.DEX, 12));
+        engine.insert(new AttributeInput(AttributeInput.WIS, 18));
+        engine.insert(new Input("ClassLevel", "Monk", 11));
+        engine.run();
+        assertAc(engine, ArmorClass.ACTYPE_NORMAL, 17);
+        assertAc(engine, ArmorClass.ACTYPE_TOUCH, 17);
+        engine.destroy();
+    }
+
+    @Test
+    public void testACChargeLunge() throws DroolsParserException, IOException {
+        Engine engine = new Engine();
+        engine.create();
+        engine.insert(new Condition(Condition.TYPE_CHARGE));
+        engine.insert(new Condition(Condition.TYPE_LUNGE));
+        engine.run();
+        assertAc(engine, ArmorClass.ACTYPE_NORMAL, 6);
+        assertAc(engine, ArmorClass.ACTYPE_TOUCH, 6);
+        engine.destroy();
+    }
+
     private void assertAc(Engine engine, String actype, int ac) {
         Collection<Object> acs = engine.query(new ACFilter(actype));
         Assert.assertEquals(Arrays.asList(new ArmorClass(actype, ac)), new ArrayList<Object>(acs));
