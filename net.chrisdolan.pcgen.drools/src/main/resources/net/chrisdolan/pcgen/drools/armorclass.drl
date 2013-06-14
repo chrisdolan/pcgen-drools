@@ -4,13 +4,9 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
-declare InitializationTrigger
-end
-
 rule "AC.Initialization"
     salience 1000 // trigger this rule first of all
     when
-        not InitializationTrigger()
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
@@ -18,13 +14,13 @@ end
 
 rule "Condition.General.NoDexAC"
     when
-        Condition(type == "NoDexAC")
+        not(not Condition(type == "NoDexAC"))
     then
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
 end
 rule "Condition.General.NoDodgeAC"
     when
-        Condition(type == "NoDodgeAC")
+        not(not Condition(type == "NoDodgeAC"))
     then
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
 end

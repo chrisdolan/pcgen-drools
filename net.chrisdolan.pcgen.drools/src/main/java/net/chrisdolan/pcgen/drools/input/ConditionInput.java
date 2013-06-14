@@ -1,6 +1,6 @@
 package net.chrisdolan.pcgen.drools.input;
 
-public class Condition {
+public class ConditionInput {
     public static final String TYPE_BLEED = "Bleed";
     public static final String TYPE_BLINDED = "Blinded";
     public static final String TYPE_BROKEN = "Broken";
@@ -41,9 +41,9 @@ public class Condition {
 
     private String type;
 
-    public Condition() {
+    public ConditionInput() {
     }
-    public Condition(String type) {
+    public ConditionInput(String type) {
         this.type = type;
     }
 
@@ -70,7 +70,7 @@ public class Condition {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Condition other = (Condition) obj;
+        ConditionInput other = (ConditionInput) obj;
         if (type == null) {
             if (other.type != null)
                 return false;

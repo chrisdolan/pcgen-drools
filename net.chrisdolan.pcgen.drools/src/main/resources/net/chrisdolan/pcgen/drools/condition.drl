@@ -4,65 +4,138 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+declare Condition
+    type : String
+end
+
+rule "Condition.UserInput"
+    when
+        ConditionInput($t:type)
+    then
+        insertLogical(new Condition($t));
+end
+
 rule "Condition.Blinded"
     when
-        Condition(type == Condition.TYPE_BLINDED)
+        not(not Condition(type == ConditionInput.TYPE_BLINDED))
     then
         insertLogical(new Condition("NoDexAC"));
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
 end
 rule "Condition.Cowering"
     when
-        Condition(type == Condition.TYPE_COWERING)
+        not(not Condition(type == ConditionInput.TYPE_COWERING))
     then
         insertLogical(new Condition("NoDexAC")); // Just to AC or all dex??
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
 end
 rule "Condition.Entangled"
     when
-        Condition(type == Condition.TYPE_ENTANGLED)
+        not(not Condition(type == ConditionInput.TYPE_ENTANGLED))
     then
         insertLogical(new Input("Attack", "Entanged", -2));
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Entanged", -4));
 end
 rule "Condition.Exhausted"
     when
-        Condition(type == Condition.TYPE_EXHAUSTED)
+        not(not Condition(type == ConditionInput.TYPE_EXHAUSTED))
     then
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Exhausted", -6));
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Exhausted", -6));
 end
 rule "Condition.Fatigued"
     when
-        Condition(type == Condition.TYPE_FATIGUED)
-        not Condition(type == Condition.TYPE_EXHAUSTED) // these don't stack
+        not(not Condition(type == ConditionInput.TYPE_FATIGUED))
+        not Condition(type == ConditionInput.TYPE_EXHAUSTED) // these don't stack
     then
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Fatigued", -2));
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Fatigued", -2));
 end
 rule "Condition.FlatFooted"
     when
-        Condition(type == Condition.TYPE_FLATFOOTED)
+        not(not Condition(type == ConditionInput.TYPE_FLATFOOTED))
     then
         insertLogical(new Condition("NoDexAC"));
         insertLogical(new Condition("NoDodgeAC"));
 end
 rule "Condition.Grappled"
     when
-        Condition(type == Condition.TYPE_GRAPPLED)
+        not(not Condition(type == ConditionInput.TYPE_GRAPPLED))
+        not Condition(type == ConditionInput.TYPE_PINNED) // they do not stack
     then
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Grappled", -4));
 end
 rule "Condition.Helpless"
     when
-        Condition(type == Condition.TYPE_HELPLESS)
+        not(not Condition(type == ConditionInput.TYPE_HELPLESS))
     then
         insertLogical(new Input("Override", AbilityInput.TYPE + AbilityInput.DEX, 0));
+end
+rule "Condition.Panicked"
+    when
+        not(not Condition(type == ConditionInput.TYPE_PANICKED))
+    then
+        insertLogical(new Input("Save.Reflex", "Panicked", -2));
+        insertLogical(new Input("Save.Fortitude", "Panicked", -2));
+        insertLogical(new Input("Save.Will", "Panicked", -2));
+        insertLogical(new Input("Attack", "Panicked", -2));
+        // ...
+end
+rule "Condition.Paralyzed"
+    when
+        not(not Condition(type == ConditionInput.TYPE_PARALYZED))
+    then
+        insertLogical(new Input("Override", AbilityInput.TYPE + AbilityInput.STR, 0));
+        insertLogical(new Condition(ConditionInput.TYPE_HELPLESS));
+end
+rule "Condition.Petrified"
+    when
+        not(not Condition(type == ConditionInput.TYPE_PETRIFIED))
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_UNCONSCIOUS));
+end
+rule "Condition.Pinned"
+    when
+        not(not Condition(type == ConditionInput.TYPE_PINNED))
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_FLATFOOTED));
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -4));
+end
+rule "Condition.Prone"
+    when
+        not(not Condition(type == ConditionInput.TYPE_PRONE))
+    then
+        insertLogical(new Input("Attack", "Prone", -4));
+        // todo: ranged vs. melee AC
+end
+rule "Condition.Shaken"
+    when
+        not(not Condition(type == ConditionInput.TYPE_SHAKEN))
+        not Condition(type == ConditionInput.TYPE_PANICKED) // they don't stack
+    then
+        insertLogical(new Input("Save.Reflex", "Shaken", -2));
+        insertLogical(new Input("Save.Fortitude", "Shaken", -2));
+        insertLogical(new Input("Save.Will", "Shaken", -2));
+        insertLogical(new Input("Attack", "Shaken", -2));
+        // ...
+end
+rule "Condition.Stunned"
+    when
+        not(not Condition(type == ConditionInput.TYPE_STUNNED))
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+        insertLogical(new Condition("NoDexAC"));
+end
+rule "Condition.Unconscious"
+    when
+        not(not Condition(type == ConditionInput.TYPE_UNCONSCIOUS))
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_HELPLESS));
 end
 
 rule "Condition.Charging"
     when
-        Condition(type == Condition.TYPE_CHARGE)
+        not(not Condition(type == ConditionInput.TYPE_CHARGE))
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
         insertLogical(new Input("Attack", "Charge", 2));
@@ -70,7 +143,7 @@ rule "Condition.Charging"
 end
 rule "Condition.Lunging"
     when
-        Condition(type == Condition.TYPE_LUNGE)
+        not(not Condition(type == ConditionInput.TYPE_LUNGE))
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
         insertLogical(new Input("Reach", "Lunge", 5));

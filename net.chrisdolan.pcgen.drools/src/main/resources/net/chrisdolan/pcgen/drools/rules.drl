@@ -4,13 +4,9 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
-declare InitializationTrigger
-end
-
 rule "Global.Initialization"
     salience 100000 // trigger this rule first of all
     when
-        not InitializationTrigger()
     then
         System.out.println("--Engine init--");
 end

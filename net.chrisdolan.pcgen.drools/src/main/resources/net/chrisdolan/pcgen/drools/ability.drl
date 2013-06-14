@@ -7,7 +7,6 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Ability.Init"
     salience 1000
     when
-        not InitializationTrigger()
     then
         insertLogical(new AbilityName(AbilityInput.STR));
         insertLogical(new AbilityName(AbilityInput.DEX));

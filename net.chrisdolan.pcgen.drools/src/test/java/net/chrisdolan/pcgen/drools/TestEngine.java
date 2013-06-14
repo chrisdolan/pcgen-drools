@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.chrisdolan.pcgen.drools.input.AbilityInput;
-import net.chrisdolan.pcgen.drools.input.Condition;
+import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.Input;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
@@ -76,7 +76,7 @@ public class TestEngine {
         session.insert(ac(ArmorClass.SUBTYPE_SHIELD, 5));
         session.insert(ac(ArmorClass.SUBTYPE_DEXTERITY, 10));
         session.insert(ac(ArmorClass.SUBTYPE_DODGE, 7));
-        session.insert(new Condition(Condition.TYPE_FLATFOOTED));
+        session.insert(new ConditionInput(ConditionInput.TYPE_FLATFOOTED));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 16);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 10);
@@ -98,8 +98,8 @@ public class TestEngine {
     @Test
     public void testACChargeLunge() throws DroolsParserException, IOException {
         Session session = engine.createSession();
-        session.insert(new Condition(Condition.TYPE_CHARGE));
-        session.insert(new Condition(Condition.TYPE_LUNGE));
+        session.insert(new ConditionInput(ConditionInput.TYPE_CHARGE));
+        session.insert(new ConditionInput(ConditionInput.TYPE_LUNGE));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 6);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 6);
@@ -111,10 +111,21 @@ public class TestEngine {
         Session session = engine.createSession();
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 3));
         session.insert(new AbilityInput(AbilityInput.DEX, 12));
-        session.insert(new Condition(Condition.TYPE_HELPLESS));
+        session.insert(new ConditionInput(ConditionInput.TYPE_HELPLESS));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 8);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 5);
+        session.destroy();
+    }
+
+    @Test
+    public void testTwoConditions() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.insert(new ConditionInput(ConditionInput.TYPE_STUNNED));
+        session.insert(new ConditionInput(ConditionInput.TYPE_STUNNED));
+        session.run();
+        assertAc(session, ArmorClass.ACTYPE_NORMAL, 8);
+        assertAc(session, ArmorClass.ACTYPE_TOUCH, 8);
         session.destroy();
     }
 
