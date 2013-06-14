@@ -32,6 +32,16 @@ rule "Stack.Max"
         insertLogical(new Stack($v,$t,$st));
 end
 
+rule "Stack.Min"
+    when
+        $s : Input($t:type, $st:subtype, $v:value)
+        not Input(type == $t, subtype == $st, value < $v)
+        StackRule(type == $t, subtype == $st, rulename == "Min")
+    then
+        //System.out.println("min of " + $t + "." + $st + "=" + $v);
+        insertLogical(new Stack($v,$t,$st));
+end
+
 rule "Stack.Sum"
     when
         StackRule($t:type, $st:subtype, rulename == "Sum")

@@ -16,6 +16,14 @@ rule "Ability.Init"
         insertLogical(new AbilityName(AbilityInput.CHA));
 end
 
+rule "Ability.Max.Stacking"
+    salience 900
+    when
+        AbilityName($attname:name)
+    then
+        insertLogical(new StackRule("Ability.Max", $attname, "Min"));
+end
+
 declare AbilityName
     name : String
 end
@@ -65,6 +73,14 @@ end
 rule "Ability.Bonus"
     when
         Ability($attname:name, $att:value)
+        not Stack(type == "Ability.Max", subtype == $attname)
     then
         insertLogical(new AbilityBonus($attname, $att/2 - 5));
+end
+rule "Ability.Bonus.Capped"
+    when
+        Ability($attname:name, $att:value)
+        Stack($cap:value, type == "Ability.Max", subtype == $attname)
+    then
+        insertLogical(new AbilityBonus($attname, Math.min($cap, $att/2 - 5)));
 end

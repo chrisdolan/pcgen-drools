@@ -96,6 +96,17 @@ public class TestEngine {
     }
 
     @Test
+    public void testACEncumberedMonk() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.insert(new AbilityInput(AbilityInput.DEX, 18));
+        session.insert(new Input("Encumbrance", "Heavy", 1));
+        session.run();
+        assertAc(session, ArmorClass.ACTYPE_NORMAL, 11);
+        assertAc(session, ArmorClass.ACTYPE_TOUCH, 11);
+        session.destroy();
+    }
+
+    @Test
     public void testACChargeLunge() throws DroolsParserException, IOException {
         Session session = engine.createSession();
         session.insert(new ConditionInput(ConditionInput.TYPE_CHARGE));

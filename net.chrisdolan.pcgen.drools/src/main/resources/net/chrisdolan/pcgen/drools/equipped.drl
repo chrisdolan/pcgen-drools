@@ -1,0 +1,24 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Encumbrance
+    level : String
+end
+
+rule "Encumbrance.Medium"
+    when
+        Encumbrance(level == "Medium") or Input(type == "Encumbrance", subtype == "Medium")
+    then
+        insertLogical(new Input("Ability.Max", AbilityInput.DEX, 3)); 
+        insertLogical(new Input("ArmorCheck", "Encumbrance", -3));
+end
+rule "Encumbrance.Heavy"
+    when
+        Encumbrance(level == "Heavy") or Input(type == "Encumbrance", subtype == "Heavy")
+    then
+        insertLogical(new Input("Ability.Max", AbilityInput.DEX, 1)); 
+        insertLogical(new Input("ArmorCheck", "Encumbrance", -6));
+end
