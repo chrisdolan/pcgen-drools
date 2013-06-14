@@ -24,9 +24,46 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class Engine {
-    private StatefulKnowledgeSession ksession;
+    private KnowledgeBase kbase;
 
-    public void create() throws IOException, DroolsParserException {
+    private static class EngineSession implements Session {
+        private StatefulKnowledgeSession ksession;
+
+        private EngineSession(StatefulKnowledgeSession ksession) {
+            this.ksession = ksession;
+        }
+        public FactHandle insert(Object obj) {
+            return ksession.insert(obj);
+        }
+        public void retract(Object obj) {
+            FactHandle handle = obj instanceof FactHandle ? (FactHandle) obj : ksession.getFactHandle(obj);
+            ksession.retract(handle);
+        }
+
+        public void run() {
+            ksession.fireAllRules();
+        }
+
+        public Collection<Object> query(ObjectFilter filter) {
+            return ksession.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
+        }
+        public <T> Collection<T> queryByClass(final Class<T> cls) {
+            @SuppressWarnings("unchecked")
+            Collection<T> c = (Collection<T>) query(new ObjectFilter() {
+                public boolean accept(Object object) {
+                    return cls.isAssignableFrom(object.getClass());
+                }
+            });
+            return c;
+        }
+
+        public void destroy() {
+            ksession.dispose();
+            ksession = null;
+        }
+    }
+
+    public Engine() throws IOException, DroolsParserException {
         Ruleset ruleset = readRuleset();
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -40,9 +77,12 @@ public class Engine {
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
+        kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        ksession = kbase.newStatefulKnowledgeSession();
+    }
+    
+    public Session createSession() {
+        return new EngineSession(kbase.newStatefulKnowledgeSession());
     }
 
     private Ruleset readRuleset() throws IOException {
@@ -57,35 +97,5 @@ public class Engine {
         } catch (JAXBException e) {
             throw new IOException(e);
         }
-    }
-
-    public FactHandle insert(Object obj) {
-        return ksession.insert(obj);
-    }
-    public void retract(Object obj) {
-        FactHandle handle = obj instanceof FactHandle ? (FactHandle) obj : ksession.getFactHandle(obj);
-        ksession.retract(handle);
-    }
-
-    public void run() {
-        ksession.fireAllRules();
-    }
-
-    public Collection<Object> query(ObjectFilter filter) {
-        return ksession.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
-    }
-    public <T> Collection<T> queryByClass(final Class<T> cls) {
-        @SuppressWarnings("unchecked")
-        Collection<T> c = (Collection<T>) query(new ObjectFilter() {
-            public boolean accept(Object object) {
-                return cls.isAssignableFrom(object.getClass());
-            }
-        });
-        return c;
-    }
-
-    public void destroy() {
-        ksession.dispose();
-        ksession = null;
     }
 }

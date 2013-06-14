@@ -53,6 +53,12 @@ rule "Condition.Grappled"
     then
         insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Grappled", -4));
 end
+rule "Condition.Helpless"
+    when
+        Condition(type == Condition.TYPE_HELPLESS)
+    then
+        insertLogical(new Input("Override", AbilityInput.TYPE + AbilityInput.DEX, 0));
+end
 
 rule "Condition.Charging"
     when

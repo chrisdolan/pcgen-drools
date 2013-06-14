@@ -48,11 +48,24 @@ end
 rule "Ability.Totals"
     when
         AbilityName($attname:name)
+        not Input(type == "Override", subtype == (AbilityInput.TYPE + $attname))
         Number($att : intValue) from accumulate(
             Stack($v:value, type == (AbilityInput.TYPE + $attname)),
             sum($v)
         )
     then
         insertLogical(new Ability($attname, $att));
+end
+rule "Ability.Override"
+    when
+        AbilityName($attname:name)
+        Input(type == "Override", subtype == (AbilityInput.TYPE + $attname), $v:value)
+    then
+        insertLogical(new Ability($attname, $v));
+end
+rule "Ability.Bonus"
+    when
+        Ability($attname:name, $att:value)
+    then
         insertLogical(new AbilityBonus($attname, $att/2 - 5));
 end
