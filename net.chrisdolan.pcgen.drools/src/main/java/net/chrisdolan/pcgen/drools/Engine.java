@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -37,9 +38,13 @@ public class Engine {
     public void insert(Object obj) {
         workingMemory.insert(obj);
     }
+    public void remove(Object obj) {
+    	FactHandle handle = workingMemory.getFactHandle(obj);
+        workingMemory.retract(handle);
+    }
 
     public void run() {
-    	//System.out.println("--Engine.run--");
+    	System.out.println("--Engine.run--");
         workingMemory.fireAllRules();
     }
 

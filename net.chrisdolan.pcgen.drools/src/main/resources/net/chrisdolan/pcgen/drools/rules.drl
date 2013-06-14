@@ -89,6 +89,7 @@ rule "Condition.Charging"
     when
         Condition(type == Condition.TYPE_CHARGE)
     then
+        System.out.println("Charge");
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
         insertLogical(new Input("Attack", "Charge", 2));
         insertLogical(new Input("CMB", "BullRush", 2));
@@ -97,6 +98,7 @@ rule "Condition.Lunging"
     when
         Condition(type == Condition.TYPE_LUNGE)
     then
+        System.out.println("Lunge");
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
         insertLogical(new Input("Reach", "Lunge", 5));
 end
@@ -122,8 +124,7 @@ end
 
 rule "Attribute.BaseInput"
     when
-        AttributeName($attname:name)
-        AttributeInput(name == $attname, $v:value)
+        AttributeInput($attname:name, $v:value)
     then
         insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, $v));
 end
@@ -154,6 +155,56 @@ rule "Dex.AC"
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
 end
+
+rule "Size.AC.Colossal"
+    when
+        Input(type == "Size", subtype == "Colossal")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -8));
+end
+rule "Size.AC.Gargantuan"
+    when
+        Input(type == "Size", subtype == "Gargantuan")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -4));
+end
+rule "Size.AC.Huge"
+    when
+        Input(type == "Size", subtype == "Huge")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -2));
+end
+rule "Size.AC.Large"
+    when
+        Input(type == "Size", subtype == "Large")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -1));
+end
+rule "Size.AC.Small"
+    when
+        Input(type == "Size", subtype == "Small")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 1));
+end
+rule "Size.AC.Tiny"
+    when
+        Input(type == "Size", subtype == "Tiny")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 2));
+end
+rule "Size.AC.Diminutive"
+    when
+        Input(type == "Size", subtype == "Diminutive")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 4));
+end
+rule "Size.AC.Fine"
+    when
+        Input(type == "Size", subtype == "Fine")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 8));
+end
+
 rule "Monk.Ability.AC.level"
     when
         Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)
@@ -199,7 +250,7 @@ rule "Stack.Max"
         not Input(type == $t, subtype == $st, value > $v)
         (not StackRule(type == $t, subtype == $st) or StackRule(type == $t, subtype == $st, rulename == "Max"))
     then
-        //System.out.println("max of " + $t + "." + $st + "=" + $v);
+        System.out.println("max of " + $t + "." + $st + "=" + $v);
         insertLogical(new Stack($v,$t,$st));
 end
 
@@ -208,6 +259,6 @@ rule "Stack.Sum"
         StackRule($t:type, $st:subtype, rulename == "Sum")
         Number($sum : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), sum($v))
     then
-        //System.out.println("sum of " + $t + "." + $st + "=" + $sum);
+        System.out.println("sum of " + $t + "." + $st + "=" + $sum);
         insertLogical(new Stack($sum,$t,$st));
 end

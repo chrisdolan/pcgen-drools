@@ -105,6 +105,25 @@ public class TestEngine {
         engine.destroy();
     }
 
+    @Test
+    public void testACSize() throws DroolsParserException, IOException {
+        Engine engine = new Engine();
+        engine.create();
+        Input lastSize;
+        engine.insert(lastSize = new Input("Size", "Colossal", 1));
+        engine.run();
+        assertAc(engine, ArmorClass.ACTYPE_NORMAL, 2);
+        engine.remove(lastSize);
+        engine.insert(lastSize = new Input("Size", "Huge", 1));
+        engine.run();
+        assertAc(engine, ArmorClass.ACTYPE_NORMAL, 8);
+        engine.remove(lastSize);
+        engine.insert(lastSize = new Input("Size", "Small", 1));
+        engine.run();
+        assertAc(engine, ArmorClass.ACTYPE_NORMAL, 11);
+        engine.destroy();
+    }
+
     private void assertAc(Engine engine, String actype, int ac) {
         Collection<Object> acs = engine.query(new ACFilter(actype));
         Assert.assertEquals(Arrays.asList(new ArmorClass(actype, ac)), new ArrayList<Object>(acs));
