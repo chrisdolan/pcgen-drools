@@ -1,0 +1,43 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare InitializationTrigger
+end
+
+rule "AC.Initialization"
+    salience 1000 // trigger this rule first of all
+    when
+        not InitializationTrigger()
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
+end
+
+rule "AC.Dex"
+    when
+        AbilityBonus(name == AbilityInput.DEX, $v:value)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
+end
+
+rule "AC.Normal"
+    when
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == ArmorClass.TYPE),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_NORMAL, $ac));
+end
+rule "AC.Touch"
+    when
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == ArmorClass.TYPE, subtype not in ( "Armor", "Shield", "Natural" )),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_TOUCH, $ac));
+end

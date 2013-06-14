@@ -1,6 +1,6 @@
 package net.chrisdolan.pcgen.drools.input;
 
-public class AttributeInput {
+public class AbilityInput {
     public static final String TYPE = "Attribute";
     public static final String SUBTYPE_BASE = "Base";
 
@@ -14,9 +14,9 @@ public class AttributeInput {
     private String name;
     private int value;
 
-    public AttributeInput() {
+    public AbilityInput() {
     }
-    public AttributeInput(String name, int value) {
+    public AbilityInput(String name, int value) {
         this.name = name;
         this.value = value;
     }
@@ -49,7 +49,7 @@ public class AttributeInput {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AttributeInput other = (AttributeInput) obj;
+        AbilityInput other = (AbilityInput) obj;
         if (name == null) {
             if (other.name != null)
                 return false;

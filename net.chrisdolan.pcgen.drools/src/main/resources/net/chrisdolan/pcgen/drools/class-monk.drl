@@ -1,0 +1,19 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Monk.Ability.AC.level"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v > 20 ? 5 : $v/4));
+end
+rule "Monk.Ability.AC.Wis"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0)
+        AbilityBonus(name == AbilityInput.WIS, $v:value)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
+end

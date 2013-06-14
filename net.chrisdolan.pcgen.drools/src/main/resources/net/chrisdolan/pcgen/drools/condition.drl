@@ -1,0 +1,90 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Condition.Blinded"
+    when
+        Condition(type == Condition.TYPE_BLINDED)
+    then
+        insertLogical(new Condition("NoDexAC"));
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+end
+rule "Condition.Cowering"
+    when
+        Condition(type == Condition.TYPE_COWERING)
+    then
+        insertLogical(new Condition("NoDexAC")); // Just to AC or all dex??
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+end
+rule "Condition.Entangled"
+    when
+        Condition(type == Condition.TYPE_ENTANGLED)
+    then
+        insertLogical(new Input("Attack", "Entanged", -2));
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Entanged", -4));
+end
+rule "Condition.Exhausted"
+    when
+        Condition(type == Condition.TYPE_EXHAUSTED)
+    then
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Exhausted", -6));
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Exhausted", -6));
+end
+rule "Condition.Fatigued"
+    when
+        Condition(type == Condition.TYPE_FATIGUED)
+        not Condition(type == Condition.TYPE_EXHAUSTED) // these don't stack
+    then
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Fatigued", -2));
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Fatigued", -2));
+end
+rule "Condition.FlatFooted"
+    when
+        Condition(type == Condition.TYPE_FLATFOOTED)
+    then
+        insertLogical(new Condition("NoDexAC"));
+        insertLogical(new Condition("NoDodgeAC"));
+end
+rule "Condition.Grappled"
+    when
+        Condition(type == Condition.TYPE_GRAPPLED)
+    then
+        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Grappled", -4));
+end
+
+rule "Condition.Charging"
+    when
+        Condition(type == Condition.TYPE_CHARGE)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+        insertLogical(new Input("Attack", "Charge", 2));
+        insertLogical(new Input("CMB", "BullRush", 2));
+end
+rule "Condition.Lunging"
+    when
+        Condition(type == Condition.TYPE_LUNGE)
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+        insertLogical(new Input("Reach", "Lunge", 5));
+end
+
+rule "Condition.General.NoDexAC"
+    when
+        Condition(type == "NoDexAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
+end
+rule "Condition.General.NoDodgeAC"
+    when
+        Condition(type == "NoDodgeAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
+end
+rule "Condition.General.YesDodgeAC"
+    when
+        not Condition(type == "NoDodgeAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "Sum"));
+end

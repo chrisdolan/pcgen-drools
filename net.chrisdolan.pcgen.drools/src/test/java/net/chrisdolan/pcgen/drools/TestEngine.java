@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.chrisdolan.pcgen.drools.input.AttributeInput;
+import net.chrisdolan.pcgen.drools.input.AbilityInput;
 import net.chrisdolan.pcgen.drools.input.Condition;
 import net.chrisdolan.pcgen.drools.input.Input;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
@@ -59,7 +59,7 @@ public class TestEngine {
     public void testACDex() throws DroolsParserException, IOException {
         Engine engine = new Engine();
         engine.create();
-        engine.insert(new AttributeInput(AttributeInput.DEX, 18));
+        engine.insert(new AbilityInput(AbilityInput.DEX, 18));
         engine.run();
         assertAc(engine, ArmorClass.ACTYPE_NORMAL, 14);
         engine.destroy();
@@ -84,8 +84,8 @@ public class TestEngine {
     public void testACMonk() throws DroolsParserException, IOException {
         Engine engine = new Engine();
         engine.create();
-        engine.insert(new AttributeInput(AttributeInput.DEX, 12));
-        engine.insert(new AttributeInput(AttributeInput.WIS, 18));
+        engine.insert(new AbilityInput(AbilityInput.DEX, 12));
+        engine.insert(new AbilityInput(AbilityInput.WIS, 18));
         engine.insert(new Input("ClassLevel", "Monk", 11));
         engine.run();
         assertAc(engine, ArmorClass.ACTYPE_NORMAL, 17);

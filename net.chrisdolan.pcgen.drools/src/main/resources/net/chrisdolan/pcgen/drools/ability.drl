@@ -1,0 +1,58 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Ability.Init"
+    salience 1000 // trigger this rule first of all
+    when
+        not InitializationTrigger()
+    then
+        insertLogical(new AbilityName(AbilityInput.STR));
+        insertLogical(new AbilityName(AbilityInput.DEX));
+        insertLogical(new AbilityName(AbilityInput.CON));
+        insertLogical(new AbilityName(AbilityInput.INT));
+        insertLogical(new AbilityName(AbilityInput.WIS));
+        insertLogical(new AbilityName(AbilityInput.CHA));
+end
+
+declare AbilityName
+    name : String
+end
+declare Ability
+    name : String
+    value: int
+end
+declare AbilityBonus
+    name : String
+    value: int
+end
+
+
+rule "Ability.BaseInput"
+    when
+        AbilityInput($attname:name, $v:value)
+    then
+        insertLogical(new Input(AbilityInput.TYPE + $attname, AbilityInput.SUBTYPE_BASE, $v));
+end
+rule "Ability.BaseInputMissing"
+    // this is mainly to simplify unit tests where we may lack initialization of the ability scores to 10
+    when
+        AbilityName($attname:name)
+        not AbilityInput(name == $attname)
+    then
+        insertLogical(new Input(AbilityInput.TYPE + $attname, AbilityInput.SUBTYPE_BASE, 10));
+end
+
+rule "Ability.Totals"
+    when
+        AbilityName($attname:name)
+        Number($att : intValue) from accumulate(
+            Stack($v:value, type == (AbilityInput.TYPE + $attname)),
+            sum($v)
+        )
+    then
+        insertLogical(new Ability($attname, $att));
+        insertLogical(new AbilityBonus($attname, $att/2 - 5));
+end

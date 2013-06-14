@@ -7,235 +7,12 @@ import net.chrisdolan.pcgen.drools.type.*;
 declare InitializationTrigger
 end
 
-rule "Initialization"
-    salience 1000 // trigger this rule first of all
+rule "Global.Initialization"
+    salience 100000 // trigger this rule first of all
     when
         not InitializationTrigger()
     then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
-        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
-        insertLogical(new AttributeName(AttributeInput.STR));
-        insertLogical(new AttributeName(AttributeInput.DEX));
-        insertLogical(new AttributeName(AttributeInput.CON));
-        insertLogical(new AttributeName(AttributeInput.INT));
-        insertLogical(new AttributeName(AttributeInput.WIS));
-        insertLogical(new AttributeName(AttributeInput.CHA));
-end
-
-declare AttributeName
-    name : String
-end
-declare Attribute
-    name : String
-    value: int
-end
-declare AttributeBonus
-    name : String
-    value: int
-end
-
-
-rule "Condition.Blinded"
-    when
-        Condition(type == Condition.TYPE_BLINDED)
-    then
-        insertLogical(new Condition("NoDexAC"));
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-end
-rule "Condition.Cowering"
-    when
-        Condition(type == Condition.TYPE_COWERING)
-    then
-        insertLogical(new Condition("NoDexAC")); // Just to AC or all dex??
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-end
-rule "Condition.Entangled"
-    when
-        Condition(type == Condition.TYPE_ENTANGLED)
-    then
-        insertLogical(new Input("Attack", "Entanged", -2));
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.DEX, "Entanged", -4));
-end
-rule "Condition.Exhausted"
-    when
-        Condition(type == Condition.TYPE_EXHAUSTED)
-    then
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.STR, "Exhausted", -6));
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.DEX, "Exhausted", -6));
-end
-rule "Condition.Fatigued"
-    when
-        Condition(type == Condition.TYPE_FATIGUED)
-        not Condition(type == Condition.TYPE_EXHAUSTED) // these don't stack
-    then
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.STR, "Fatigued", -2));
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.DEX, "Fatigued", -2));
-end
-rule "Condition.FlatFooted"
-    when
-        Condition(type == Condition.TYPE_FLATFOOTED)
-    then
-        insertLogical(new Condition("NoDexAC"));
-        insertLogical(new Condition("NoDodgeAC"));
-end
-rule "Condition.Grappled"
-    when
-        Condition(type == Condition.TYPE_GRAPPLED)
-    then
-        insertLogical(new Input(AttributeInput.TYPE + AttributeInput.DEX, "Grappled", -4));
-end
-
-rule "Condition.Charging"
-    when
-        Condition(type == Condition.TYPE_CHARGE)
-    then
-        System.out.println("Charge");
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-        insertLogical(new Input("Attack", "Charge", 2));
-        insertLogical(new Input("CMB", "BullRush", 2));
-end
-rule "Condition.Lunging"
-    when
-        Condition(type == Condition.TYPE_LUNGE)
-    then
-        System.out.println("Lunge");
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-        insertLogical(new Input("Reach", "Lunge", 5));
-end
-
-rule "Condition.General.NoDexAC"
-    when
-        Condition(type == "NoDexAC")
-    then
-        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
-end
-rule "Condition.General.NoDodgeAC"
-    when
-        Condition(type == "NoDodgeAC")
-    then
-        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
-end
-rule "Condition.General.YesDodgeAC"
-    when
-        not Condition(type == "NoDodgeAC")
-    then
-        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "Sum"));
-end
-
-rule "Attribute.BaseInput"
-    when
-        AttributeInput($attname:name, $v:value)
-    then
-        insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, $v));
-end
-rule "Attribute.BaseInputMissing"
-    // this is mainly to simplify unit tests where we may lack initialization of the ability scores to 10
-    when
-        AttributeName($attname:name)
-        not AttributeInput(name == $attname)
-    then
-        insertLogical(new Input(AttributeInput.TYPE + $attname, AttributeInput.SUBTYPE_BASE, 10));
-end
-
-rule "Attribute.Totals"
-    when
-        AttributeName($attname:name)
-        Number($att : intValue) from accumulate(
-            Stack($v:value, type == (AttributeInput.TYPE + $attname)),
-            sum($v)
-        )
-    then
-        insertLogical(new Attribute($attname, $att));
-        insertLogical(new AttributeBonus($attname, $att/2 - 5));
-end
-
-rule "Dex.AC"
-    when
-        AttributeBonus(name == AttributeInput.DEX, $v:value)
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
-end
-
-rule "Size.AC.Colossal"
-    when
-        Input(type == "Size", subtype == "Colossal")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -8));
-end
-rule "Size.AC.Gargantuan"
-    when
-        Input(type == "Size", subtype == "Gargantuan")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -4));
-end
-rule "Size.AC.Huge"
-    when
-        Input(type == "Size", subtype == "Huge")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -2));
-end
-rule "Size.AC.Large"
-    when
-        Input(type == "Size", subtype == "Large")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -1));
-end
-rule "Size.AC.Small"
-    when
-        Input(type == "Size", subtype == "Small")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 1));
-end
-rule "Size.AC.Tiny"
-    when
-        Input(type == "Size", subtype == "Tiny")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 2));
-end
-rule "Size.AC.Diminutive"
-    when
-        Input(type == "Size", subtype == "Diminutive")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 4));
-end
-rule "Size.AC.Fine"
-    when
-        Input(type == "Size", subtype == "Fine")
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 8));
-end
-
-rule "Monk.Ability.AC.level"
-    when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v > 20 ? 5 : $v/4));
-end
-rule "Monk.Ability.AC.Wis"
-    when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0)
-        AttributeBonus(name == AttributeInput.WIS, $v:value)
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
-end
-
-rule "AC.Normal"
-    when
-        Number($ac : intValue) from accumulate(
-            Stack($v:value, type == ArmorClass.TYPE),
-            sum($v)
-        )
-    then
-        insertLogical(new ArmorClass(ArmorClass.ACTYPE_NORMAL, $ac));
-end
-rule "AC.Touch"
-    when
-        Number($ac : intValue) from accumulate(
-            Stack($v:value, type == ArmorClass.TYPE, subtype not in ( "Armor", "Shield", "Natural" )),
-            sum($v)
-        )
-    then
-        insertLogical(new ArmorClass(ArmorClass.ACTYPE_TOUCH, $ac));
+        System.out.println("--Engine init--");
 end
 
 declare Stack
@@ -250,7 +27,7 @@ rule "Stack.Max"
         not Input(type == $t, subtype == $st, value > $v)
         (not StackRule(type == $t, subtype == $st) or StackRule(type == $t, subtype == $st, rulename == "Max"))
     then
-        System.out.println("max of " + $t + "." + $st + "=" + $v);
+        //System.out.println("max of " + $t + "." + $st + "=" + $v);
         insertLogical(new Stack($v,$t,$st));
 end
 
@@ -259,6 +36,6 @@ rule "Stack.Sum"
         StackRule($t:type, $st:subtype, rulename == "Sum")
         Number($sum : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), sum($v))
     then
-        System.out.println("sum of " + $t + "." + $st + "=" + $sum);
+        //System.out.println("sum of " + $t + "." + $st + "=" + $sum);
         insertLogical(new Stack($sum,$t,$st));
 end

@@ -1,0 +1,54 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Size.AC.Colossal"
+    when
+        Input(type == "Size", subtype == "Colossal")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -8));
+end
+rule "Size.AC.Gargantuan"
+    when
+        Input(type == "Size", subtype == "Gargantuan")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -4));
+end
+rule "Size.AC.Huge"
+    when
+        Input(type == "Size", subtype == "Huge")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -2));
+end
+rule "Size.AC.Large"
+    when
+        Input(type == "Size", subtype == "Large")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -1));
+end
+rule "Size.AC.Small"
+    when
+        Input(type == "Size", subtype == "Small")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 1));
+end
+rule "Size.AC.Tiny"
+    when
+        Input(type == "Size", subtype == "Tiny")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 2));
+end
+rule "Size.AC.Diminutive"
+    when
+        Input(type == "Size", subtype == "Diminutive")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 4));
+end
+rule "Size.AC.Fine"
+    when
+        Input(type == "Size", subtype == "Fine")
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 8));
+end

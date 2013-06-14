@@ -3,9 +3,15 @@ package net.chrisdolan.pcgen.drools;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
+import net.chrisdolan.pcgen.drools.Ruleset.Rule;
+
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -21,11 +27,14 @@ public class Engine {
     private StatefulKnowledgeSession ksession;
 
     public void create() throws IOException, DroolsParserException {
+        Ruleset ruleset = readRuleset();
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.batch()
-            .add(new ClassPathResource("rules.drl", getClass()), ResourceType.DRL)
-            .build();
+        CompositeKnowledgeBuilder batch = kbuilder.batch();
+        for (Rule rule : ruleset.getRules()) {
+            batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
+        }
+        batch.build();
         if (kbuilder.hasErrors())
             throw new DroolsParserException(kbuilder.getErrors().toString());
 
@@ -34,6 +43,20 @@ public class Engine {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         ksession = kbase.newStatefulKnowledgeSession();
+    }
+
+    private Ruleset readRuleset() throws IOException {
+        try {
+            Object o = JAXBContext.newInstance(Ruleset.class).createUnmarshaller().unmarshal(getClass().getResourceAsStream("ruleset.xml"));
+            if (!(o instanceof Ruleset))
+                throw new IOException("Unmarshalled XML is not a Ruleset, but is: " + o.getClass());
+            Ruleset rs = (Ruleset) o;
+            if (rs.getRules().isEmpty())
+                throw new IOException("No rules found in the ruleset");
+            return rs;
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
     }
 
     public FactHandle insert(Object obj) {
