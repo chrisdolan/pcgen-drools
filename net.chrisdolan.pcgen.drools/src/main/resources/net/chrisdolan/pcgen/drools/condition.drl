@@ -106,7 +106,8 @@ rule "Condition.Prone"
         not(not Condition(type == ConditionInput.TYPE_PRONE))
     then
         insertLogical(new Input("Attack", "Prone", -4));
-        // todo: ranged vs. melee AC
+        insertLogical(new Input(ArmorClass.TYPE+".Range", ArmorClass.SUBTYPE_OTHER, 4));
+        insertLogical(new Input(ArmorClass.TYPE+".Melee", ArmorClass.SUBTYPE_OTHER, -4));
 end
 rule "Condition.Shaken"
     when

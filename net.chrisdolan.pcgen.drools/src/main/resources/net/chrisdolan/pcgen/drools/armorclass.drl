@@ -5,7 +5,7 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "AC.Initialization"
-    salience 1000 // trigger this rule first of all
+    salience 1000
     when
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_BASE, 10));
@@ -55,4 +55,44 @@ rule "AC.Touch"
         )
     then
         insertLogical(new ArmorClass(ArmorClass.ACTYPE_TOUCH, $ac));
+end
+rule "AC.Normal.Range"
+    when
+        ArmorClass(actype == ArmorClass.ACTYPE_NORMAL, $touch:value)
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == (ArmorClass.TYPE + ".Range")),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_RANGE, $touch+$ac));
+end
+rule "AC.Normal.Melee"
+    when
+        ArmorClass(actype == ArmorClass.ACTYPE_NORMAL, $base:value)
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == (ArmorClass.TYPE + ".Melee")),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_MELEE, $base+$ac));
+end
+rule "AC.Touch.Range"
+    when
+        ArmorClass(actype == ArmorClass.ACTYPE_TOUCH, $touch:value)
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == (ArmorClass.TYPE + ".Range")),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_RANGE_TOUCH, $touch+$ac));
+end
+rule "AC.Touch.Melee"
+    when
+        ArmorClass(actype == ArmorClass.ACTYPE_TOUCH, $base:value)
+        Number($ac : intValue) from accumulate(
+            Stack($v:value, type == (ArmorClass.TYPE + ".Melee")),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorClass(ArmorClass.ACTYPE_MELEE_TOUCH, $base+$ac));
 end

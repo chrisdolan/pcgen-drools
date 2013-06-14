@@ -32,7 +32,7 @@ public class TestEngine {
         }
 
         public boolean accept(Object object) {
-            return object instanceof ArmorClass && ((ArmorClass) object).getAcType().equals(actype);
+            return object instanceof ArmorClass && ((ArmorClass) object).getActype().equals(actype);
         }
     }
 
@@ -115,6 +115,20 @@ public class TestEngine {
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 8);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 5);
+        session.destroy();
+    }
+
+    @Test
+    public void testACProne() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.insert(new ConditionInput(ConditionInput.TYPE_PRONE));
+        session.run();
+        assertAc(session, ArmorClass.ACTYPE_NORMAL, 10);
+        assertAc(session, ArmorClass.ACTYPE_TOUCH, 10);
+        assertAc(session, ArmorClass.ACTYPE_MELEE, 6);
+        assertAc(session, ArmorClass.ACTYPE_MELEE_TOUCH, 6);
+        assertAc(session, ArmorClass.ACTYPE_RANGE, 14);
+        assertAc(session, ArmorClass.ACTYPE_RANGE_TOUCH, 14);
         session.destroy();
     }
 

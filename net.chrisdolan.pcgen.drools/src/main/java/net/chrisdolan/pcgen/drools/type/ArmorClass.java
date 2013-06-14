@@ -16,21 +16,25 @@ public class ArmorClass {
 
     public static final String ACTYPE_NORMAL = "Normal";
     public static final String ACTYPE_TOUCH = "Touch";
+    public static final String ACTYPE_RANGE = "Range";
+    public static final String ACTYPE_MELEE = "Melee";
+    public static final String ACTYPE_RANGE_TOUCH = "RangeTouch";
+    public static final String ACTYPE_MELEE_TOUCH = "MeleeTouch";
 
-    private String acType;
+    private String actype;
     private int value;
 
     public ArmorClass() {
     }
-    public ArmorClass(String acType, int value) {
-        this.acType = acType;
+    public ArmorClass(String actype, int value) {
+        this.actype = actype;
         this.value = value;
     }
-    public String getAcType() {
-        return acType;
+    public String getActype() {
+        return actype;
     }
-    public void setAcType(String actype) {
-        this.acType = actype;
+    public void setActype(String actype) {
+        this.actype = actype;
     }
     public int getValue() {
         return value;
@@ -43,7 +47,7 @@ public class ArmorClass {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((acType == null) ? 0 : acType.hashCode());
+        result = prime * result + ((actype == null) ? 0 : actype.hashCode());
         result = prime * result + value;
         return result;
     }
@@ -56,10 +60,10 @@ public class ArmorClass {
         if (getClass() != obj.getClass())
             return false;
         ArmorClass other = (ArmorClass) obj;
-        if (acType == null) {
-            if (other.acType != null)
+        if (actype == null) {
+            if (other.actype != null)
                 return false;
-        } else if (!acType.equals(other.acType))
+        } else if (!actype.equals(other.actype))
             return false;
         if (value != other.value)
             return false;
@@ -68,6 +72,6 @@ public class ArmorClass {
 
     @Override
     public String toString() {
-        return "AC[" + acType + "=" + value + "]";
+        return "AC[" + actype + "=" + value + "]";
     }
 }
