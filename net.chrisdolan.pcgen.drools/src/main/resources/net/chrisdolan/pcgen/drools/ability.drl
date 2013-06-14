@@ -5,7 +5,7 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "Ability.Init"
-    salience 1000 // trigger this rule first of all
+    salience 1000
     when
         not InitializationTrigger()
     then

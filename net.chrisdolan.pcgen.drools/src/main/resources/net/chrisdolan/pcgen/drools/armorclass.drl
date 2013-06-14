@@ -16,6 +16,25 @@ rule "AC.Initialization"
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, "Sum"));
 end
 
+rule "Condition.General.NoDexAC"
+    when
+        Condition(type == "NoDexAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
+end
+rule "Condition.General.NoDodgeAC"
+    when
+        Condition(type == "NoDodgeAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
+end
+rule "Condition.General.YesDodgeAC"
+    when
+        not Condition(type == "NoDodgeAC")
+    then
+        insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "Sum"));
+end
+
 rule "AC.Dex"
     when
         AbilityBonus(name == AbilityInput.DEX, $v:value)

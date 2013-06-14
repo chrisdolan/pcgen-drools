@@ -20,6 +20,11 @@ declare Stack
    type : String
    subtype : String
 end
+declare StackRule
+    type : String
+    subtype : String
+    rulename : String
+end
 
 rule "Stack.Max"
     when

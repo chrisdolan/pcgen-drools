@@ -113,11 +113,11 @@ public class TestEngine {
         engine.insert(lastSize = new Input("Size", "Colossal", 1));
         engine.run();
         assertAc(engine, ArmorClass.ACTYPE_NORMAL, 2);
-        engine.remove(lastSize);
+        engine.retract(lastSize);
         engine.insert(lastSize = new Input("Size", "Huge", 1));
         engine.run();
         assertAc(engine, ArmorClass.ACTYPE_NORMAL, 8);
-        engine.remove(lastSize);
+        engine.retract(lastSize);
         engine.insert(lastSize = new Input("Size", "Small", 1));
         engine.run();
         assertAc(engine, ArmorClass.ACTYPE_NORMAL, 11);

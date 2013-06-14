@@ -1,7 +1,7 @@
 package net.chrisdolan.pcgen.drools.input;
 
 public class AbilityInput {
-    public static final String TYPE = "Attribute";
+    public static final String TYPE = "Ability";
     public static final String SUBTYPE_BASE = "Base";
 
     public static final String STR = "Strength";

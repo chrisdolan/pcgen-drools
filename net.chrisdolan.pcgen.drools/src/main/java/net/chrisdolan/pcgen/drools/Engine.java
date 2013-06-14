@@ -62,13 +62,12 @@ public class Engine {
     public FactHandle insert(Object obj) {
         return ksession.insert(obj);
     }
-    public void remove(Object obj) {
+    public void retract(Object obj) {
         FactHandle handle = obj instanceof FactHandle ? (FactHandle) obj : ksession.getFactHandle(obj);
         ksession.retract(handle);
     }
 
     public void run() {
-        //System.out.println("--Engine.run--");
         ksession.fireAllRules();
     }
 
