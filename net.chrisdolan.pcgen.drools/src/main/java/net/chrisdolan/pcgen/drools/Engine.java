@@ -1,76 +1,69 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderErrors;
+import org.drools.conf.EventProcessingOption;
+import org.drools.io.impl.ClassPathResource;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 public class Engine {
-    private WorkingMemory workingMemory;
+    private StatefulKnowledgeSession ksession;
 
     public void create() throws IOException, DroolsParserException {
-        InputStream rulesStream = getClass().getResourceAsStream("rules.drl");
-        try {
-            PackageBuilder packageBuilder = new PackageBuilder();
-            packageBuilder.addPackageFromDrl(new InputStreamReader(rulesStream));
-            assertNoRuleErrors(packageBuilder);
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage(packageBuilder.getPackage());
-            workingMemory = ruleBase.newStatefulSession();
-//            for (Object o : CoreFacts.get())
-//                workingMemory.insert(o);
-        } finally {
-            rulesStream.close();
-        }
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.batch()
+            .add(new ClassPathResource("rules.drl", getClass()), ResourceType.DRL)
+            .build();
+        if (kbuilder.hasErrors())
+            throw new DroolsParserException(kbuilder.getErrors().toString());
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        ksession = kbase.newStatefulKnowledgeSession();
     }
 
-    public void insert(Object obj) {
-        workingMemory.insert(obj);
+    public FactHandle insert(Object obj) {
+        return ksession.insert(obj);
     }
     public void remove(Object obj) {
-    	FactHandle handle = workingMemory.getFactHandle(obj);
-        workingMemory.retract(handle);
+        FactHandle handle = obj instanceof FactHandle ? (FactHandle) obj : ksession.getFactHandle(obj);
+        ksession.retract(handle);
     }
 
     public void run() {
-    	System.out.println("--Engine.run--");
-        workingMemory.fireAllRules();
+        //System.out.println("--Engine.run--");
+        ksession.fireAllRules();
     }
 
     public Collection<Object> query(ObjectFilter filter) {
-        return workingMemory.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
+        return ksession.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
+    }
+    public <T> Collection<T> queryByClass(final Class<T> cls) {
+        @SuppressWarnings("unchecked")
+        Collection<T> c = (Collection<T>) query(new ObjectFilter() {
+            public boolean accept(Object object) {
+                return cls.isAssignableFrom(object.getClass());
+            }
+        });
+        return c;
     }
 
     public void destroy() {
-        workingMemory.dispose();
-        workingMemory = null;
-    }
-    
-    private void assertNoRuleErrors(PackageBuilder packageBuilder) {
-        PackageBuilderErrors errors = packageBuilder.getErrors();
-
-        if (errors.getErrors().length > 0) {
-            StringBuilder errorMessages = new StringBuilder();
-            errorMessages.append("Found errors in package builder\n");
-            for (int i = 0; i < errors.getErrors().length; i++) {
-                DroolsError errorMessage = errors.getErrors()[i];
-                errorMessages.append(errorMessage);
-                errorMessages.append("\n");
-            }
-            errorMessages.append("Could not parse knowledge");
-
-            throw new IllegalArgumentException(errorMessages.toString());
-        }
+        ksession.dispose();
+        ksession = null;
     }
 }
