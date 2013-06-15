@@ -1,0 +1,63 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.SavingThrows"
+    SavingThrow(type == SavingThrow.FORT, fortitude : value)
+    SavingThrow(type == SavingThrow.REFL, reflex : value)
+    SavingThrow(type == SavingThrow.WILL, will : value)
+end
+query "Query.SavingThrow.Fortitude"
+    SavingThrow(type == SavingThrow.FORT, fortitude : value)
+end
+query "Query.SavingThrow.Reflex"
+    SavingThrow(type == SavingThrow.REFL, reflex : value)
+end
+query "Query.SavingThrow.Will"
+    SavingThrow(type == SavingThrow.WILL, will : value)
+end
+
+rule "SavingThrow.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new SavingThrowType(SavingThrow.FORT));
+        insertLogical(new SavingThrowType(SavingThrow.REFL));
+        insertLogical(new SavingThrowType(SavingThrow.WILL));
+end
+
+declare SavingThrowType
+    name : String
+end
+
+rule "SavingThrow.CON"
+    when
+        AbilityBonus(name == AbilityInput.CON, $con:value)
+    then
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, SavingThrow.SUBTYPE_ABILITY, $con));
+end
+rule "SavingThrow.DEX"
+    when
+        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+    then
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, SavingThrow.SUBTYPE_ABILITY, $dex));
+end
+rule "SavingThrow.WIS"
+    when
+        AbilityBonus(name == AbilityInput.WIS, $wis:value)
+    then
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, SavingThrow.SUBTYPE_ABILITY, $wis));
+end
+rule "SavingThrow.Totals"
+    when
+        SavingThrowType($t:name)
+        //not Input(type == "Override", subtype == (SavingThrow.TYPE + $t))
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == (SavingThrow.TYPE + $t)),
+            sum($v)
+        )
+    then
+        insertLogical(new SavingThrow($t, $sum));
+end

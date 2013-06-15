@@ -36,9 +36,6 @@ public class ConditionInput {
     public static final String TYPE_STUNNED = "Stunned";
     public static final String TYPE_UNCONSCIOUS = "Unconscious";
 
-    public static final String TYPE_CHARGE = "Charge";
-    public static final String TYPE_LUNGE = "Lunge";
-
     private String type;
 
     public ConditionInput() {
@@ -80,6 +77,6 @@ public class ConditionInput {
     }
     @Override
     public String toString() {
-        return "Condition[" + type + "]";
+        return "ConditionInput[" + type + "]";
     }
 }

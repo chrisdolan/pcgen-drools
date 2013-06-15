@@ -2,9 +2,12 @@ package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.chrisdolan.pcgen.drools.input.AbilityInput;
+import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.Input;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
@@ -105,8 +108,8 @@ public class TestEngine {
     @Test
     public void testACChargeLunge() throws DroolsParserException, IOException {
         Session session = engine.createSession();
-        session.insert(new ConditionInput(ConditionInput.TYPE_CHARGE));
-        session.insert(new ConditionInput(ConditionInput.TYPE_LUNGE));
+        session.insert(new ActionInput(ActionInput.TYPE_CHARGE));
+        session.insert(new ActionInput(ActionInput.TYPE_LUNGE));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 6);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 6);
@@ -241,6 +244,26 @@ public class TestEngine {
         session.destroy();
     }
 
+    @Test
+    public void testSaves() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.insert(new AbilityInput(AbilityInput.CON, 14));
+        session.insert(new AbilityInput(AbilityInput.DEX, 12));
+        session.insert(new AbilityInput(AbilityInput.WIS, 8));
+        session.run();
+        assertSaves(session, 2, 1, -1);
+        session.destroy();
+    }
+
+    private void assertSaves(Session session, int fort, int refl, int will) {
+        Map<String,Integer> got = session.queryToMap(Integer.class, "Query.SavingThrows");
+        Map<String,Integer> expected = new HashMap<String, Integer>();
+        expected.put("fortitude", fort);
+        expected.put("reflex", refl);
+        expected.put("will", will);
+        Assert.assertEquals(expected, got);
+    }
+
     private void assertInitiative(Session session, int initExpected) {
         int initGot = session.querySingle(Integer.class, "Query.Initiative");
         Assert.assertEquals(initExpected, initGot);
@@ -252,8 +275,12 @@ public class TestEngine {
     }
 
     private void assertLoadLimits(Session session, int light, int medium, int heavy) {
-        List<Object> got = session.queryAll("Query.LoadLimits");
-        Assert.assertEquals(Arrays.asList(heavy, light, medium), got); // alphabetic order...
+        Map<String,Integer> got = session.queryToMap(Integer.class, "Query.LoadLimits");
+        Map<String,Integer> expected = new HashMap<String, Integer>();
+        expected.put("light", light);
+        expected.put("medium", medium);
+        expected.put("heavy", heavy);
+        Assert.assertEquals(expected, got);
     }
 
     private void assertAc(Session session, String actype, int acExpected) {

@@ -3,8 +3,10 @@ package net.chrisdolan.pcgen.drools;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -64,6 +66,21 @@ public class Engine {
                     out.add(row.get(id));
                 }
             }
+            return out;
+        }
+        public <T> Map<String, T> queryToMap(Class<T> cls, String queryname,  Object... args) {
+            QueryResults queryResults = ksession.getQueryResults(queryname, args);
+            Map<String, T> out = new HashMap<String, T>();
+            String[] cols = queryResults.getIdentifiers();
+                QueryResultsRow row = queryResults.iterator().next();
+                for (String id : cols) {
+                    Object object = row.get(id);
+                    if (!cls.isAssignableFrom(object.getClass()))
+                        throw new ClassCastException(cls.getName() + " <- " + object.getClass());
+                    @SuppressWarnings("unchecked")
+                    T t = (T) object;
+                    out.put(id, t);
+                }
             return out;
         }
         public <T> List<T> queryColumn(Class<T> cls, String queryname, Object... args) {

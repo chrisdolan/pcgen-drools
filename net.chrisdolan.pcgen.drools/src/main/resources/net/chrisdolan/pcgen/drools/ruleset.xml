@@ -1,10 +1,11 @@
 <ruleset>
     <rule name="rules.drl" type="DRL"/>
     <rule name="ability.drl" type="DRL"/>
-    <rule name="size.drl" type="DRL"/>
-    <rule name="condition.drl" type="DRL"/>
-    <rule name="equipped.drl" type="DRL"/>
-    <rule name="combat.drl" type="DRL"/>
     <rule name="armorclass.drl" type="DRL"/>
     <rule name="class-monk.drl" type="DRL"/>
+    <rule name="combat.drl" type="DRL"/>
+    <rule name="condition.drl" type="DRL"/>
+    <rule name="equipped.drl" type="DRL"/>
+    <rule name="savingthrow.drl" type="DRL"/>
+    <rule name="size.drl" type="DRL"/>
 </ruleset>

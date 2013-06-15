@@ -133,19 +133,3 @@ rule "Condition.Unconscious"
     then
         insertLogical(new Condition(ConditionInput.TYPE_HELPLESS));
 end
-
-rule "Condition.Charging"
-    when
-        not(not Condition(type == ConditionInput.TYPE_CHARGE))
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-        insertLogical(new Input("Attack", "Charge", 2));
-        insertLogical(new Input("CMB", "BullRush", 2));
-end
-rule "Condition.Lunging"
-    when
-        not(not Condition(type == ConditionInput.TYPE_LUNGE))
-    then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
-        insertLogical(new Input("Reach", "Lunge", 5));
-end
