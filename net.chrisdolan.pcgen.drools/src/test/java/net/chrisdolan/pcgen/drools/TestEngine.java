@@ -1,9 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.chrisdolan.pcgen.drools.input.AbilityInput;
@@ -22,7 +20,7 @@ public class TestEngine {
     
     @BeforeClass
     public static void before() throws DroolsParserException, IOException {
-        engine = new Engine(); // this is by far the most expensive part
+        engine = new Engine("pathfinder"); // this is by far the most expensive part
     }
 
     @Test

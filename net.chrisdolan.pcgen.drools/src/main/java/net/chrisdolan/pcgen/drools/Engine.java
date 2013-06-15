@@ -127,8 +127,8 @@ public class Engine {
         }
     }
 
-    public Engine() throws IOException, DroolsParserException {
-        Ruleset ruleset = readRuleset();
+    public Engine(String name) throws IOException, DroolsParserException {
+        Ruleset ruleset = readRuleset(name);
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder batch = kbuilder.batch();
@@ -149,9 +149,9 @@ public class Engine {
         return new EngineSession(kbase.newStatefulKnowledgeSession());
     }
 
-    private Ruleset readRuleset() throws IOException {
+    private Ruleset readRuleset(String name) throws IOException {
         try {
-            Object o = JAXBContext.newInstance(Ruleset.class).createUnmarshaller().unmarshal(getClass().getResourceAsStream("ruleset.xml"));
+            Object o = JAXBContext.newInstance(Ruleset.class).createUnmarshaller().unmarshal(getClass().getResourceAsStream(name + ".xml"));
             if (!(o instanceof Ruleset))
                 throw new IOException("Unmarshalled XML is not a Ruleset, but is: " + o.getClass());
             Ruleset rs = (Ruleset) o;

@@ -1,0 +1,11 @@
+<ruleset>
+    <rule name="pathfinder/rules.drl" type="DRL"/>
+    <rule name="pathfinder/ability.drl" type="DRL"/>
+    <rule name="pathfinder/armorclass.drl" type="DRL"/>
+    <rule name="pathfinder/class-monk.drl" type="DRL"/>
+    <rule name="pathfinder/combat.drl" type="DRL"/>
+    <rule name="pathfinder/condition.drl" type="DRL"/>
+    <rule name="pathfinder/equipped.drl" type="DRL"/>
+    <rule name="pathfinder/savingthrow.drl" type="DRL"/>
+    <rule name="pathfinder/size.drl" type="DRL"/>
+</ruleset>
