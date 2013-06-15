@@ -22,24 +22,35 @@ declare StackRule
     rulename : String
 end
 
-rule "Stack.Max"
+rule "Stack.Max.Default"
+    // this is complicated because without a singleton StackRule to key off, we need to somehow select just one Input.
+    // I had to add the ordinal to tie-break between two Inputs with the same value. Before that, I had a bug
+    // that ties each added a Stack item 
     when
-        $s : Input($t:type, $st:subtype, $v:value)
-        not Input(type == $t, subtype == $st, value > $v)
-        (not StackRule(type == $t, subtype == $st) or StackRule(type == $t, subtype == $st, rulename == "Max"))
+        $s : Input($t:type, $st:subtype, $v:value, $o:ordinal)
+        not Input(type == $t, subtype == $st, value > $v || (value == $v && ordinal < $o))
+        not StackRule(type == $t, subtype == $st)
     then
         //System.out.println("max of " + $t + "." + $st + "=" + $v);
         insertLogical(new Stack($v,$t,$st));
 end
 
+rule "Stack.Max"
+    when
+        StackRule($t:type, $st:subtype, rulename == "Max")
+        Number($max : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), max($v))
+    then
+        //System.out.println("max of " + $t + "." + $st + "=" + $v);
+        insertLogical(new Stack($max,$t,$st));
+end
+
 rule "Stack.Min"
     when
-        $s : Input($t:type, $st:subtype, $v:value)
-        not Input(type == $t, subtype == $st, value < $v)
-        StackRule(type == $t, subtype == $st, rulename == "Min")
+        StackRule($t:type, $st:subtype, rulename == "Min")
+        Number($min : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), min($v))
     then
         //System.out.println("min of " + $t + "." + $st + "=" + $v);
-        insertLogical(new Stack($v,$t,$st));
+        insertLogical(new Stack($min,$t,$st));
 end
 
 rule "Stack.Sum"

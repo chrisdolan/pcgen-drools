@@ -43,6 +43,16 @@ public class TestEngine {
     }
 
     @Test
+    public void testACStack() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
+        session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
+        session.run();
+        assertAc(session, ArmorClass.ACTYPE_NORMAL, 12);
+        session.destroy();
+    }
+
+    @Test
     public void testACOther() throws DroolsParserException, IOException {
         Session session = engine.createSession();
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));

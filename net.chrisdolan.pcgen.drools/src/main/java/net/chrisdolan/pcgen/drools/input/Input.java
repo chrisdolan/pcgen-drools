@@ -33,6 +33,10 @@ public class Input {
         this.value = value;
     }
 
+    public int getOrdinal() {
+        return System.identityHashCode(this);
+    }
+
     @Override
     public String toString() {
         return "Input[" + type + "/" + subtype + "=" + value + "]";

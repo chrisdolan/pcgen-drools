@@ -21,6 +21,7 @@ declare LoadLimit
 end
 
 rule "Initialize.EncumbranceTable"
+    salience 1000
     when
     then
         insertLogical(new LoadLimit(1,3,6,10));
