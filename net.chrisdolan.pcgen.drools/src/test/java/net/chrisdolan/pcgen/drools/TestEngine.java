@@ -1,9 +1,8 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import net.chrisdolan.pcgen.drools.input.AbilityInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
@@ -11,41 +10,36 @@ import net.chrisdolan.pcgen.drools.input.Input;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.runtime.ObjectFilter;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestEngine {
-    private Engine engine;
+    private static Engine engine;
     
-    @Before
-    public void before() throws DroolsParserException, IOException {
-        engine = new Engine();
-    }
-    
-    private final class ACFilter implements ObjectFilter {
-        private final String actype;
-
-        public ACFilter(String actype) {
-            this.actype = actype;
-        }
-
-        public boolean accept(Object object) {
-            return object instanceof ArmorClass && ((ArmorClass) object).getActype().equals(actype);
-        }
+    @BeforeClass
+    public static void before() throws DroolsParserException, IOException {
+        engine = new Engine(); // this is by far the most expensive part
     }
 
     @Test
     public void testAC() throws DroolsParserException, IOException {
+//        long start = System.currentTimeMillis();
         Session session = engine.createSession();
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
+//        session.run();
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.insert(ac(ArmorClass.SUBTYPE_DEFLECTION, 2));
         session.insert(ac(ArmorClass.SUBTYPE_DEFLECTION, 1));
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.run();
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 14);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 12);
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.destroy();
+//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
     }
 
     @Test
@@ -172,12 +166,113 @@ public class TestEngine {
         session.destroy();
     }
 
-    private void assertAc(Session session, String actype, int ac) {
-        Collection<Object> acs = session.query(new ACFilter(actype));
-        Assert.assertEquals(Arrays.asList(new ArmorClass(actype, ac)), new ArrayList<Object>(acs));
+    @Test
+    public void testWeightLimits() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        AbilityInput ability;
+        session.insert(ability = new AbilityInput(AbilityInput.STR, 11));
+        session.run();
+        assertLoadLimits(session, 38, 76, 115);
+        session.retract(ability);
+        session.insert(ability = new AbilityInput(AbilityInput.STR, 31));
+        session.run();
+        assertLoadLimits(session, 153*4, 306*4, 460*4);
+        session.retract(ability);
+        session.insert(ability = new AbilityInput(AbilityInput.STR, 64));
+        session.run();
+        assertLoadLimits(session, 233*4*4*4*4, 466*4*4*4*4, 700*4*4*4*4);
+        session.destroy();
+    }
+
+    @Test
+    public void testEncumbrance() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        Input last;
+        session.insert(new AbilityInput(AbilityInput.STR, 11));
+        session.insert(last = new Input("Weight", "PC", 1));
+        session.run();
+        assertEncumbrance(session, "Light");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 38));
+        session.run();
+        assertEncumbrance(session, "Light");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 39));
+        session.run();
+        assertEncumbrance(session, "Medium");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 76));
+        session.run();
+        assertEncumbrance(session, "Medium");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 77));
+        session.run();
+        assertEncumbrance(session, "Heavy");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 115));
+        session.run();
+        assertEncumbrance(session, "Heavy");
+        session.retract(last);
+        session.insert(last = new Input("Weight", "PC", 116));
+        session.run();
+        assertEncumbrance(session, "Overloaded");
+        session.destroy();
+    }
+
+    private void assertEncumbrance(Session session, String encExpected) {
+        String encGot = session.querySingle(String.class, "Query.Encumbrance");
+        Assert.assertEquals(encExpected, encGot);
+//        Collection<Object> enc = session.search(new ObjectFilter() {
+//            @Override
+//            public boolean accept(Object object) {
+//                return object instanceof Input && ((Input)object).getType().equals("Encumbrance");
+//            }
+//        });
+//        List<String> got = new ArrayList<String>();
+//        for (Object o : enc)
+//            got.add(((Input)o).getSubtype());
+//        Assert.assertEquals(Arrays.asList(enclevel), got);
+    }
+
+    private void assertLoadLimits(Session session, int light, int medium, int heavy) {
+        List<Object> got = session.queryAll("Query.LoadLimits");
+        Assert.assertEquals(Arrays.asList(heavy, light, medium), got);
+//        Collection<Object> limits = session.search(new ObjectFilter() {
+//            @Override
+//            public boolean accept(Object object) {
+//                return object instanceof Input && ((Input)object).getType().equals("LoadLimit");
+//            }
+//        });
+//        Map<String,Integer> expected = new HashMap<String, Integer>();
+//        expected.put("Light", light);
+//        expected.put("Medium", medium);
+//        expected.put("Heavy", heavy);
+//        Map<String,Integer> got = new HashMap<String, Integer>();
+//        for (Object limit : limits)
+//            got.put(((Input)limit).getSubtype(), ((Input)limit).getValue());
+//        Assert.assertEquals(expected, got);
+    }
+
+    private void assertAc(Session session, String actype, int acExpected) {
+        int acGot = session.querySingle(Integer.class, "Query.ArmorClass.ByType", actype);
+        Assert.assertEquals(acExpected, acGot);
+//        Collection<Object> acs = session.search(new ACFilter(actype));
+//        Assert.assertEquals(Arrays.asList(new ArmorClass(actype, acExpected)), new ArrayList<Object>(acs));
     }
 
     private Input ac(String subtype, int value) {
         return new Input(ArmorClass.TYPE, subtype, value);
     }
+    
+//    private final class ACFilter implements ObjectFilter {
+//        private final String actype;
+//
+//        public ACFilter(String actype) {
+//            this.actype = actype;
+//        }
+//
+//        public boolean accept(Object object) {
+//            return object instanceof ArmorClass && ((ArmorClass) object).getActype().equals(actype);
+//        }
+//    }
 }

@@ -1,7 +1,10 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,6 +25,8 @@ import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 
 public class Engine {
     private KnowledgeBase kbase;
@@ -42,14 +47,56 @@ public class Engine {
 
         public void run() {
             ksession.fireAllRules();
+//            int nFired = ksession.fireAllRules();
+//            System.out.println("Fired " + nFired + " rules");
         }
 
-        public Collection<Object> query(ObjectFilter filter) {
+        public QueryResults query(String queryname, Object... args) {
+            return ksession.getQueryResults(queryname, args);
+        }
+        public List<Object> queryAll(String queryname, Object... args) {
+            QueryResults queryResults = ksession.getQueryResults(queryname, args);
+            List<Object> out = new ArrayList<Object>();
+            String[] cols = queryResults.getIdentifiers();
+            for (Iterator<QueryResultsRow> it = queryResults.iterator(); it.hasNext();) {
+                QueryResultsRow row = it.next();
+                for (String id : cols) {
+                    out.add(row.get(id));
+                }
+            }
+            return out;
+        }
+        public <T> List<T> queryColumn(Class<T> cls, String queryname, Object... args) {
+            QueryResults queryResults = ksession.getQueryResults(queryname, args);
+            List<T> out = new ArrayList<T>();
+            String[] cols = queryResults.getIdentifiers();
+            for (Iterator<QueryResultsRow> it = queryResults.iterator(); it.hasNext();) {
+                QueryResultsRow row = it.next();
+                Object object = row.get(cols[args.length]);
+                if (!cls.isAssignableFrom(object.getClass()))
+                    throw new ClassCastException(cls.getName() + " <- " + object.getClass());
+                @SuppressWarnings("unchecked")
+                T t = (T) object;
+                out.add(t);
+            }
+            return out;
+        }
+        public <T> T querySingle(Class<T> cls, String queryname, Object... args) {
+            QueryResults queryResults = ksession.getQueryResults(queryname, args);
+            Object object = queryResults.iterator().next().get(queryResults.getIdentifiers()[args.length]);
+            if (!cls.isAssignableFrom(object.getClass()))
+                throw new ClassCastException(cls.getName() + " <- " + object.getClass());
+            @SuppressWarnings("unchecked")
+            T t = (T) object;
+            return t;
+        }
+        
+        public Collection<Object> search(ObjectFilter filter) {
             return ksession.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()).getObjects(filter);
         }
-        public <T> Collection<T> queryByClass(final Class<T> cls) {
+        public <T> Collection<T> searchByClass(final Class<T> cls) {
             @SuppressWarnings("unchecked")
-            Collection<T> c = (Collection<T>) query(new ObjectFilter() {
+            Collection<T> c = (Collection<T>) search(new ObjectFilter() {
                 public boolean accept(Object object) {
                     return cls.isAssignableFrom(object.getClass());
                 }

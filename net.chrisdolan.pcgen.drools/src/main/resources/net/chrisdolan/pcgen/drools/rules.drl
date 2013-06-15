@@ -8,7 +8,7 @@ rule "Global.Initialization"
     salience 100000 // trigger this rule first of all
     when
     then
-        System.out.println("--Engine init--");
+        System.out.println("--Session init--");
 end
 
 declare Stack

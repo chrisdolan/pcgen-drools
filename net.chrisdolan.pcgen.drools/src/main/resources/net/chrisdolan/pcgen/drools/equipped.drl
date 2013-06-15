@@ -4,21 +4,117 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
-declare Encumbrance
-    level : String
+query "Query.Encumbrance"
+    Input(type == "Encumbrance", encumbrance : subtype)
+end
+query "Query.LoadLimits"
+    Input(type == "LoadLimit", subtype == "Light", light : value)
+    Input(type == "LoadLimit", subtype == "Medium", medium : value)
+    Input(type == "LoadLimit", subtype == "Heavy", heavy : value)
+end
+
+declare LoadLimit
+    str : int
+    light : int
+    medium : int
+    heavy : int
+end
+
+rule "Initialize.EncumbranceTable"
+    when
+    then
+        insertLogical(new LoadLimit(1,3,6,10));
+        insertLogical(new LoadLimit(2,6,13,20));
+        insertLogical(new LoadLimit(3,10,20,30));
+        insertLogical(new LoadLimit(4,13,26,40));
+        insertLogical(new LoadLimit(5,16,33,50));
+        insertLogical(new LoadLimit(6,20,40,60));
+        insertLogical(new LoadLimit(7,23,46,70));
+        insertLogical(new LoadLimit(8,26,53,80));
+        insertLogical(new LoadLimit(9,30,60,90));
+        insertLogical(new LoadLimit(10,33,66,100));
+        insertLogical(new LoadLimit(11,38,76,115));
+        insertLogical(new LoadLimit(12,43,86,130));
+        insertLogical(new LoadLimit(13,50,100,150));
+        insertLogical(new LoadLimit(14,58,116,175));
+        insertLogical(new LoadLimit(15,66,133,200));
+        insertLogical(new LoadLimit(16,76,153,230));
+        insertLogical(new LoadLimit(17,86,173,260));
+        insertLogical(new LoadLimit(18,100,200,300));
+        insertLogical(new LoadLimit(19,116,233,350));
+        insertLogical(new LoadLimit(20,133,266,400));
+        insertLogical(new LoadLimit(21,153,306,460));
+        insertLogical(new LoadLimit(22,173,346,520));
+        insertLogical(new LoadLimit(23,200,400,600));
+        insertLogical(new LoadLimit(24,233,466,700));
+        insertLogical(new LoadLimit(25,266,533,800));
+        insertLogical(new LoadLimit(26,306,613,920));
+        insertLogical(new LoadLimit(27,346,693,1040));
+        insertLogical(new LoadLimit(28,400,800,1200));
+        insertLogical(new LoadLimit(29,466,933,1400));
+end
+
+rule "Encumbrance.LoadLimits"
+    when
+        Ability(name == AbilityInput.STR, $str:value)
+        LoadLimit(str == $str, $light:light, $medium:medium, $heavy:heavy)
+    then
+        insertLogical(new Input("LoadLimit", "Light", $light));
+        insertLogical(new Input("LoadLimit", "Medium", $medium));
+        insertLogical(new Input("LoadLimit", "Heavy", $heavy));
+end
+
+rule "Encumbrance.LoadLimits.Extrapolation"
+    when
+        Ability(name == AbilityInput.STR, $str:value)
+        not LoadLimit(str == $str)
+        LoadLimit(str == (20 + $str % 10), $altstr:str, $light:light, $medium:medium, $heavy:heavy)
+    then
+        insertLogical(new Input("LoadLimit", "Light", $str < 1 ? 0 : $light * (int)Math.pow(4, ($str-$altstr)/10)));
+        insertLogical(new Input("LoadLimit", "Medium", $str < 1 ? 0 : $medium * (int)Math.pow(4, ($str-$altstr)/10)));
+        insertLogical(new Input("LoadLimit", "Heavy", $str < 1 ? 0 : $heavy * (int)Math.pow(4, ($str-$altstr)/10)));
+end
+
+rule "Encumbrance.Weight"
+    when
+        Stack(type == "Weight", subtype == "PC", $wt:value)
+        Input(type == "LoadLimit", value >= $wt, $enc:subtype, $v:value)
+        not Input(type == "LoadLimit", value >= $wt && value < $v)
+    then
+        insertLogical(new Input("Encumbrance", $enc, 1));
+end
+rule "Encumbrance.Weight.Overloaded"
+    when
+        Stack(type == "Weight", subtype == "PC", $wt:value)
+        not Input(type == "LoadLimit", value >= $wt)
+    then
+        insertLogical(new Input("Encumbrance", "Overloaded", 1));
+end
+rule "Encumbrance.Weight.Missing"
+    when
+        not Stack(type == "Weight", subtype == "PC")
+    then
+        insertLogical(new Input("Encumbrance", "Light", 1));
 end
 
 rule "Encumbrance.Medium"
     when
-        Encumbrance(level == "Medium") or Input(type == "Encumbrance", subtype == "Medium")
+        Input(type == "Encumbrance", subtype == "Medium")
     then
         insertLogical(new Input("Ability.Max", AbilityInput.DEX, 3)); 
         insertLogical(new Input("ArmorCheck", "Encumbrance", -3));
 end
 rule "Encumbrance.Heavy"
     when
-        Encumbrance(level == "Heavy") or Input(type == "Encumbrance", subtype == "Heavy")
+        Input(type == "Encumbrance", subtype == "Heavy")
     then
         insertLogical(new Input("Ability.Max", AbilityInput.DEX, 1)); 
         insertLogical(new Input("ArmorCheck", "Encumbrance", -6));
+end
+rule "Encumbrance.Overloaded"
+    when
+        Input(type == "Encumbrance", subtype == "Overloaded")
+    then
+        insertLogical(new Condition("NoDexAC"));
+        insertLogical(new Input("Override", "Move", 5));
 end

@@ -4,6 +4,13 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.ArmorClass.ByType" (String type)
+    ArmorClass(ac : value, actype == type)
+end
+query "Query.ArmorClass"
+    ArmorClass(actype == "Normal",ac : value)
+end
+
 rule "AC.Initialization"
     salience 1000
     when
