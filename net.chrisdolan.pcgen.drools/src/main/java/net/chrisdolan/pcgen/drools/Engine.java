@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -145,6 +146,32 @@ public class Engine {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
     }
     
+    public static Session createSession(String name) throws DroolsParserException, IOException {
+        return getEngine(name).createSession();
+    }
+
+    private static String lastUsedName;
+    private static Engine lastUsed;
+    private static Map<String, WeakReference<Engine>> engines = new HashMap<String, WeakReference<Engine>>();
+    public static Engine getEngine(String name) throws DroolsParserException, IOException {
+        synchronized (engines) {
+            if (name.equals(lastUsedName) && lastUsed != null)
+                return lastUsed;
+            Engine engine = null;
+            WeakReference<Engine> engineRef = engines.get(name);
+            if (engineRef != null) {
+                engine = engineRef.get();
+            }
+            if (engine == null) {
+                engine = new Engine(name);
+                engines.put(name, new WeakReference<Engine>(engine));
+                lastUsedName = name;
+                lastUsed = engine;
+            }
+            return engine;
+        }
+    }
+
     public Session createSession() {
         return new EngineSession(kbase.newStatefulKnowledgeSession());
     }
