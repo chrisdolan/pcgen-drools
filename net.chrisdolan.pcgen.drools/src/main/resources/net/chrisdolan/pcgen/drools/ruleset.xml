@@ -4,6 +4,7 @@
     <rule name="size.drl" type="DRL"/>
     <rule name="condition.drl" type="DRL"/>
     <rule name="equipped.drl" type="DRL"/>
+    <rule name="combat.drl" type="DRL"/>
     <rule name="armorclass.drl" type="DRL"/>
     <rule name="class-monk.drl" type="DRL"/>
 </ruleset>

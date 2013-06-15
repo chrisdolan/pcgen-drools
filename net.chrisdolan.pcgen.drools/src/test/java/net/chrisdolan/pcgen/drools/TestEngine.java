@@ -24,22 +24,14 @@ public class TestEngine {
 
     @Test
     public void testAC() throws DroolsParserException, IOException {
-//        long start = System.currentTimeMillis();
         Session session = engine.createSession();
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
-//        session.run();
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.insert(ac(ArmorClass.SUBTYPE_DEFLECTION, 2));
         session.insert(ac(ArmorClass.SUBTYPE_DEFLECTION, 1));
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.run();
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 14);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 12);
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
         session.destroy();
-//        System.out.println("elapsed " + (System.currentTimeMillis() - start));
     }
 
     @Test
@@ -229,60 +221,47 @@ public class TestEngine {
         session.destroy();
     }
 
+    @Test
+    public void testInitiative() throws DroolsParserException, IOException {
+        Session session = engine.createSession();
+        session.run();
+        assertInitiative(session, 0);
+        AbilityInput ability;
+        session.insert(ability = new AbilityInput(AbilityInput.DEX, 10));
+        session.run();
+        assertInitiative(session, 0);
+        session.retract(ability);
+        session.insert(ability = new AbilityInput(AbilityInput.DEX, 4));
+        session.run();
+        assertInitiative(session, -3);
+        session.retract(ability);
+        session.insert(ability = new AbilityInput(AbilityInput.DEX, 64));
+        session.run();
+        assertInitiative(session, 27);
+        session.destroy();
+    }
+
+    private void assertInitiative(Session session, int initExpected) {
+        int initGot = session.querySingle(Integer.class, "Query.Initiative");
+        Assert.assertEquals(initExpected, initGot);
+    }
+
     private void assertEncumbrance(Session session, String encExpected) {
         String encGot = session.querySingle(String.class, "Query.Encumbrance");
         Assert.assertEquals(encExpected, encGot);
-//        Collection<Object> enc = session.search(new ObjectFilter() {
-//            @Override
-//            public boolean accept(Object object) {
-//                return object instanceof Input && ((Input)object).getType().equals("Encumbrance");
-//            }
-//        });
-//        List<String> got = new ArrayList<String>();
-//        for (Object o : enc)
-//            got.add(((Input)o).getSubtype());
-//        Assert.assertEquals(Arrays.asList(enclevel), got);
     }
 
     private void assertLoadLimits(Session session, int light, int medium, int heavy) {
         List<Object> got = session.queryAll("Query.LoadLimits");
-        Assert.assertEquals(Arrays.asList(heavy, light, medium), got);
-//        Collection<Object> limits = session.search(new ObjectFilter() {
-//            @Override
-//            public boolean accept(Object object) {
-//                return object instanceof Input && ((Input)object).getType().equals("LoadLimit");
-//            }
-//        });
-//        Map<String,Integer> expected = new HashMap<String, Integer>();
-//        expected.put("Light", light);
-//        expected.put("Medium", medium);
-//        expected.put("Heavy", heavy);
-//        Map<String,Integer> got = new HashMap<String, Integer>();
-//        for (Object limit : limits)
-//            got.put(((Input)limit).getSubtype(), ((Input)limit).getValue());
-//        Assert.assertEquals(expected, got);
+        Assert.assertEquals(Arrays.asList(heavy, light, medium), got); // alphabetic order...
     }
 
     private void assertAc(Session session, String actype, int acExpected) {
         int acGot = session.querySingle(Integer.class, "Query.ArmorClass.ByType", actype);
         Assert.assertEquals(acExpected, acGot);
-//        Collection<Object> acs = session.search(new ACFilter(actype));
-//        Assert.assertEquals(Arrays.asList(new ArmorClass(actype, acExpected)), new ArrayList<Object>(acs));
     }
 
     private Input ac(String subtype, int value) {
         return new Input(ArmorClass.TYPE, subtype, value);
     }
-    
-//    private final class ACFilter implements ObjectFilter {
-//        private final String actype;
-//
-//        public ACFilter(String actype) {
-//            this.actype = actype;
-//        }
-//
-//        public boolean accept(Object object) {
-//            return object instanceof ArmorClass && ((ArmorClass) object).getActype().equals(actype);
-//        }
-//    }
 }
