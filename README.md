@@ -1,4 +1,5 @@
-= Synopsis =
+Synopsis
+--------
 
 Drools is a high-performance, generic /knowledge engine/ with a
 concise syntax for defining rules. A knowledge engine is a collection
@@ -12,7 +13,8 @@ or add the Shaken condition and see how attack bonuses change. We just
 need to make a bunch of if/then rules and Drools takes care of /how/
 to propagate the facts.
 
-= Motivation =
+Motivation
+----------
 
 In early 2013, I (Chris Dolan) tried to port PCGen 5.x to Android. It
 technically worked, but the startup performance was about 100x too
@@ -27,7 +29,8 @@ announced my initial work here:
 
 http://tech.groups.yahoo.com/group/pcgen_developers/message/3363
 
-= Architecture =
+Architecture
+------------
 
 This initial implementation only has Pathfinder rules, but I've
 architected it to hopefully be compatible with any d20 system, but I
@@ -64,7 +67,8 @@ Here's what the API currently looks like:
         
         session.destroy();
 
-= License =
+License
+-------
 
 Following the lead of PCGen itself, I permit redistribution of this
 project's code under the terms of the LGPL v3
