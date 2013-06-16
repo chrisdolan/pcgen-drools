@@ -3,11 +3,6 @@
     <rule name="pathfinder/ability.drl" type="DRL"/>
     <rule name="pathfinder/armorclass.drl" type="DRL"/>
     <rule name="pathfinder/class.drl" type="DRL"/>
-    <rule name="pathfinder/combat.drl" type="DRL"/>
-    <rule name="pathfinder/condition.drl" type="DRL"/>
-    <rule name="pathfinder/equipped.drl" type="DRL"/>
-    <rule name="pathfinder/savingthrow.drl" type="DRL"/>
-    <rule name="pathfinder/size.drl" type="DRL"/>
     <rule name="pathfinder/class-barbarian.drl" type="DRL"/>
     <rule name="pathfinder/class-bard.drl" type="DRL"/>
     <rule name="pathfinder/class-cleric.drl" type="DRL"/>
@@ -19,4 +14,13 @@
     <rule name="pathfinder/class-rogue.drl" type="DRL"/>
     <rule name="pathfinder/class-sorcerer.drl" type="DRL"/>
     <rule name="pathfinder/class-wizard.drl" type="DRL"/>
+    <rule name="pathfinder/combat.drl" type="DRL"/>
+    <rule name="pathfinder/combat-actions.drl" type="DRL"/>
+    <rule name="pathfinder/combat-bab.drl" type="DRL"/>
+    <rule name="pathfinder/combat-cmb.drl" type="DRL"/>
+    <rule name="pathfinder/combat-initiative.drl" type="DRL"/>
+    <rule name="pathfinder/condition.drl" type="DRL"/>
+    <rule name="pathfinder/equipped.drl" type="DRL"/>
+    <rule name="pathfinder/savingthrow.drl" type="DRL"/>
+    <rule name="pathfinder/size.drl" type="DRL"/>
 </ruleset>

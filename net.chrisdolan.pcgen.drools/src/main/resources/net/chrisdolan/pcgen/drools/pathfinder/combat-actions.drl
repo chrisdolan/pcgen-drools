@@ -1,0 +1,47 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Action
+    type : String
+end
+
+rule "Action.UserInput"
+    when
+        ActionInput($t:type)
+    then
+        insertLogical(new Action($t));
+end
+
+rule "Action.Charging"
+    when
+        not(not Action(type == ActionInput.TYPE_CHARGE))
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+        insertLogical(new Input("Attack", "Charge", 2));
+        insertLogical(new Input("CMB", "BullRush", 2));
+end
+rule "Action.Lunging"
+    when
+        not(not Action(type == ActionInput.TYPE_LUNGE))
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, -2));
+        insertLogical(new Input("Reach", "Lunge", 5));
+end
+rule "Action.FightingDefensively"
+    when
+        not(not Action(type == ActionInput.TYPE_FIGHTING_DEFENSIVELY))
+        not Action(type == ActionInput.TYPE_TOTAL_DEFENSE) // they don't stack
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 2));
+        insertLogical(new Input("Attack", "FightingDefensively", -4));
+end
+rule "Action.TotalDefense"
+    when
+        not(not Action(type == ActionInput.TYPE_TOTAL_DEFENSE))
+    then
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 4));
+        // todo: no attacks
+end

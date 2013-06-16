@@ -1,0 +1,23 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.BaseAttackBonus.Highest"
+    BAB(bab : value)
+end
+
+declare BAB
+    value : int
+end
+
+rule "BAB.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "BAB"),
+            sum($v)
+        )
+    then
+        insertLogical(new BAB($sum));
+end

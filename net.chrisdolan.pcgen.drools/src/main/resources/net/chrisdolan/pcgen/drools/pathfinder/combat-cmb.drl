@@ -1,0 +1,166 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.CMB.All"
+    CMB(type == "BullRush", bullrush : value)
+    CMB(type == "Disarm", disarm : value)
+    CMB(type == "Grapple", grapple : value)
+    CMB(type == "Overrun", overrun : value)
+    CMB(type == "Sunder", sunder : value)
+    CMB(type == "Trip", trip : value)
+end
+query "Query.CMB.BullRush"
+    CMB(type == "BullRush", bullrush : value)
+end
+query "Query.CMB.Disarm"
+    CMB(type == "Disarm", disarm : value)
+end
+query "Query.CMB.Grapple"
+    CMB(type == "Grapple", grapple : value)
+end
+query "Query.CMB.Overrun"
+    CMB(type == "Overrun", overrun : value)
+end
+query "Query.CMB.Sunder"
+    CMB(type == "Sunder", sunder : value)
+end
+query "Query.CMB.Trip"
+    CMB(type == "Trip", trip : value)
+end
+query "Query.CMD.All"
+    CMD(type == "BullRush", bullrush : value)
+    CMD(type == "Disarm", disarm : value)
+    CMD(type == "Grapple", grapple : value)
+    CMD(type == "Overrun", overrun : value)
+    CMD(type == "Sunder", sunder : value)
+    CMD(type == "Trip", trip : value)
+end
+query "Query.CMD.BullRush"
+    CMD(type == "BullRush", bullrush : value)
+end
+query "Query.CMD.Disarm"
+    CMD(type == "Disarm", disarm : value)
+end
+query "Query.CMD.Grapple"
+    CMD(type == "Grapple", grapple : value)
+end
+query "Query.CMD.Overrun"
+    CMD(type == "Overrun", overrun : value)
+end
+query "Query.CMD.Sunder"
+    CMD(type == "Sunder", sunder : value)
+end
+query "Query.CMD.Trip"
+    CMD(type == "Trip", trip : value)
+end
+
+rule "Combat.CMB.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new CMBType("BullRush"));
+        insertLogical(new CMBType("Disarm"));
+        insertLogical(new CMBType("Grapple"));
+        insertLogical(new CMBType("Overrun"));
+        insertLogical(new CMBType("Sunder"));
+        insertLogical(new CMBType("Trip"));
+end
+
+declare CMBType
+    name : String
+end
+declare CMB
+    type : String
+    value : int
+end
+declare CMD
+    type : String
+    value : int
+end
+
+rule "CMB.BaseAttackBonus"
+    when
+        BAB($bab:value)
+    then
+        insertLogical(new Input("CMB", "BaseAttackBonus", $bab));
+end
+rule "CMB.Ability"
+    when
+        AbilityBonus(name == AbilityInput.STR, $str:value)
+    then
+        insertLogical(new Input("CMB", "Ability", $str));
+end
+rule "CMB.Base.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "CMB"),
+            sum($v)
+        )
+    then
+        insertLogical(new CMB("Base", $sum));
+end
+rule "CMB.Type.Base"
+    when
+        CMBType($t:name)
+        CMB(type == "Base", $v:value)
+    then
+        insertLogical(new Input("CMB."+$t, "Base", $v));
+end
+rule "CMB.Type.Total"
+    when
+        CMBType($t:name)
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == ("CMB."+$t)),
+            sum($v)
+        )
+    then
+        insertLogical(new CMB($t, $sum));
+end
+
+rule "CMD.BaseAttackBonus"
+    when
+        BAB($bab:value)
+    then
+        insertLogical(new Input("CMD", "BaseAttackBonus", $bab));
+end
+rule "CMD.Ability.Str"
+    when
+        AbilityBonus(name == AbilityInput.STR, $str:value)
+    then
+        insertLogical(new Input("CMD", "AbilityStr", $str));
+end
+rule "CMD.Ability.Dex"
+    when
+        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+    then
+        insertLogical(new Input("CMD", "AbilityDex", $dex));
+end
+rule "CMD.Base.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "CMD"),
+            sum($v)
+        )
+    then
+        insertLogical(new CMD("Base", 10+$sum));
+end
+rule "CMD.Type.Base"
+    when
+        CMBType($t:name)
+        CMD(type == "Base", $v:value)
+    then
+        insertLogical(new Input("CMD."+$t, "Base", $v));
+end
+rule "CMD.Type.Total"
+    when
+        CMBType($t:name)
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == ("CMD."+$t)),
+            sum($v)
+        )
+    then
+        insertLogical(new CMD($t, $sum));
+end

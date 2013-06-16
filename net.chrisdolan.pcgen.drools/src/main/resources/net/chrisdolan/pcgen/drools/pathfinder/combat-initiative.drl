@@ -1,0 +1,25 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Initiative"
+    Initiative(initiative : value)
+end
+
+rule "Initiative.DEX"
+    when
+        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+    then
+        insertLogical(new Input(Initiative.TYPE, Initiative.SUBTYPE_DEXTERITY, $dex));
+end
+rule "Initiative"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == Initiative.TYPE),
+            sum($v)
+        )
+    then
+        insertLogical(new Initiative($sum));
+end
