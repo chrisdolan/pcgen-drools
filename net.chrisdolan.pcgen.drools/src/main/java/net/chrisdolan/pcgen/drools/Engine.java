@@ -3,6 +3,7 @@ package net.chrisdolan.pcgen.drools;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import org.drools.runtime.rule.QueryResultsRow;
 
 public class Engine {
     private KnowledgeBase kbase;
+    private ArrayList<String> names;
 
     private static class EngineSession implements Session {
         private StatefulKnowledgeSession ksession;
@@ -128,14 +130,13 @@ public class Engine {
         }
     }
 
-    public Engine(String name) throws IOException, DroolsParserException {
-        Ruleset ruleset = readRuleset(name);
-        
+    public Engine(String... names) throws IOException, DroolsParserException {
+        this.names = new ArrayList<String>(Arrays.asList(names));
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder batch = kbuilder.batch();
-        for (Rule rule : ruleset.getRules()) {
-            batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
-        }
+        for (String name : names)
+            for (Rule rule : readRuleset(name).getRules())
+                batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
         batch.build();
         if (kbuilder.hasErrors())
             throw new DroolsParserException(kbuilder.getErrors().toString());
@@ -146,26 +147,27 @@ public class Engine {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
     }
     
-    public static Session createSession(String name) throws DroolsParserException, IOException {
-        return getEngine(name).createSession();
+    public static Session createSession(String... names) throws DroolsParserException, IOException {
+        return getEngine(names).createSession();
     }
 
     private static String lastUsedName;
     private static Engine lastUsed;
     private static Map<String, WeakReference<Engine>> engines = new HashMap<String, WeakReference<Engine>>();
-    public static Engine getEngine(String name) throws DroolsParserException, IOException {
+    public static Engine getEngine(String... names) throws DroolsParserException, IOException {
+        String key = Arrays.toString(names);
         synchronized (engines) {
-            if (name.equals(lastUsedName) && lastUsed != null)
+            if (key.equals(lastUsedName) && lastUsed != null)
                 return lastUsed;
             Engine engine = null;
-            WeakReference<Engine> engineRef = engines.get(name);
+            WeakReference<Engine> engineRef = engines.get(key);
             if (engineRef != null) {
                 engine = engineRef.get();
             }
             if (engine == null) {
-                engine = new Engine(name);
-                engines.put(name, new WeakReference<Engine>(engine));
-                lastUsedName = name;
+                engine = new Engine(names);
+                engines.put(key, new WeakReference<Engine>(engine));
+                lastUsedName = key;
                 lastUsed = engine;
             }
             return engine;
@@ -188,5 +190,10 @@ public class Engine {
         } catch (JAXBException e) {
             throw new IOException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Engine" + names;
     }
 }
