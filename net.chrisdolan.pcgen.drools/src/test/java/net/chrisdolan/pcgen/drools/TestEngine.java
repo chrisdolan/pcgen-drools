@@ -10,6 +10,7 @@ import net.chrisdolan.pcgen.drools.input.AbilityInput;
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.Input;
+import net.chrisdolan.pcgen.drools.input.LevelInput;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
 import org.drools.compiler.DroolsParserException;
@@ -104,7 +105,8 @@ public class TestEngine {
         Session session = Engine.createSession(RULESET);
         session.insert(new AbilityInput(AbilityInput.DEX, 12));
         session.insert(new AbilityInput(AbilityInput.WIS, 18));
-        session.insert(new Input("ClassLevel", "Monk", 11));
+        for (int i=0;i<11;++i)
+            session.insert(new LevelInput("Monk"));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 17);
         assertAc(session, ArmorClass.ACTYPE_TOUCH, 17);

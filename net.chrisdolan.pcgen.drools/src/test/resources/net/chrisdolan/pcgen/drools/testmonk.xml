@@ -24,7 +24,8 @@
 		GM grants an additional feat or something) so the UI doesn't warn about it. 
 		But maybe that has to be done via a rule? -->
 
-		<level class="Monk" archetype="HungryGhost">
+		<level class="Monk">
+		    <archetype name="Monk.HungryGhost"/>
 		    <hitpoints value="8"/>
             <skill ranks="1" name="Acrobatics"/>
             <skill ranks="1" name="Climb"/>

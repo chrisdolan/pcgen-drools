@@ -11,13 +11,29 @@ rule "Class.Init"
         insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
 end
 
-/*
-rule "Class.Init.Saves"
-    salience 900
+rule "Class.Level.Total"
     when
-        SavingThrowType($save:name)
+        MaxClassLevel($class:classname)
+        Number(intValue > 0, $sum : intValue) from accumulate(
+            $l : LevelInput(classname == $class),
+            count($l)
+        )
     then
-        insertLogical(new StackRule(SavingThrow.TYPE + $save, "ClassLevel", "Sum");
+        insertLogical(new Input("ClassLevel", $class, $sum));
+end
+rule "Class.Archetype.Missing"
+    when
+        Input(type == "ClassLevel", $class:subtype, value > 0)
+        not ArchetypeInput($class == classname, name != "Base")
+    then
+        insertLogical(new ArchetypeInput($class, "Base"));
+end
+/*
+rule "Class.Archetype"
+    when
+        ArchetypeInput($class:classname,$name:name)
+    then
+        insertLogical(new Input("Archtype", $class+"."+$name, 1);
 end
 */
 
