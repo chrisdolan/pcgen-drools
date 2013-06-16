@@ -36,6 +36,8 @@ public class ConditionInput {
     public static final String TYPE_STUNNED = "Stunned";
     public static final String TYPE_UNCONSCIOUS = "Unconscious";
 
+    public static final String TYPE_RAGE = "Rage";
+
     private String type;
 
     public ConditionInput() {

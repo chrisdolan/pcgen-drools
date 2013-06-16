@@ -25,16 +25,14 @@
 		But maybe that has to be done via a rule? -->
 
 		<level class="Monk">
-		    <archetype name="Monk.HungryGhost"/>
+		    <archetype class="Monk" name="HungryGhost"/>
 		    <hitpoints value="8"/>
             <skill ranks="1" name="Acrobatics"/>
             <skill ranks="1" name="Climb"/>
             <skill ranks="1" name="EscapeArtist"/>
             <skill ranks="1" name="Perception"/>
             <skill ranks="1" name="SenseMotive"/>
-            <favoredclassbonus>
-                <hitpoints value="1"/>
-            </favoredclassbonus>
+            <favoredclassbonus name="hitpoint"/>
             <feat source="class" name="CombatReflexes"/>
             <feat name="Toughness"/>
             <feat name="ViciousStomp"/>

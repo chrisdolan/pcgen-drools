@@ -25,7 +25,7 @@ end
 rule "Class.Monk.Ability.AC.Wis"
     when
         Input(type == "ClassLevel", subtype == "Monk", value > 0)
-        AbilityBonus(name == AbilityInput.WIS, $v:value)
+        StatBonus(name == StatInput.WIS, $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
 end

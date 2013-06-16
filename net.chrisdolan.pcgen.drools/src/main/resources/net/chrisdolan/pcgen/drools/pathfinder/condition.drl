@@ -34,22 +34,22 @@ rule "Condition.Entangled"
         not(not Condition(type == ConditionInput.TYPE_ENTANGLED))
     then
         insertLogical(new Input("Attack", "Entanged", -2));
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Entanged", -4));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Entanged", -4));
 end
 rule "Condition.Exhausted"
     when
         not(not Condition(type == ConditionInput.TYPE_EXHAUSTED))
     then
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Exhausted", -6));
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Exhausted", -6));
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Exhausted", -6));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Exhausted", -6));
 end
 rule "Condition.Fatigued"
     when
         not(not Condition(type == ConditionInput.TYPE_FATIGUED))
         not Condition(type == ConditionInput.TYPE_EXHAUSTED) // these don't stack
     then
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.STR, "Fatigued", -2));
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Fatigued", -2));
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Fatigued", -2));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Fatigued", -2));
 end
 rule "Condition.FlatFooted"
     when
@@ -63,13 +63,13 @@ rule "Condition.Grappled"
         not(not Condition(type == ConditionInput.TYPE_GRAPPLED))
         not Condition(type == ConditionInput.TYPE_PINNED) // they do not stack
     then
-        insertLogical(new Input(AbilityInput.TYPE + AbilityInput.DEX, "Grappled", -4));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Grappled", -4));
 end
 rule "Condition.Helpless"
     when
         not(not Condition(type == ConditionInput.TYPE_HELPLESS))
     then
-        insertLogical(new Input("Override", AbilityInput.TYPE + AbilityInput.DEX, 0));
+        insertLogical(new Input("Override", StatInput.TYPE + StatInput.DEX, 0));
 end
 rule "Condition.Panicked"
     when
@@ -85,7 +85,7 @@ rule "Condition.Paralyzed"
     when
         not(not Condition(type == ConditionInput.TYPE_PARALYZED))
     then
-        insertLogical(new Input("Override", AbilityInput.TYPE + AbilityInput.STR, 0));
+        insertLogical(new Input("Override", StatInput.TYPE + StatInput.STR, 0));
         insertLogical(new Condition(ConditionInput.TYPE_HELPLESS));
 end
 rule "Condition.Petrified"

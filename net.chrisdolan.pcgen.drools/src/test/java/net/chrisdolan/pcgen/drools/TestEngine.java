@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.chrisdolan.pcgen.drools.input.AbilityInput;
+import net.chrisdolan.pcgen.drools.input.StatInput;
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.Input;
@@ -80,7 +80,7 @@ public class TestEngine {
     @Test
     public void testACDex() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        session.insert(new AbilityInput(AbilityInput.DEX, 18));
+        session.insert(new StatInput(StatInput.DEX, 18));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 14);
         session.destroy();
@@ -103,8 +103,8 @@ public class TestEngine {
     @Test
     public void testACMonk() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        session.insert(new AbilityInput(AbilityInput.DEX, 12));
-        session.insert(new AbilityInput(AbilityInput.WIS, 18));
+        session.insert(new StatInput(StatInput.DEX, 12));
+        session.insert(new StatInput(StatInput.WIS, 18));
         for (int i=0;i<11;++i)
             session.insert(new LevelInput("Monk"));
         session.run();
@@ -116,7 +116,7 @@ public class TestEngine {
     @Test
     public void testACEncumberedMonk() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        session.insert(new AbilityInput(AbilityInput.DEX, 18));
+        session.insert(new StatInput(StatInput.DEX, 18));
         session.insert(new Input("Encumbrance", "Heavy", 1));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 11);
@@ -139,7 +139,7 @@ public class TestEngine {
     public void testACHelpless() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 3));
-        session.insert(new AbilityInput(AbilityInput.DEX, 12));
+        session.insert(new StatInput(StatInput.DEX, 12));
         session.insert(new ConditionInput(ConditionInput.TYPE_HELPLESS));
         session.run();
         assertAc(session, ArmorClass.ACTYPE_NORMAL, 8);
@@ -193,16 +193,16 @@ public class TestEngine {
     @Test
     public void testWeightLimits() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        AbilityInput ability;
-        session.insert(ability = new AbilityInput(AbilityInput.STR, 11));
+        StatInput ability;
+        session.insert(ability = new StatInput(StatInput.STR, 11));
         session.run();
         assertLoadLimits(session, 38, 76, 115);
         session.retract(ability);
-        session.insert(ability = new AbilityInput(AbilityInput.STR, 31));
+        session.insert(ability = new StatInput(StatInput.STR, 31));
         session.run();
         assertLoadLimits(session, 153*4, 306*4, 460*4);
         session.retract(ability);
-        session.insert(ability = new AbilityInput(AbilityInput.STR, 64));
+        session.insert(ability = new StatInput(StatInput.STR, 64));
         session.run();
         assertLoadLimits(session, 233*4*4*4*4, 466*4*4*4*4, 700*4*4*4*4);
         session.destroy();
@@ -212,7 +212,7 @@ public class TestEngine {
     public void testEncumbrance() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
         Input last;
-        session.insert(new AbilityInput(AbilityInput.STR, 11));
+        session.insert(new StatInput(StatInput.STR, 11));
         session.insert(last = new Input("Weight", "PC", 1));
         session.run();
         assertEncumbrance(session, "Light");
@@ -248,16 +248,16 @@ public class TestEngine {
         Session session = Engine.createSession(RULESET);
         session.run();
         assertInitiative(session, 0);
-        AbilityInput ability;
-        session.insert(ability = new AbilityInput(AbilityInput.DEX, 10));
+        StatInput ability;
+        session.insert(ability = new StatInput(StatInput.DEX, 10));
         session.run();
         assertInitiative(session, 0);
         session.retract(ability);
-        session.insert(ability = new AbilityInput(AbilityInput.DEX, 4));
+        session.insert(ability = new StatInput(StatInput.DEX, 4));
         session.run();
         assertInitiative(session, -3);
         session.retract(ability);
-        session.insert(ability = new AbilityInput(AbilityInput.DEX, 64));
+        session.insert(ability = new StatInput(StatInput.DEX, 64));
         session.run();
         assertInitiative(session, 27);
         session.destroy();
@@ -266,9 +266,9 @@ public class TestEngine {
     @Test
     public void testSaves() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        session.insert(new AbilityInput(AbilityInput.CON, 14));
-        session.insert(new AbilityInput(AbilityInput.DEX, 12));
-        session.insert(new AbilityInput(AbilityInput.WIS, 8));
+        session.insert(new StatInput(StatInput.CON, 14));
+        session.insert(new StatInput(StatInput.DEX, 12));
+        session.insert(new StatInput(StatInput.WIS, 8));
         session.run();
         assertSaves(session, 2, 1, -1);
         Input last;
@@ -299,8 +299,8 @@ public class TestEngine {
     @Test
     public void testBAB() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESET);
-        session.insert(new AbilityInput(AbilityInput.STR, 18));
-        session.insert(new AbilityInput(AbilityInput.DEX, 12));
+        session.insert(new StatInput(StatInput.STR, 18));
+        session.insert(new StatInput(StatInput.DEX, 12));
         session.run();
         assertBABFirst(session, 0);
         assertCMB(session, "Grapple", 4);

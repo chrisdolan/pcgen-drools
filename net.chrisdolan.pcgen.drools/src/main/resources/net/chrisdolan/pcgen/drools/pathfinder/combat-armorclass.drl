@@ -40,7 +40,7 @@ end
 
 rule "AC.Dex"
     when
-        AbilityBonus(name == AbilityInput.DEX, $v:value)
+        StatBonus(name == StatInput.DEX, $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, $v));
 end

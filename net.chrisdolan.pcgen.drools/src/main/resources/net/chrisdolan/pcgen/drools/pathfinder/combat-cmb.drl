@@ -87,11 +87,11 @@ rule "CMB.BaseAttackBonus"
     then
         insertLogical(new Input("CMB", "BaseAttackBonus", $bab));
 end
-rule "CMB.Ability"
+rule "CMB.Stat"
     when
-        AbilityBonus(name == AbilityInput.STR, $str:value)
+        StatBonus(name == StatInput.STR, $str:value)
     then
-        insertLogical(new Input("CMB", "Ability", $str));
+        insertLogical(new Input("CMB", "Stat", $str));
 end
 rule "CMB.Base.Total"
     when
@@ -126,17 +126,17 @@ rule "CMD.BaseAttackBonus"
     then
         insertLogical(new Input("CMD", "BaseAttackBonus", $bab));
 end
-rule "CMD.Ability.Str"
+rule "CMD.Stat.Str"
     when
-        AbilityBonus(name == AbilityInput.STR, $str:value)
+        StatBonus(name == StatInput.STR, $str:value)
     then
-        insertLogical(new Input("CMD", "AbilityStr", $str));
+        insertLogical(new Input("CMD", "StatStr", $str));
 end
-rule "CMD.Ability.Dex"
+rule "CMD.Stat.Dex"
     when
-        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+        StatBonus(name == StatInput.DEX, $dex:value)
     then
-        insertLogical(new Input("CMD", "AbilityDex", $dex));
+        insertLogical(new Input("CMD", "StatDex", $dex));
 end
 rule "CMD.Base.Total"
     when

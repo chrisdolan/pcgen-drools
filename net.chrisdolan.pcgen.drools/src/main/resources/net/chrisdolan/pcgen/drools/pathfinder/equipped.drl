@@ -57,7 +57,7 @@ end
 
 rule "Encumbrance.LoadLimits"
     when
-        Ability(name == AbilityInput.STR, $str:value)
+        Stat(name == StatInput.STR, $str:value)
         LoadLimit(str == $str, $light:light, $medium:medium, $heavy:heavy)
     then
         insertLogical(new Input("LoadLimit", "Light", $light));
@@ -67,7 +67,7 @@ end
 
 rule "Encumbrance.LoadLimits.Extrapolation"
     when
-        Ability(name == AbilityInput.STR, $str:value)
+        Stat(name == StatInput.STR, $str:value)
         not LoadLimit(str == $str)
         LoadLimit(str == (20 + $str % 10), $altstr:str, $light:light, $medium:medium, $heavy:heavy)
     then
@@ -102,14 +102,14 @@ rule "Encumbrance.Medium"
     when
         Input(type == "Encumbrance", subtype == "Medium")
     then
-        insertLogical(new Input("Ability.Max", AbilityInput.DEX, 3)); 
+        insertLogical(new Input("Stat.Max", StatInput.DEX, 3)); 
         insertLogical(new Input("ArmorCheck", "Encumbrance", -3));
 end
 rule "Encumbrance.Heavy"
     when
         Input(type == "Encumbrance", subtype == "Heavy")
     then
-        insertLogical(new Input("Ability.Max", AbilityInput.DEX, 1)); 
+        insertLogical(new Input("Stat.Max", StatInput.DEX, 1)); 
         insertLogical(new Input("ArmorCheck", "Encumbrance", -6));
 end
 rule "Encumbrance.Overloaded"

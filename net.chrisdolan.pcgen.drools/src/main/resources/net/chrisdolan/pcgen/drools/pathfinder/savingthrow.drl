@@ -34,19 +34,19 @@ end
 
 rule "SavingThrow.CON"
     when
-        AbilityBonus(name == AbilityInput.CON, $con:value)
+        StatBonus(name == StatInput.CON, $con:value)
     then
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, SavingThrow.SUBTYPE_ABILITY, $con));
 end
 rule "SavingThrow.DEX"
     when
-        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+        StatBonus(name == StatInput.DEX, $dex:value)
     then
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, SavingThrow.SUBTYPE_ABILITY, $dex));
 end
 rule "SavingThrow.WIS"
     when
-        AbilityBonus(name == AbilityInput.WIS, $wis:value)
+        StatBonus(name == StatInput.WIS, $wis:value)
     then
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, SavingThrow.SUBTYPE_ABILITY, $wis));
 end

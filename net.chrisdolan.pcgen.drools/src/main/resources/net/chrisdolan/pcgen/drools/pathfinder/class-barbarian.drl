@@ -14,3 +14,16 @@ rule "Class.Barbarian.Init"
         insertLogical(new SaveProgression("Barbarian", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Barbarian", SavingThrow.WILL, "Slow"));
 end
+
+rule "Class.Barbarian.Rage"
+    when
+        Condition(type == ConditionInput.TYPE_RAGE)
+        //Input(type == "ClassLevel", subtype == "Barbarian", $lvl:value)
+    then
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Morale", 4));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Morale", 4));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Morale", 4));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Morale", 2));
+        insertLogical(new Input(ArmorClass.TYPE, "Rage", -2));
+        // todo: greater/mighty rage
+end  

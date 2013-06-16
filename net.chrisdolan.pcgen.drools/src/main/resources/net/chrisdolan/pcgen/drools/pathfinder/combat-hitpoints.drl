@@ -1,0 +1,82 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Hitpoints"
+    Hitpoints(hp : value)
+end
+
+rule "Hitpoints.Init"
+    when
+    then
+        insertLogical(new StackRule("Hitpoints", "ClassLevel", "Sum"));
+end
+
+declare Hitpoints
+    value : int
+end
+declare CurrentHitpoints
+    type : String
+    value : int
+end
+
+rule "Hitpoints.UserInput"
+    when
+        HitpointsInput($v:value)
+    then
+        insertLogical(new Input("Hitpoints", "ClassLevel", $v));
+end
+
+rule "Hitpoints.CON"
+    when
+        StatBonus(name == StatInput.CON, $con:value)
+        Number($levels : intValue) from accumulate(
+            Stack($v:value, type == "ClassLevel"),
+            sum($v)
+        )
+    then
+        insertLogical(new Input("Hitpoints", StatInput.CON, $levels * $con));
+end
+
+rule "Hitpoints.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "Hitpoints"),
+            sum($v)
+        )
+    then
+        insertLogical(new Hitpoints($sum));
+end
+
+rule "HitpointsCurrent.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "Hitpoints"),
+            sum($v)
+        )
+    then
+        insertLogical(new Hitpoints($sum));
+end
+
+rule "Hitpoints.Dead"
+    when
+        Stat(name == StatInput.CON, $con:value)
+        CurrentHitpoints(type == "Lethal", value <= $con)
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_DEAD));
+end
+rule "Hitpoints.Dying"
+    when
+        Stat(name == StatInput.CON, $con:value)
+        CurrentHitpoints(type == "Lethal", value < 0, value > $con)
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_DYING));
+end
+rule "Hitpoints.Disabled"
+    when
+        CurrentHitpoints(type == "Lethal", value == 0)
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_DISABLED));
+end

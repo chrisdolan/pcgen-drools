@@ -1,0 +1,86 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Stat.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new StatName(StatInput.STR));
+        insertLogical(new StatName(StatInput.DEX));
+        insertLogical(new StatName(StatInput.CON));
+        insertLogical(new StatName(StatInput.INT));
+        insertLogical(new StatName(StatInput.WIS));
+        insertLogical(new StatName(StatInput.CHA));
+end
+
+rule "Stat.Max.Stacking"
+    salience 900
+    when
+        StatName($attname:name)
+    then
+        insertLogical(new StackRule("Stat.Max", $attname, "Min"));
+end
+
+declare StatName
+    name : String
+end
+declare Stat
+    name : String
+    value: int
+end
+declare StatBonus
+    name : String
+    value: int
+end
+
+
+rule "Stat.BaseInput"
+    when
+        StatInput($attname:name, $v:value)
+    then
+        insertLogical(new Input(StatInput.TYPE + $attname, StatInput.SUBTYPE_BASE, $v));
+end
+rule "Stat.BaseInputMissing"
+    // this is mainly to simplify unit tests where we may lack initialization of the ability scores to 10
+    when
+        StatName($attname:name)
+        not StatInput(name == $attname)
+    then
+        insertLogical(new Input(StatInput.TYPE + $attname, StatInput.SUBTYPE_BASE, 10));
+end
+
+rule "Stat.Totals"
+    when
+        StatName($attname:name)
+        not Input(type == "Override", subtype == (StatInput.TYPE + $attname))
+        Number($att : intValue) from accumulate(
+            Stack($v:value, type == (StatInput.TYPE + $attname)),
+            sum($v)
+        )
+    then
+        insertLogical(new Stat($attname, $att));
+end
+rule "Stat.Override"
+    when
+        StatName($attname:name)
+        Input(type == "Override", subtype == (StatInput.TYPE + $attname), $v:value)
+    then
+        insertLogical(new Stat($attname, $v));
+end
+rule "Stat.Bonus"
+    when
+        Stat($attname:name, $att:value)
+        not Stack(type == "Stat.Max", subtype == $attname)
+    then
+        insertLogical(new StatBonus($attname, $att/2 - 5));
+end
+rule "Stat.Bonus.Capped"
+    when
+        Stat($attname:name, $att:value)
+        Stack($cap:value, type == "Stat.Max", subtype == $attname)
+    then
+        insertLogical(new StatBonus($attname, Math.min($cap, $att/2 - 5)));
+end

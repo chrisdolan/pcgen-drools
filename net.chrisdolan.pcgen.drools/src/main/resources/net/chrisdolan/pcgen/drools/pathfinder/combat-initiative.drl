@@ -10,7 +10,7 @@ end
 
 rule "Initiative.DEX"
     when
-        AbilityBonus(name == AbilityInput.DEX, $dex:value)
+        StatBonus(name == StatInput.DEX, $dex:value)
     then
         insertLogical(new Input(Initiative.TYPE, Initiative.SUBTYPE_DEXTERITY, $dex));
 end
