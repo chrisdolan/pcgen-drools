@@ -166,14 +166,12 @@ rule "CMD.Ability.Str"
     when
         AbilityBonus(name == AbilityInput.STR, $str:value)
     then
-        System.out.println("str " + $str);
         insertLogical(new Input("CMD", "AbilityStr", $str));
 end
 rule "CMD.Ability.Dex"
     when
         AbilityBonus(name == AbilityInput.DEX, $dex:value)
     then
-        System.out.println("dex " + $dex);
         insertLogical(new Input("CMD", "AbilityDex", $dex));
 end
 rule "CMD.Base.Total"
@@ -190,7 +188,6 @@ rule "CMD.Type.Base"
         CMBType($t:name)
         CMD(type == "Base", $v:value)
     then
-        System.out.println("cmdbase " + $t + "=" + $v);
         insertLogical(new Input("CMD."+$t, "Base", $v));
 end
 rule "CMD.Type.Total"
