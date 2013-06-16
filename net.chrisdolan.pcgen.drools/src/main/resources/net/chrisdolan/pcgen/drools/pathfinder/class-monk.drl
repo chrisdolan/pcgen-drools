@@ -8,6 +8,9 @@ rule "Class.Monk.Init"
     when
     then
         insertLogical(new BABProgression("Monk", "Medium"));
+        insertLogical(new SaveProgression("Monk", SavingThrow.FORT, "Fast"));
+        insertLogical(new SaveProgression("Monk", SavingThrow.REFL, "Fast"));
+        insertLogical(new SaveProgression("Monk", SavingThrow.WILL, "Fast"));
 end
 
 

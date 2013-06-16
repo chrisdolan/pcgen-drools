@@ -14,6 +14,11 @@ declare BABProgression
     classname : String
     type : String
 end
+declare SaveProgression
+    classname : String
+    save : String
+    type : String
+end
 
 rule "Class.BAB.Progression.Fast"
     when
@@ -27,12 +32,27 @@ rule "Class.BAB.Progression.Medium"
         Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
         BABProgression(classname == $st, type == "Medium")
     then
-        insertLogical(new Input("BAB", "ClassLevel", (int)($v*.75)));
+        insertLogical(new Input("BAB", "ClassLevel", $v*3/4));
 end
 rule "Class.BAB.Progression.Slow"
     when
         Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
         BABProgression(classname == $st, type == "Slow")
     then
-        insertLogical(new Input("BAB", "ClassLevel", (int)($v*.5)));
+        insertLogical(new Input("BAB", "ClassLevel", $v/2));
+end
+
+rule "Class.Save.Progression.Fast"
+    when
+        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
+        SaveProgression(classname == $st, $save:save, type == "Fast")
+    then
+        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel", ($v+4)/2));
+end
+rule "Class.Save.Progression.Slow"
+    when
+        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
+        SaveProgression(classname == $st, $save:save, type == "Slow")
+    then
+        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel", ($v+1)/3));
 end

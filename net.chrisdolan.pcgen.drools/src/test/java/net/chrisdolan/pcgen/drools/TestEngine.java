@@ -244,6 +244,21 @@ public class TestEngine {
         session.insert(new AbilityInput(AbilityInput.WIS, 8));
         session.run();
         assertSaves(session, 2, 1, -1);
+        Input last;
+        session.insert(last = new Input("ClassLevel", "Monk", 1));
+        session.run();
+        assertSaves(session, 4, 3, 1);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 2));
+        session.run();
+        assertSaves(session, 5, 4, 2);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 20));
+        session.run();
+        assertSaves(session, 14, 13, 11);
+        session.insert(new ConditionInput("Shaken"));
+        session.run();
+        assertSaves(session, 12, 11, 9);
         session.destroy();
     }
 
