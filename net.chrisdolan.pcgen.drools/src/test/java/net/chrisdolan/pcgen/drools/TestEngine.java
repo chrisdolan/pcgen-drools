@@ -259,6 +259,13 @@ public class TestEngine {
         session.insert(new ConditionInput("Shaken"));
         session.run();
         assertSaves(session, 12, 11, 9);
+        session.insert(last = new Input("ClassLevel", "Fighter", 1));
+        session.run();
+        assertSaves(session, 14, 11, 9);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Fighter", 20));
+        session.run();
+        assertSaves(session, 24, 17, 15);
         session.destroy();
     }
 
@@ -301,6 +308,11 @@ public class TestEngine {
         assertBABFirst(session, 15);
         assertCMB(session, "Grapple", 19);
         assertCMD(session, "Grapple", 30);
+        session.insert(last = new Input("ClassLevel", "Fighter", 20));
+        session.run();
+        assertBABFirst(session, 35);
+        assertCMB(session, "Grapple", 39);
+        assertCMD(session, "Grapple", 50);
         session.destroy();
     }
 

@@ -5,11 +5,30 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "Class.Init"
+    salience 1000
     when
     then
         insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
 end
 
+/*
+rule "Class.Init.Saves"
+    salience 900
+    when
+        SavingThrowType($save:name)
+    then
+        insertLogical(new StackRule(SavingThrow.TYPE + $save, "ClassLevel", "Sum");
+end
+*/
+
+declare MaxClassLevel
+    classname : String
+    value : int
+end
+declare HitDie
+    classname : String
+    value : int
+end
 declare BABProgression
     classname : String
     type : String
@@ -22,37 +41,37 @@ end
 
 rule "Class.BAB.Progression.Fast"
     when
-        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
-        BABProgression(classname == $st, type == "Fast")
+        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        BABProgression(classname == $class, type == "Fast")
     then
-        insertLogical(new Input("BAB", "ClassLevel", $v));
+        insertLogical(new Input("BAB", "ClassLevel"+$class, $v));
 end
 rule "Class.BAB.Progression.Medium"
     when
-        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
-        BABProgression(classname == $st, type == "Medium")
+        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        BABProgression(classname == $class, type == "Medium")
     then
-        insertLogical(new Input("BAB", "ClassLevel", $v*3/4));
+        insertLogical(new Input("BAB", "ClassLevel"+$class, $v*3/4));
 end
 rule "Class.BAB.Progression.Slow"
     when
-        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
-        BABProgression(classname == $st, type == "Slow")
+        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        BABProgression(classname == $class, type == "Slow")
     then
-        insertLogical(new Input("BAB", "ClassLevel", $v/2));
+        insertLogical(new Input("BAB", "ClassLevel"+$class, $v/2));
 end
 
 rule "Class.Save.Progression.Fast"
     when
-        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
-        SaveProgression(classname == $st, $save:save, type == "Fast")
+        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        SaveProgression(classname == $class, $save:save, type == "Fast")
     then
-        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel", ($v+4)/2));
+        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel"+$class, 2+$v/2));
 end
 rule "Class.Save.Progression.Slow"
     when
-        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
-        SaveProgression(classname == $st, $save:save, type == "Slow")
+        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        SaveProgression(classname == $class, $save:save, type == "Slow")
     then
-        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel", ($v+1)/3));
+        insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel"+$class, $v/3));
 end

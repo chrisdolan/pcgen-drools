@@ -1,0 +1,16 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Class.Sorcerer.Init"
+    when
+    then
+        insertLogical(new MaxClassLevel("Sorcerer", 20));
+        insertLogical(new HitDie("Sorcerer", 6));
+        insertLogical(new BABProgression("Sorcerer", "Slow"));
+        insertLogical(new SaveProgression("Sorcerer", SavingThrow.FORT, "Slow"));
+        insertLogical(new SaveProgression("Sorcerer", SavingThrow.REFL, "Slow"));
+        insertLogical(new SaveProgression("Sorcerer", SavingThrow.WILL, "Fast"));
+end

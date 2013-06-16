@@ -1,0 +1,16 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Class.Cleric.Init"
+    when
+    then
+        insertLogical(new MaxClassLevel("Cleric", 20));
+        insertLogical(new HitDie("Cleric", 8));
+        insertLogical(new BABProgression("Cleric", "Medium"));
+        insertLogical(new SaveProgression("Cleric", SavingThrow.FORT, "Fast"));
+        insertLogical(new SaveProgression("Cleric", SavingThrow.REFL, "Slow"));
+        insertLogical(new SaveProgression("Cleric", SavingThrow.WILL, "Fast"));
+end

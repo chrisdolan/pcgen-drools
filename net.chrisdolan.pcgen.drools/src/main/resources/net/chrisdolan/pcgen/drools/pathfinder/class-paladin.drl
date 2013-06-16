@@ -1,0 +1,16 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Class.Paladin.Init"
+    when
+    then
+        insertLogical(new MaxClassLevel("Paladin", 20));
+        insertLogical(new HitDie("Paladin", 10));
+        insertLogical(new BABProgression("Paladin", "Fast"));
+        insertLogical(new SaveProgression("Paladin", SavingThrow.FORT, "Fast"));
+        insertLogical(new SaveProgression("Paladin", SavingThrow.REFL, "Slow"));
+        insertLogical(new SaveProgression("Paladin", SavingThrow.WILL, "Fast"));
+end

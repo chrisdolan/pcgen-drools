@@ -7,6 +7,8 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Monk.Init"
     when
     then
+        insertLogical(new MaxClassLevel("Monk", 20));
+        insertLogical(new HitDie("Monk", 8));
         insertLogical(new BABProgression("Monk", "Medium"));
         insertLogical(new SaveProgression("Monk", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.REFL, "Fast"));

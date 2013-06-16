@@ -1,0 +1,16 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Class.Rogue.Init"
+    when
+    then
+        insertLogical(new MaxClassLevel("Rogue", 20));
+        insertLogical(new HitDie("Rogue", 8));
+        insertLogical(new BABProgression("Rogue", "Medium"));
+        insertLogical(new SaveProgression("Rogue", SavingThrow.FORT, "Slow"));
+        insertLogical(new SaveProgression("Rogue", SavingThrow.REFL, "Fast"));
+        insertLogical(new SaveProgression("Rogue", SavingThrow.WILL, "Slow"));
+end
