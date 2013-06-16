@@ -1,7 +1,7 @@
 Synopsis
 --------
 
-Drools is a high-performance, generic /knowledge engine/ with a
+Drools is a high-performance, generic *knowledge engine* with a
 concise syntax for defining rules. A knowledge engine is a collection
 of rules and facts that can infer downstream facts with minimal
 effort. This project takes advantage of Drools' statful mode, where
@@ -10,7 +10,7 @@ changes.
 
 For example, add a level of Monk and see how the Armor Class changes,
 or add the Shaken condition and see how attack bonuses change. We just
-need to make a bunch of if/then rules and Drools takes care of /how/
+need to make a bunch of if/then rules and Drools takes care of *how*
 to propagate the facts.
 
 Motivation
@@ -26,7 +26,6 @@ work.
 I'd previously used Drools and Drools Planner in my day job, so I was
 familiar with the rules syntax (and knew their limitations...) I
 announced my initial work here:
-
 http://tech.groups.yahoo.com/group/pcgen_developers/message/3363
 
 Architecture
