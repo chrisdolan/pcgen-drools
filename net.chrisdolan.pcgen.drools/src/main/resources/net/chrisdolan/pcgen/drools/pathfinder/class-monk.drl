@@ -4,6 +4,13 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+rule "Class.Monk.Init"
+    when
+    then
+        insertLogical(new BABProgression("Monk", "Medium"));
+end
+
+
 rule "Class.Monk.Ability.AC.level"
     when
         Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)

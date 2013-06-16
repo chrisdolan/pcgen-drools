@@ -247,6 +247,58 @@ public class TestEngine {
         session.destroy();
     }
 
+    @Test
+    public void testBAB() throws DroolsParserException, IOException {
+        Session session = Engine.createSession(RULESET);
+        session.insert(new AbilityInput(AbilityInput.STR, 18));
+        session.insert(new AbilityInput(AbilityInput.DEX, 12));
+        session.run();
+        assertBABFirst(session, 0);
+        assertCMB(session, "Grapple", 4);
+        assertCMD(session, "Grapple", 15);
+        Input last;
+        session.insert(last = new Input("ClassLevel", "Monk", 1));
+        session.run();
+        assertBABFirst(session, 0);
+        assertCMB(session, "Grapple", 4);
+        assertCMD(session, "Grapple", 15);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 2));
+        session.run();
+        assertBABFirst(session, 1);
+        assertCMB(session, "Grapple", 5);
+        assertCMD(session, "Grapple", 16);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 3));
+        session.run();
+        assertBABFirst(session, 2);
+        assertCMB(session, "Grapple", 6);
+        assertCMD(session, "Grapple", 17);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 19));
+        session.run();
+        assertBABFirst(session, 14);
+        assertCMB(session, "Grapple", 18);
+        assertCMD(session, "Grapple", 29);
+        session.retract(last);
+        session.insert(last = new Input("ClassLevel", "Monk", 20));
+        session.run();
+        assertBABFirst(session, 15);
+        assertCMB(session, "Grapple", 19);
+        assertCMD(session, "Grapple", 30);
+        session.destroy();
+    }
+
+    private void assertBABFirst(Session session, int expected) {
+        assertInteger(session, "Query.BaseAttackBonus.Highest", expected);
+    }
+    private void assertCMB(Session session, String type, int expected) {
+        assertInteger(session, "Query.CMB."+type, expected);
+    }
+    private void assertCMD(Session session, String type, int expected) {
+        assertInteger(session, "Query.CMD."+type, expected);
+    }
+
     private void assertSaves(Session session, int fort, int refl, int will) {
         Map<String,Integer> got = session.queryToMap(Integer.class, "Query.SavingThrows");
         Map<String,Integer> expected = new HashMap<String, Integer>();
@@ -256,9 +308,8 @@ public class TestEngine {
         Assert.assertEquals(expected, got);
     }
 
-    private void assertInitiative(Session session, int initExpected) {
-        int initGot = session.querySingle(Integer.class, "Query.Initiative");
-        Assert.assertEquals(initExpected, initGot);
+    private void assertInitiative(Session session, int expected) {
+        assertInteger(session, "Query.Initiative", expected);
     }
 
     private void assertEncumbrance(Session session, String encExpected) {
@@ -282,5 +333,10 @@ public class TestEngine {
 
     private Input ac(String subtype, int value) {
         return new Input(ArmorClass.TYPE, subtype, value);
+    }
+
+    private void assertInteger(Session session, String query, int expected) {
+        int got = session.querySingle(Integer.class, query);
+        Assert.assertEquals(expected, got);
     }
 }

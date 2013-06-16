@@ -1,0 +1,38 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Class.Init"
+    when
+    then
+        insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
+end
+
+declare BABProgression
+    classname : String
+    type : String
+end
+
+rule "Class.BAB.Progression.Fast"
+    when
+        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
+        BABProgression(classname == $st, type == "Fast")
+    then
+        insertLogical(new Input("BAB", "ClassLevel", $v));
+end
+rule "Class.BAB.Progression.Medium"
+    when
+        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
+        BABProgression(classname == $st, type == "Medium")
+    then
+        insertLogical(new Input("BAB", "ClassLevel", (int)($v*.75)));
+end
+rule "Class.BAB.Progression.Slow"
+    when
+        Input(type == "ClassLevel", $st:subtype, value > 0, $v:value)
+        BABProgression(classname == $st, type == "Slow")
+    then
+        insertLogical(new Input("BAB", "ClassLevel", (int)($v*.5)));
+end

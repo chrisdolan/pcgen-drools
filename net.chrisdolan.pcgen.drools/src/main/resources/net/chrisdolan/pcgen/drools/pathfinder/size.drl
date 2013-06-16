@@ -9,46 +9,62 @@ rule "Size.Colossal"
         Input(type == "Size", subtype == "Colossal")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -8));
+        insertLogical(new Input("CMB", "Size", 8));
+        insertLogical(new Input("CMD", "Size", 8));
 end
 rule "Size.Gargantuan"
     when
         Input(type == "Size", subtype == "Gargantuan")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -4));
+        insertLogical(new Input("CMB", "Size", 4));
+        insertLogical(new Input("CMD", "Size", 4));
 end
 rule "Size.Huge"
     when
         Input(type == "Size", subtype == "Huge")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -2));
+        insertLogical(new Input("CMB", "Size", 2));
+        insertLogical(new Input("CMD", "Size", 2));
 end
 rule "Size.Large"
     when
         Input(type == "Size", subtype == "Large")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -1));
+        insertLogical(new Input("CMB", "Size", 1));
+        insertLogical(new Input("CMD", "Size", 1));
 end
 rule "Size.Small"
     when
         Input(type == "Size", subtype == "Small")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 1));
+        insertLogical(new Input("CMB", "Size", -1));
+        insertLogical(new Input("CMD", "Size", -1));
 end
 rule "Size.Tiny"
     when
         Input(type == "Size", subtype == "Tiny")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 2));
+        insertLogical(new Input("CMB", "Size", -2));
+        insertLogical(new Input("CMD", "Size", -2));
 end
 rule "Size.Diminutive"
     when
         Input(type == "Size", subtype == "Diminutive")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 4));
+        insertLogical(new Input("CMB", "Size", -4));
+        insertLogical(new Input("CMD", "Size", -4));
 end
 rule "Size.Fine"
     when
         Input(type == "Size", subtype == "Fine")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 8));
+        insertLogical(new Input("CMB", "Size", -8));
+        insertLogical(new Input("CMD", "Size", -8));
 end
