@@ -1,6 +1,8 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,11 +13,34 @@ import net.chrisdolan.pcgen.drools.input.Input;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
 import org.drools.compiler.DroolsParserException;
+import org.drools.runtime.ObjectFilter;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEngine {
     private static final String RULESET = "pathfinder";
+
+    /**
+     * Fires up an empty engine and just prints all of the injected facts. This
+     * is just for curiosity and diagnostics, not an actual test.
+     */
+    //@Test
+    public void testDump() throws DroolsParserException, IOException {
+        Session session = Engine.createSession(RULESET);
+        session.run();
+        ObjectFilter filter = new ObjectFilter() {
+            public boolean accept(Object object) {
+                return !object.getClass().getSimpleName().startsWith("Stack");
+            }
+        };
+        ArrayList<String> list = new ArrayList<String>();
+        for (Object o : session.search(filter))
+            list.add(o.toString());
+        Collections.sort(list);
+        for (String s : list)
+            System.out.println(s);
+        session.destroy();
+    }
 
     @Test
     public void testAC() throws DroolsParserException, IOException {

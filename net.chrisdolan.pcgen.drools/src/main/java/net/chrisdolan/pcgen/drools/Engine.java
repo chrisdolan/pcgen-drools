@@ -196,4 +196,12 @@ public class Engine {
     public String toString() {
         return "Engine" + names;
     }
+
+    // Just for Compile action
+    KnowledgeBase getKbase() {
+        return kbase;
+    }
+    void setKbase(KnowledgeBase kbase) {
+        this.kbase = kbase;
+    }
 }

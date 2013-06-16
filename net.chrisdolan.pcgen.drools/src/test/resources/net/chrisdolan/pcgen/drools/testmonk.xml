@@ -1,0 +1,98 @@
+<pc xmlns="http://chrisdolan.net/pcgen/drools">
+    <ruleset name="pathfinder"/>
+    <input xmlns="http://chrisdolan.net/pcgen/drools/input">
+        <property name="CharacterName">Aarn</property>
+        <property name="PlayerName">Chris Dolan</property>
+        
+		<alignment name="LE"/>
+	
+		<ability value="14" name="Strength"/>
+		<ability value="14" name="Dexterity"/>
+		<ability value="12" name="Constitution"/>
+		<ability value="10" name="Intelligence"/>
+		<ability value="14" name="Wisdom"/>
+		<ability value="8"  name="Charisma"/>
+	
+		<race name="Human" age="24">
+	       <favoredclass name="Monk"/>
+	       <abilitybonus name="Strength" value="2"/>
+	       <trait name="Suspicious"/>
+	       <trait name="DarkFear"/> <!-- homebrew campaign trait: grants low-light & undercommon, but will save vs. panic in darkness -->
+		</race>
+
+	<!-- todo: there should be a way to mark something as a known rulebend (like 
+		GM grants an additional feat or something) so the UI doesn't warn about it. 
+		But maybe that has to be done via a rule? -->
+
+		<level class="Monk" archetype="HungryGhost">
+		    <hitpoints value="8"/>
+            <skill ranks="1" name="Acrobatics"/>
+            <skill ranks="1" name="Climb"/>
+            <skill ranks="1" name="EscapeArtist"/>
+            <skill ranks="1" name="Perception"/>
+            <skill ranks="1" name="SenseMotive"/>
+            <favoredclassbonus>
+                <hitpoints value="1"/>
+            </favoredclassbonus>
+            <feat source="class" name="CombatReflexes"/>
+            <feat name="Toughness"/>
+            <feat name="ViciousStomp"/>
+        </level>
+
+		<inventory>
+		</inventory>
+    </input>
+    <derived xmlns="http://chrisdolan.net/pcgen/drools/output">
+        <property name="CharacterName">Aarn</property>
+        <property name="PlayerName">Chris Dolan</property>
+        <alignment name="LE"/>
+        <ability value="16" name="Strength"/>
+        <ability value="14" name="Dexterity"/>
+        <ability value="12" name="Constitution"/>
+        <ability value="10" name="Intelligence"/>
+        <ability value="14" name="Wisdom"/>
+        <ability value="8"  name="Charisma"/>
+        <race name="Human" age="24">
+            <favoredclass name="Monk"/>
+        </race>
+        <class name="Monk" level="1"/>
+        <hitpoints value="13"/>
+        <armorclass actype="Normal" value="14"/>
+        <armorclass actype="Touch" value="14"/>
+        <encumbrance weight="6.5" type="Light"/>
+        <loadlimit type="Light" value="76"/>
+        <loadlimit type="Medium" value="153"/>
+        <loadlimit type="Heavy" value="230"/>
+        <loadlimit type="OverHead" value="230"/>
+        <loadlimit type="OffGround" value="460"/>
+        <loadlimit type="Drag" value="1150"/>
+        <speed value="30"/>
+        <initiative value="2"/>
+        <bab value="0"/>
+        <savingthrow type="Fortitude" value="3"/>
+        <savingthrow type="Reflex" value="4"/>
+        <savingthrow type="Will" value="4"/>
+        <attack type="Melee" value="3"/>
+        <attack type="Range" value="2"/>
+        <cmb type="Base" value="3"/>
+        <cmb type="Grapple" value="3"/>
+        <cmb type="Trip" value="3"/>
+        <cmb type="Disarm" value="3"/>
+        <cmb type="Sunder" value="3"/>
+        <cmb type="BullRush" value="3"/>
+        <cmb type="Overrun" value="3"/>
+        <cmd type="Base" value="17"/>
+        <cmd type="Grapple" value="17"/>
+        <cmd type="Trip" value="17"/>
+        <cmd type="Disarm" value="17"/>
+        <cmd type="Sunder" value="17"/>
+        <cmd type="BullRush" value="17"/>
+        <cmd type="Overrun" value="17"/>
+        <skill name="Acrobatics" value="6"/>
+        <!-- skills... -->
+        <!-- feats/abilities... -->
+        <violations>
+            <!-- List of broken validation rules including: excess inputs, unused inputs, broken prereqs -->
+        </violations>
+    </derived>
+</pc>

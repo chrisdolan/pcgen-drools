@@ -44,6 +44,6 @@ public class Initiative {
 
     @Override
     public String toString() {
-        return "Init[" + value + "]";
+        return "Initiative[" + value + "]";
     }
 }
