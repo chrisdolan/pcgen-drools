@@ -6,12 +6,12 @@
         
 		<alignment name="LE"/>
 	
-		<ability value="14" name="Strength"/>
-		<ability value="14" name="Dexterity"/>
-		<ability value="12" name="Constitution"/>
-		<ability value="10" name="Intelligence"/>
-		<ability value="14" name="Wisdom"/>
-		<ability value="8"  name="Charisma"/>
+		<stat value="14" name="Strength"/>
+		<stat value="14" name="Dexterity"/>
+		<stat value="12" name="Constitution"/>
+		<stat value="10" name="Intelligence"/>
+		<stat value="14" name="Wisdom"/>
+		<stat value="8"  name="Charisma"/>
 	
 		<race name="Human" age="24">
 	       <favoredclass name="Monk"/>

@@ -7,6 +7,15 @@ import net.chrisdolan.pcgen.drools.type.*;
 query "Query.Hitpoints"
     Hitpoints(hp : value)
 end
+query "Query.Hitpoints.Current.Lethal"
+    CurrentHitpoints(type == "Lethal", hp : value)
+end
+query "Query.Hitpoints.Current.Nonlethal"
+    CurrentHitpoints(type == "Nonlethal", hp : value)
+end
+query "Query.Hitpoints.Current.Temporary"
+    CurrentHitpoints(type == "Temporary", hp : value)
+end
 
 rule "Hitpoints.Init"
     when
@@ -20,6 +29,17 @@ end
 declare CurrentHitpoints
     type : String
     value : int
+end
+
+rule "Hitpoints.Damage.UserInput"
+    when
+        Number($dmg : intValue) from accumulate(
+            DamageInput($v:value),
+            sum($v)
+        )
+    then
+        insertLogical(new Input("Damage", "Base", $dmg));
+        // todo: this should reduce temporary hit points first!
 end
 
 rule "Hitpoints.UserInput"
@@ -50,33 +70,72 @@ rule "Hitpoints.Total"
         insertLogical(new Hitpoints($sum));
 end
 
-rule "HitpointsCurrent.Total"
+rule "HitpointsCurrent.Temporary.Total"
     when
-        Number($sum : intValue) from accumulate(
-            Stack($v:value, type == "Hitpoints"),
+        Number($temp : intValue) from accumulate(
+            Stack($v:value, type == "TemporaryHitpoints"),
             sum($v)
         )
     then
-        insertLogical(new Hitpoints($sum));
+        insertLogical(new CurrentHitpoints("Temporary", $temp));
+end
+rule "HitpointsCurrent.Lethal.Total"
+    when
+        Hitpoints($hp:value)
+        Number($dmg : intValue) from accumulate(
+            Stack($v:value, type == "Damage", subtype == "Lethal"),
+            sum($v)
+        )
+        CurrentHitpoints(type == "Temporary", $temp:value)
+    then
+        insertLogical(new CurrentHitpoints("Lethal", $hp+$temp-$dmg));
+end
+rule "HitpointsCurrent.NonLethal.Total"
+    when
+        Hitpoints($hp:value)
+        Number($dmg : intValue) from accumulate(
+            Stack($v:value, type == "Damage"),
+            sum($v)
+        )
+        Number($temp : intValue) from accumulate(
+            Stack($v:value, type == "TemporaryHitpoints"),
+            sum($v)
+        )
+    then
+        insertLogical(new CurrentHitpoints("Nonlethal", $hp+$temp-$dmg));
 end
 
-rule "Hitpoints.Dead"
+rule "Hitpoints.Lethal.Dead"
     when
         Stat(name == StatInput.CON, $con:value)
         CurrentHitpoints(type == "Lethal", value <= $con)
     then
         insertLogical(new Condition(ConditionInput.TYPE_DEAD));
 end
-rule "Hitpoints.Dying"
+rule "Hitpoints.Lethal.Dying"
     when
         Stat(name == StatInput.CON, $con:value)
         CurrentHitpoints(type == "Lethal", value < 0, value > $con)
     then
         insertLogical(new Condition(ConditionInput.TYPE_DYING));
 end
-rule "Hitpoints.Disabled"
+rule "Hitpoints.Lethal.Disabled"
     when
         CurrentHitpoints(type == "Lethal", value == 0)
     then
         insertLogical(new Condition(ConditionInput.TYPE_DISABLED));
+end
+rule "Hitpoints.Nonlethal.Staggered"
+    when
+        CurrentHitpoints(type == "Nonlethal", value == 0)
+        CurrentHitpoints(type == "Lethal", value > 0)
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_STAGGERED));
+end
+rule "Hitpoints.Nonlethal.Unconscious"
+    when
+        CurrentHitpoints(type == "NonLethal", value < 0)
+        CurrentHitpoints(type == "Lethal", value > 0)
+    then
+        insertLogical(new Condition(ConditionInput.TYPE_UNCONSCIOUS));
 end
