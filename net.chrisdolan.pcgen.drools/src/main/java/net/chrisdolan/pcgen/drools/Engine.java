@@ -1,6 +1,8 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,9 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 import net.chrisdolan.pcgen.drools.Ruleset.Rule;
 
@@ -24,6 +23,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.conf.EventProcessingOption;
+import org.drools.definition.KnowledgePackage;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
@@ -35,6 +35,17 @@ import org.drools.runtime.rule.QueryResultsRow;
 public class Engine {
     private KnowledgeBase kbase;
     private ArrayList<String> names;
+    private final Ruleset.Reader rulesetReader;
+
+    {
+        Ruleset.Reader r;
+        try {
+            r = new JAXBRulesetReader(); // this will fail on Android
+        } catch (Throwable t) {
+            r = new XStreamRulesetReader();
+        }
+        rulesetReader = r;
+    }
 
     private static class EngineSession implements Session {
         private StatefulKnowledgeSession ksession;
@@ -132,21 +143,59 @@ public class Engine {
 
     public Engine(String... names) throws IOException, DroolsParserException {
         this.names = new ArrayList<String>(Arrays.asList(names));
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder batch = kbuilder.batch();
-        for (String name : names)
-            for (Rule rule : readRuleset(name).getRules())
-                batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
-        batch.build();
-        if (kbuilder.hasErrors())
-            throw new DroolsParserException(kbuilder.getErrors().toString());
 
+        Collection<KnowledgePackage> kpkgs = null;
+        if (this.names.size() == 1 && this.names.get(0).endsWith(".ser")) {
+            kpkgs = readSerializedRules(this.names.get(0));
+        } else {
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            CompositeKnowledgeBuilder batch = kbuilder.batch();
+            for (String name : names)
+                for (Rule rule : readRuleset(name).getRules())
+                    batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
+            batch.build();
+            if (kbuilder.hasErrors())
+                throw new DroolsParserException(kbuilder.getErrors().toString());
+
+            kpkgs = kbuilder.getKnowledgePackages();
+        }
+        //KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, getClass().getClassLoader());
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
         kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        kbase.addKnowledgePackages(kpkgs);
     }
     
+    private Collection<KnowledgePackage> readSerializedRules(String path) throws IOException {
+        InputStream is = getClass().getResourceAsStream(path);
+        try {
+            ObjectInputStream ois = new ObjectInputStream(is);
+            try {
+                Object o = ois.readObject();
+                if (!(o instanceof Collection))
+                    throw new IOException("deserialization expected a Collection, got: " + o.getClass());
+                @SuppressWarnings({ "rawtypes" })
+                Collection c = (Collection)o;
+                if (c.isEmpty())
+                    throw new IOException("deserialization got an empty collection");
+                Object item = c.iterator().next();
+                if (!(item instanceof KnowledgePackage))
+                    throw new IOException("deserialization expected a Collection of KnowledgePackage, got: " + item.getClass());
+                @SuppressWarnings("unchecked")
+                Collection<KnowledgePackage> ck = c;
+                return ck;
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e);
+            } finally {
+                ois.close();
+            }
+        } catch (RuntimeException e) {
+            throw new IOException(e);
+        } finally {
+            is.close();
+        }
+    }
+
     public static Session createSession(String... names) throws DroolsParserException, IOException {
         return getEngine(names).createSession();
     }
@@ -165,7 +214,11 @@ public class Engine {
                 engine = engineRef.get();
             }
             if (engine == null) {
-                engine = new Engine(names);
+                try {
+                    engine = new Engine(names);
+                } catch (RuntimeException e) {
+                    throw new IOException(e);
+                }
                 engines.put(key, new WeakReference<Engine>(engine));
                 lastUsedName = key;
                 lastUsed = engine;
@@ -179,17 +232,7 @@ public class Engine {
     }
 
     private Ruleset readRuleset(String name) throws IOException {
-        try {
-            Object o = JAXBContext.newInstance(Ruleset.class).createUnmarshaller().unmarshal(getClass().getResourceAsStream(name + ".xml"));
-            if (!(o instanceof Ruleset))
-                throw new IOException("Unmarshalled XML is not a Ruleset, but is: " + o.getClass());
-            Ruleset rs = (Ruleset) o;
-            if (rs.getRules().isEmpty())
-                throw new IOException("No rules found in the ruleset");
-            return rs;
-        } catch (JAXBException e) {
-            throw new IOException(e);
-        }
+        return rulesetReader.read(getClass().getResource(name + ".xml"));
     }
 
     @Override
