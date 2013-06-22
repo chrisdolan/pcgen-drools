@@ -1,14 +1,14 @@
-package net.chrisdolan.pcgen.drools.input;
+package net.chrisdolan.pcgen.drools.test;
 
-public class Input {
+public class TestInput {
 
     private String type;
     private String subtype;
     private int value;
     
-    public Input() {
+    public TestInput() {
     }
-    public Input(String type, String subtype, int value) {
+    public TestInput(String type, String subtype, int value) {
         this.type = type;
         this.subtype = subtype;
         this.value = value;
@@ -33,13 +33,9 @@ public class Input {
         this.value = value;
     }
 
-    public int getOrdinal() {
-        return System.identityHashCode(this);
-    }
-
     @Override
     public String toString() {
-        return "Input[" + type + "/" + subtype + "=" + value + "]";
+        return "TestInput[" + type + "/" + subtype + "=" + value + "]";
     }
 
 }

@@ -4,9 +4,13 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+declare Size
+    type : String
+end
+
 rule "Size.Colossal"
     when
-        Input(type == "Size", subtype == "Colossal")
+        Size(type == "Colossal")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -8));
         insertLogical(new Input("CMB", "Size", 8));
@@ -14,7 +18,7 @@ rule "Size.Colossal"
 end
 rule "Size.Gargantuan"
     when
-        Input(type == "Size", subtype == "Gargantuan")
+        Size(type == "Gargantuan")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -4));
         insertLogical(new Input("CMB", "Size", 4));
@@ -22,7 +26,7 @@ rule "Size.Gargantuan"
 end
 rule "Size.Huge"
     when
-        Input(type == "Size", subtype == "Huge")
+        Size(type == "Huge")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -2));
         insertLogical(new Input("CMB", "Size", 2));
@@ -30,7 +34,7 @@ rule "Size.Huge"
 end
 rule "Size.Large"
     when
-        Input(type == "Size", subtype == "Large")
+        Size(type == "Large")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, -1));
         insertLogical(new Input("CMB", "Size", 1));
@@ -38,7 +42,7 @@ rule "Size.Large"
 end
 rule "Size.Small"
     when
-        Input(type == "Size", subtype == "Small")
+        Size(type == "Small")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 1));
         insertLogical(new Input("CMB", "Size", -1));
@@ -46,7 +50,7 @@ rule "Size.Small"
 end
 rule "Size.Tiny"
     when
-        Input(type == "Size", subtype == "Tiny")
+        Size(type == "Tiny")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 2));
         insertLogical(new Input("CMB", "Size", -2));
@@ -54,7 +58,7 @@ rule "Size.Tiny"
 end
 rule "Size.Diminutive"
     when
-        Input(type == "Size", subtype == "Diminutive")
+        Size(type == "Diminutive")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 4));
         insertLogical(new Input("CMB", "Size", -4));
@@ -62,7 +66,7 @@ rule "Size.Diminutive"
 end
 rule "Size.Fine"
     when
-        Input(type == "Size", subtype == "Fine")
+        Size(type == "Fine")
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_SIZE, 8));
         insertLogical(new Input("CMB", "Size", -8));

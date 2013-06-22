@@ -1,0 +1,147 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Race
+    name : String
+end
+
+rule "Race.UserInput"
+    when
+        RaceInput($r:name)
+    then
+        insertLogical(new Race($r));
+end
+
+rule "Race.Dwarf"
+    when
+        Race(name == RaceInput.DWARF)
+    then
+        insertLogical(new Input("Stat."+StatInput.CON, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.WIS, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.CHA, "Racial", -2));
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 20));
+        insertLogical(new Ability("SlowAndSteady"));
+        insertLogical(new Ability("Darkvision"));
+        insertLogical(new Ability("Dwarf.DefensiveTraining"));
+        insertLogical(new Ability("Dwarf.Greed"));
+        insertLogical(new Ability("Dwarf.Hatred"));
+        insertLogical(new Ability("Dwarf.Hardy"));
+        insertLogical(new Input("CMD.BullRush", "Racial", 4));
+        insertLogical(new Input("CMD.Trip", "Racial", 4));
+        insertLogical(new Ability("Dwarf.Stonecunning"));
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Dwarven"));
+end
+
+rule "Race.Elf"
+    when
+        Race(name == RaceInput.ELF)
+    then
+        insertLogical(new Input("Stat."+StatInput.DEX, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.INT, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.CON, "Racial", -2));
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 30));
+        insertLogical(new Ability("LowLightVision"));
+        insertLogical(new Ability("Elf.Immunities"));
+        insertLogical(new Input("CasterLevel.SR", "Racial", 2));
+        insertLogical(new Ability("Elf.Magic.Spellcraft"));
+        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Elven"));
+end
+
+rule "Race.Gnome"
+    when
+        Race(name == RaceInput.GNOME)
+    then
+        insertLogical(new Input("Stat."+StatInput.CON, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.CHA, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.STR, "Racial", -2));
+        insertLogical(new Size("Small"));
+        insertLogical(new Input("Speed", "Base", 20));
+        insertLogical(new Ability("LowLightVision"));
+        insertLogical(new Ability("Gnome.DefensiveTraining"));
+        insertLogical(new Ability("Gnome.Magic"));
+        insertLogical(new Ability("Gnome.Hatred"));
+        insertLogical(new Ability("Gnome.IllusionResistance"));
+        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        insertLogical(new Ability("Gnome.Obsession"));
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Gnome"));
+        insertLogical(new Language("Sylvan"));
+end
+
+rule "Race.HalfElf"
+    when
+        Race(name == RaceInput.HALFELF)
+    then
+        // todo: stat
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 30));
+        insertLogical(new Ability("LowLightVision"));
+        // todo: skill focus
+        // todo: elf blood
+        insertLogical(new Ability("Elf.Immunities"));
+        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        // todo: multitalented
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Elven"));
+end
+
+rule "Race.HalfOrc"
+    when
+        Race(name == RaceInput.HALFORC)
+    then
+        // todo: stat
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 30));
+        insertLogical(new Ability("Darkvision"));
+        insertLogical(new Input("Skill.Intimidate", "Racial", 2));
+        // todo: orc blood
+        // todo: orc ferocity
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Orc"));
+end
+
+rule "Race.Halfling"
+    when
+        Race(name == RaceInput.HALFLING)
+    then
+        insertLogical(new Input("Stat."+StatInput.DEX, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.CHA, "Racial", 2));
+        insertLogical(new Input("Stat."+StatInput.STR, "Racial", -2));
+        insertLogical(new Size("Small"));
+        insertLogical(new Input("Speed", "Base", 20));
+        // todo: fearless
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, "Racial", 1));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, "Racial", 1));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Racial", 1));
+        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        insertLogical(new Input("Skill.Acrobatics", "Racial", 2));
+        insertLogical(new Input("Skill.Climb", "Racial", 2));
+        // todo: weapon familiarity
+        insertLogical(new Language("Common"));
+        insertLogical(new Language("Halfling"));
+end
+
+rule "Race.Human"
+    when
+        Race(name == RaceInput.HUMAN)
+    then
+        // todo: stat
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 30));
+        insertLogical(new Language("Common"));
+        // todo: bonus feat
+        // todo: bonus skill
+end

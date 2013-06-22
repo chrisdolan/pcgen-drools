@@ -1,0 +1,23 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.test.*;
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Ability
+    name : String
+end
+
+rule "Test.TestInput"
+    when
+        TestInput($t:type, $st:subtype, $v:value)
+    then
+        insertLogical(new Input($t, $st, $v));
+end
+rule "Test.TestInput.Size"
+    when
+        SpecialTestInput(type == "Size", $st:subtype, $v:value)
+    then
+        insertLogical(new Size($st));
+end

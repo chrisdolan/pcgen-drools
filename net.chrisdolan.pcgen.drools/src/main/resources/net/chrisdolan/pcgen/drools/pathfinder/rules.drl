@@ -11,6 +11,11 @@ rule "Global.Initialization"
         System.out.println("--Session init--");
 end
 
+declare Input
+   type : String
+   subtype : String
+   value : int
+end
 declare Stack
    value : int
    type : String
@@ -24,11 +29,11 @@ end
 
 rule "Stack.Max.Default"
     // this is complicated because without a singleton StackRule to key off, we need to somehow select just one Input.
-    // I had to add the ordinal to tie-break between two Inputs with the same value. Before that, I had a bug
+    // I had to add the hashCode to tie-break between two Inputs with the same value. Before that, I had a bug
     // that ties each added a Stack item 
     when
-        $s : Input($t:type, $st:subtype, $v:value, $o:ordinal)
-        not Input(type == $t, subtype == $st, value > $v || (value == $v && ordinal < $o))
+        $s : Input($t:type, $st:subtype, $v:value, $o:hashCode)
+        not Input(type == $t, subtype == $st, value > $v || (value == $v && hashCode < $o))
         not StackRule(type == $t, subtype == $st)
     then
         //System.out.println("max of " + $t + "." + $st + "=" + $v);

@@ -1,0 +1,67 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Speed
+    value : int
+end
+declare CurrentSpeed
+    value : int
+end
+
+rule "Speed.Init"
+    when
+    then
+        insertLogical(new StackRule("Speed", "Base", "Min"));
+        insertLogical(new StackRule("Speed", "Encumbrance", "Min"));
+        insertLogical(new StackRule("Override", "Speed", "Min"));
+end
+
+rule "Speed.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "Speed"),
+            sum($v)
+        )
+    then
+        insertLogical(new Speed($sum));
+end
+
+rule "Speed.Current.Normal"
+    when
+        Speed($v:value)
+        not Stack(type == "Override", subtype == "Speed")
+    then
+        insertLogical(new CurrentSpeed($v));
+end
+
+rule "Speed.Current.Overridden"
+    when
+        Speed($speed:value)
+        Stack(type == "Override", subtype == "Speed", $v:value)
+    then
+        insertLogical(new CurrentSpeed($v < $speed ? $v : $speed));
+end
+
+// todo: armor type indicates max speed; don't forget Speed.IgnoreArmor
+
+rule "Speed.Encumbrance.Medium"
+    when
+        Input(type == "Encumbrance", subtype == "Medium")
+        Stack($base:value, type == "Speed", subtype == "Base")
+        not Ability(name == "Speed.IgnoreEncumbrance")
+    then
+        insertLogical(new Input("Speed", "Encumbrance", $base >= 30 ? -10 : -5)); // todo: is this right?
+end
+rule "Speed.Encumbrance.Heavy"
+    when
+        Input(type == "Encumbrance", subtype == "Heavy")
+        Stack($base:value, type == "Speed", subtype == "Base")
+        not Ability(name == "Speed.IgnoreEncumbrance")
+    then
+        insertLogical(new Input("Speed", "Encumbrance", $base >= 30 ? -10 : -5));
+end
+
+// override from Overloaded is in equipped.drl

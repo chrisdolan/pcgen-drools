@@ -1,0 +1,24 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Ability
+    name : String
+end
+
+rule "Ability.UserInput"
+    when
+        AbilityInput($n:name)
+    then
+        insertLogical(new Ability($n));
+end
+
+rule "Ability.SlowAndSteady"
+    when
+        Ability(name == "SlowAndSteady")
+    then
+        insertLogical(new Ability("Speed.IgnoreArmor"));
+        insertLogical(new Ability("Speed.IgnoreEncumbrance"));
+end

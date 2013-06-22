@@ -109,7 +109,7 @@ rule "Encumbrance.Heavy"
     when
         Input(type == "Encumbrance", subtype == "Heavy")
     then
-        insertLogical(new Input("Stat.Max", StatInput.DEX, 1)); 
+        insertLogical(new Input("Stat.Max", StatInput.DEX, 1));
         insertLogical(new Input("ArmorCheck", "Encumbrance", -6));
 end
 rule "Encumbrance.Overloaded"
@@ -117,5 +117,5 @@ rule "Encumbrance.Overloaded"
         Input(type == "Encumbrance", subtype == "Overloaded")
     then
         insertLogical(new Condition("NoDexAC"));
-        insertLogical(new Input("Override", "Move", 5));
+        insertLogical(new Input("Override", "Speed", 5));
 end

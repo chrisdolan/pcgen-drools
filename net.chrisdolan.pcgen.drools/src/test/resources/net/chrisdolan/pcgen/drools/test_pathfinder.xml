@@ -1,0 +1,3 @@
+<ruleset>
+    <rule name="pathfinder/test.drl" type="DRL"/>
+</ruleset>
