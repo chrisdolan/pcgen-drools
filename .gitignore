@@ -9,4 +9,6 @@
 *~
 
 # Misc
-pcgendroolsviewer*
+net.chrisdolan.pcgen.drools/src/main/resources/net/chrisdolan/pcgen/drools/*.ser
+net.chrisdolan.pcgen.drools-android
+scratch
