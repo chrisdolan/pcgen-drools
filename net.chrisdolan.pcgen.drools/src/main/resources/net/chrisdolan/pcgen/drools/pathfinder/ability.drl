@@ -15,10 +15,25 @@ rule "Ability.UserInput"
         insertLogical(new Ability($n));
 end
 
+rule "Ability.Feat.UserInput"
+    when
+        FeatInput($n:name, $t:type)
+    then
+        insertLogical(new Ability("Feat." + $n + ($t == null ? "" : "." + $t)));
+end
+
 rule "Ability.SlowAndSteady"
     when
         Ability(name == "SlowAndSteady")
     then
         insertLogical(new Ability("Speed.IgnoreArmor"));
         insertLogical(new Ability("Speed.IgnoreEncumbrance"));
+end
+
+rule "Ability.Toughness"
+    when
+        Ability(name == "Feat.Toughness")
+        PCLevel($lvl:value)
+    then
+        insertLogical(new Input("Hitpoints", "Toughness", $lvl <= 3 ? 3 : $lvl));
 end

@@ -11,6 +11,10 @@ rule "Class.Init"
         insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
 end
 
+declare PCLevel
+    value : int
+end
+
 rule "Class.Level.Total"
     when
         MaxClassLevel($class:classname)
@@ -20,6 +24,15 @@ rule "Class.Level.Total"
         )
     then
         insertLogical(new Input("ClassLevel", $class, $sum));
+end
+rule "Class.PCLevel.Total"
+    when
+        Number(intValue > 0, $sum : intValue) from accumulate(
+            $l : LevelInput(),
+            count($l)
+        )
+    then
+        insertLogical(new PCLevel($sum));
 end
 rule "Class.Archetype.Missing"
     when

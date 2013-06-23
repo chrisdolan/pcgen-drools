@@ -48,7 +48,7 @@ public class LevelInput {
         this.classname = classname;
     }
     public List<ArchetypeInput> getArchetypes() {
-        return archetypes == null ? Collections.<ArchetypeInput>emptyList() : new ArrayList<ArchetypeInput>();
+        return archetypes == null ? Collections.<ArchetypeInput>emptyList() : new ArrayList<ArchetypeInput>(archetypes);
     }
     public void setArchetypes(List<ArchetypeInput> archetypes) {
         this.archetypes = new ArrayList<ArchetypeInput>(archetypes);
@@ -60,10 +60,22 @@ public class LevelInput {
         this.hitpoints = hitpoints;
     }
     public List<SkillInput> getSkills() {
-        return skills == null ? Collections.<SkillInput>emptyList() : new ArrayList<SkillInput>();
+        return skills == null ? Collections.<SkillInput>emptyList() : new ArrayList<SkillInput>(skills);
     }
     public void setSkills(List<SkillInput> skills) {
         this.skills = new ArrayList<SkillInput>(skills);
+    }
+    public FavoredClassBonusInput getFavoredClassBonus() {
+        return favoredClassBonus;
+    }
+    public void setFavoredClassBonus(FavoredClassBonusInput favoredClassBonus) {
+        this.favoredClassBonus = favoredClassBonus;
+    }
+    public List<FeatInput> getFeats() {
+        return feats == null ? Collections.<FeatInput>emptyList() : new ArrayList<FeatInput>(feats);
+    }
+    public void setFeats(List<FeatInput> feats) {
+        this.feats = new ArrayList<FeatInput>(feats);
     }
     public int getOrdinal() {
         return ordinal;

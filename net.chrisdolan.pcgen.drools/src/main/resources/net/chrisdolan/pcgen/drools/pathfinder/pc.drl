@@ -22,10 +22,27 @@ rule "PC.UserInput"
         if ($pc.getInventory() != null)
             insertLogical($pc.getInventory());
 
-        for (ConditionInput cond : $pc.getConditions())
-             insertLogical(cond);
+        for (ConditionInput condition : $pc.getConditions())
+             insertLogical(condition);
         for (DamageInput damage : $pc.getDamage())
              insertLogical(damage);
-        for (ActionInput actions : $pc.getActions())
-             insertLogical(actions);
+        for (ActionInput action : $pc.getActions())
+             insertLogical(action);
+end
+
+rule "PC.Level.UserInput"
+    salience 99
+    when
+        $lvl:LevelInput()
+    then
+        for (ArchetypeInput archetype : $lvl.getArchetypes())
+             insertLogical(archetype);
+        if ($lvl.getHitpoints() != null)
+            insertLogical($lvl.getHitpoints());
+        for (SkillInput skill : $lvl.getSkills())
+             insertLogical(skill);
+        if ($lvl.getFavoredClassBonus() != null)
+             insertLogical($lvl.getFavoredClassBonus());
+        for (FeatInput feat : $lvl.getFeats())
+             insertLogical(feat);
 end

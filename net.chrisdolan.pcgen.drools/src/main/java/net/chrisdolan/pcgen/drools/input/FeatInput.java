@@ -40,6 +40,7 @@ public class FeatInput {
     public void setType(String type) {
         this.type = type;
     }
+
     public String toString() {
         return "Feat[" + name +
                 (source == null ? "" : "/source=" + source) +

@@ -32,6 +32,7 @@ public class TestPC {
         PCAssert.assertSaves(session, 3, 4, 4);
         PCAssert.assertSpeed(session, 30);
         PCAssert.assertConditions(session); // none...
+        PCAssert.assertHitpoints(session, 13);
 
         session.destroy();
     }

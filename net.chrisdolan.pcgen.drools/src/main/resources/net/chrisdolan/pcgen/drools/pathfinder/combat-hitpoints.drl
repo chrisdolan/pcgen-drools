@@ -60,6 +60,16 @@ rule "Hitpoints.CON"
         insertLogical(new Input("Hitpoints", StatInput.CON, $levels * $con));
 end
 
+rule "Hitpoints.FavoredClass"
+    when
+        Number($c : intValue, 0 < intValue) from accumulate(
+            $v:FavoredClassBonusInput(name == "Hitpoint"),
+            count($v)
+        )
+    then
+        insertLogical(new Input("Hitpoints", "FavoredClass", $c));
+end
+
 rule "Hitpoints.Total"
     when
         Number($sum : intValue) from accumulate(

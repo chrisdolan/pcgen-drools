@@ -62,6 +62,9 @@ public class PCAssert {
         Assert.assertEquals(Arrays.asList(expectedConditions), gotConditions);
         
     }
+    public static void assertHitpoints(Session session, int hitpoints) {
+        assertInteger(session, "Query.Hitpoints", hitpoints);
+    }
 
     private static void assertInteger(Session session, String query, int expected) {
         int got = session.querySingle(Integer.class, query);
