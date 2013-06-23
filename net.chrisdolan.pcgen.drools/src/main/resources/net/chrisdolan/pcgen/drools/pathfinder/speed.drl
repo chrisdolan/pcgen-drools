@@ -4,6 +4,13 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Speed"
+    Speed(speed : value)
+end
+query "Query.Speed.Current"
+    CurrentSpeed(speed : value)
+end
+
 declare Speed
     value : int
 end

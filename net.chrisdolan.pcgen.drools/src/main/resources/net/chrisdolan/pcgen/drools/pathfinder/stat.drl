@@ -37,13 +37,13 @@ declare StatBonus
 end
 
 
-rule "Stat.BaseInput"
+rule "Stat.UserInput"
     when
         StatInput($attname:name, $v:value)
     then
         insertLogical(new Input(StatInput.TYPE + $attname, StatInput.SUBTYPE_BASE, $v));
 end
-rule "Stat.BaseInputMissing"
+rule "Stat.UserInput.Missing"
     // this is mainly to simplify unit tests where we may lack initialization of the ability scores to 10
     when
         StatName($attname:name)

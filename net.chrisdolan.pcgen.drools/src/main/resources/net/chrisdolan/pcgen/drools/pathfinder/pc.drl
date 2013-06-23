@@ -1,0 +1,31 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "PC.UserInput"
+    salience 100
+    when
+        $pc:PCInput()
+    then
+        for (PropertyInput p : $pc.getProperties())
+             insertLogical(p);
+        if ($pc.getAlignment() != null)
+            insertLogical($pc.getAlignment());
+        for (StatInput stat : $pc.getStats())
+             insertLogical(stat);
+        if ($pc.getRace() != null)
+            insertLogical($pc.getRace());
+        for (LevelInput lvl : $pc.getLevels())
+             insertLogical(lvl);
+        if ($pc.getInventory() != null)
+            insertLogical($pc.getInventory());
+
+        for (ConditionInput cond : $pc.getConditions())
+             insertLogical(cond);
+        for (DamageInput damage : $pc.getDamage())
+             insertLogical(damage);
+        for (ActionInput actions : $pc.getActions())
+             insertLogical(actions);
+end

@@ -1,10 +1,15 @@
 package net.chrisdolan.pcgen.drools;
 
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertAc;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertBABFirst;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertCMB;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertCMD;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertEncumbrance;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertInitiative;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertLoadLimits;
+import static net.chrisdolan.pcgen.drools.test.PCAssert.assertSaves;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
@@ -15,8 +20,6 @@ import net.chrisdolan.pcgen.drools.test.TestInput;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.runtime.ObjectFilter;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEngine {
@@ -30,16 +33,7 @@ public class TestEngine {
     public void testDump() throws DroolsParserException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.run();
-        ObjectFilter filter = new ObjectFilter() {
-            public boolean accept(Object object) {
-                return !object.getClass().getSimpleName().startsWith("Stack");
-            }
-        };
-        ArrayList<String> list = new ArrayList<String>();
-        for (Object o : session.search(filter))
-            list.add(o.toString());
-        Collections.sort(list);
-        for (String s : list)
+        for (String s : session.dump())
             System.out.println(s);
         session.destroy();
     }
@@ -344,54 +338,7 @@ public class TestEngine {
         session.destroy();
     }
 
-    private void assertBABFirst(Session session, int expected) {
-        assertInteger(session, "Query.BaseAttackBonus.Highest", expected);
-    }
-    private void assertCMB(Session session, String type, int expected) {
-        assertInteger(session, "Query.CMB."+type, expected);
-    }
-    private void assertCMD(Session session, String type, int expected) {
-        assertInteger(session, "Query.CMD."+type, expected);
-    }
-
-    private void assertSaves(Session session, int fort, int refl, int will) {
-        Map<String,Integer> got = session.queryToMap(Integer.class, "Query.SavingThrows");
-        Map<String,Integer> expected = new HashMap<String, Integer>();
-        expected.put("fortitude", fort);
-        expected.put("reflex", refl);
-        expected.put("will", will);
-        Assert.assertEquals(expected, got);
-    }
-
-    private void assertInitiative(Session session, int expected) {
-        assertInteger(session, "Query.Initiative", expected);
-    }
-
-    private void assertEncumbrance(Session session, String encExpected) {
-        String encGot = session.querySingle(String.class, "Query.Encumbrance");
-        Assert.assertEquals(encExpected, encGot);
-    }
-
-    private void assertLoadLimits(Session session, int light, int medium, int heavy) {
-        Map<String,Integer> got = session.queryToMap(Integer.class, "Query.LoadLimits");
-        Map<String,Integer> expected = new HashMap<String, Integer>();
-        expected.put("light", light);
-        expected.put("medium", medium);
-        expected.put("heavy", heavy);
-        Assert.assertEquals(expected, got);
-    }
-
-    private void assertAc(Session session, String actype, int acExpected) {
-        int acGot = session.querySingle(Integer.class, "Query.ArmorClass.ByType", actype);
-        Assert.assertEquals(acExpected, acGot);
-    }
-
-    private TestInput ac(String subtype, int value) {
+    private static TestInput ac(String subtype, int value) {
         return new TestInput(ArmorClass.TYPE, subtype, value);
-    }
-
-    private void assertInteger(Session session, String query, int expected) {
-        int got = session.querySingle(Integer.class, query);
-        Assert.assertEquals(expected, got);
     }
 }

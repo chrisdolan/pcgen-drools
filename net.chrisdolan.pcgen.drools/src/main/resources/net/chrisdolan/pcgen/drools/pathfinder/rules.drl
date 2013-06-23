@@ -17,9 +17,9 @@ declare Input
    value : int
 end
 declare Stack
-   value : int
    type : String
    subtype : String
+   value : int
 end
 declare StackRule
     type : String
@@ -37,32 +37,35 @@ rule "Stack.Max.Default"
         not StackRule(type == $t, subtype == $st)
     then
         //System.out.println("max of " + $t + "." + $st + "=" + $v);
-        insertLogical(new Stack($v,$t,$st));
+        insertLogical(new Stack($t,$st,$v));
 end
 
 rule "Stack.Max"
     when
         StackRule($t:type, $st:subtype, rulename == "Max")
+        not(not Input(type == $t, subtype == $st))
         Number($max : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), max($v))
     then
         //System.out.println("max of " + $t + "." + $st + "=" + $v);
-        insertLogical(new Stack($max,$t,$st));
+        insertLogical(new Stack($t,$st,$max));
 end
 
 rule "Stack.Min"
     when
         StackRule($t:type, $st:subtype, rulename == "Min")
+        not(not Input(type == $t, subtype == $st))
         Number($min : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), min($v))
     then
         //System.out.println("min of " + $t + "." + $st + "=" + $v);
-        insertLogical(new Stack($min,$t,$st));
+        insertLogical(new Stack($t,$st,$min));
 end
 
 rule "Stack.Sum"
     when
         StackRule($t:type, $st:subtype, rulename == "Sum")
+        not(not Input(type == $t, subtype == $st))
         Number($sum : intValue) from accumulate(Input(type == $t, subtype == $st, $v:value), sum($v))
     then
         //System.out.println("sum of " + $t + "." + $st + "=" + $sum);
-        insertLogical(new Stack($sum,$t,$st));
+        insertLogical(new Stack($t,$st,$sum));
 end

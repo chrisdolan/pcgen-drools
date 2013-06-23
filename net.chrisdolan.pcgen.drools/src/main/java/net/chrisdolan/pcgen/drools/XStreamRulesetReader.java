@@ -22,7 +22,7 @@ public class XStreamRulesetReader implements Ruleset.Reader {
             xstream.alias("ruleset", XStreamRuleset.class);
             Object o = xstream.fromXML(url);
             if (!(o instanceof XStreamRuleset))
-                throw new IOException("Unmarshalled XML is not a JAXBRuleset, but is: " + o.getClass());
+                throw new IOException("Unmarshalled XML is not a XStreamRuleset, but is: " + o.getClass());
             XStreamRuleset rs = (XStreamRuleset) o;
             if (rs.getRules().isEmpty())
                 throw new IOException("No rules found in the ruleset");

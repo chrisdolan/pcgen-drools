@@ -1,10 +1,10 @@
-<pc xmlns="http://chrisdolan.net/pcgen/drools">
+<pc xmlns="http://chrisdolan.net/pcgen/drools/input">
     <ruleset name="pathfinder"/>
-    <input xmlns="http://chrisdolan.net/pcgen/drools/input">
-        <property name="CharacterName">Aarn</property>
-        <property name="PlayerName">Chris Dolan</property>
+    <input>
+        <property name="CharacterName" value="Aarn"/>
+        <property name="PlayerName" value="Chris Dolan"/>
         
-		<alignment name="LE"/>
+		<alignment name="LawfulEvil"/>
 	
 		<stat value="14" name="Strength"/>
 		<stat value="14" name="Dexterity"/>
@@ -15,7 +15,7 @@
 	
 		<race name="Human" age="24">
 	       <favoredclass name="Monk"/>
-	       <abilitybonus name="Strength" value="2"/>
+	       <statbonus name="Strength"/>
 	       <trait name="Suspicious"/>
 	       <trait name="DarkFear"/> <!-- homebrew campaign trait: grants low-light & undercommon, but will save vs. panic in darkness -->
 		</race>
@@ -32,7 +32,7 @@
             <skill ranks="1" name="EscapeArtist"/>
             <skill ranks="1" name="Perception"/>
             <skill ranks="1" name="SenseMotive"/>
-            <favoredclassbonus name="hitpoint"/>
+            <favoredclassbonus name="Hitpoint"/>
             <feat source="class" name="CombatReflexes"/>
             <feat name="Toughness"/>
             <feat name="ViciousStomp"/>

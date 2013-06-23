@@ -1,6 +1,12 @@
 package net.chrisdolan.pcgen.drools.input;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+@XStreamAlias("hitpoints")
 public class HitpointsInput {
+    @XStreamAlias("value")
+    @XStreamAsAttribute
     private int value;
 
     public HitpointsInput() {

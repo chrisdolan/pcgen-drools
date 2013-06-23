@@ -102,7 +102,7 @@ rule "Encumbrance.Medium"
     when
         Input(type == "Encumbrance", subtype == "Medium")
     then
-        insertLogical(new Input("Stat.Max", StatInput.DEX, 3)); 
+        insertLogical(new Input("Stat.Max", StatInput.DEX, 3));
         insertLogical(new Input("ArmorCheck", "Encumbrance", -3));
 end
 rule "Encumbrance.Heavy"

@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -133,6 +134,19 @@ public class Engine {
                 }
             });
             return c;
+        }
+        public List<String> dump() {
+            ObjectFilter filter = new ObjectFilter() {
+                public boolean accept(Object object) {
+                    return true;
+//                    return !object.getClass().getSimpleName().startsWith("Stack");
+                }
+            };
+            ArrayList<String> list = new ArrayList<String>();
+            for (Object o : search(filter))
+                list.add(o.toString());
+            Collections.sort(list);
+            return list;
         }
 
         public void destroy() {

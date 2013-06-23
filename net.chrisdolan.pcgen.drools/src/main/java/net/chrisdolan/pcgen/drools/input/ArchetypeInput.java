@@ -1,7 +1,16 @@
 package net.chrisdolan.pcgen.drools.input;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+@XStreamAlias("archetype")
 public class ArchetypeInput {
+    @XStreamAlias("class")
+    @XStreamAsAttribute
     private String classname;
+
+    @XStreamAlias("name")
+    @XStreamAsAttribute
     private String name;
 
     public ArchetypeInput() {

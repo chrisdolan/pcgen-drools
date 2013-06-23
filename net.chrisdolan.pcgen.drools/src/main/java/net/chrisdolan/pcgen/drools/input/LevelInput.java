@@ -1,11 +1,40 @@
 package net.chrisdolan.pcgen.drools.input;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+@XStreamAlias("level")
 public class LevelInput {
+    @XStreamAlias("class")
+    @XStreamAsAttribute
     private String classname;
+
+    @XStreamImplicit(itemFieldName="archetype")
+    private List<ArchetypeInput> archetypes = new ArrayList<ArchetypeInput>();
+
+    @XStreamAlias("hitpoints")
+    private HitpointsInput hitpoints;
+
+    @XStreamImplicit(itemFieldName="skill")
+    private List<SkillInput> skills = new ArrayList<SkillInput>();
+
+    @XStreamAlias("favoredclassbonus")
+    private FavoredClassBonusInput favoredClassBonus;
+
+    @XStreamImplicit(itemFieldName="feat")
+    private List<FeatInput> feats = new ArrayList<FeatInput>();
+
     /**
-     * The ordinal is to track which levels were added first, which matters for prereqs and some bonuses. It doesn't need to be serialized.
+     * The ordinal is to track which levels were added first, which matters for prereqs and some bonuses.
+     * It doesn't need to be serialized because it's implicit in the order of the XML layout.
      */
-    private int ordinal;
+    private transient int ordinal;
+    private transient int classOrdinal;
 
     public LevelInput() {
     }
@@ -18,13 +47,37 @@ public class LevelInput {
     public void setClassname(String classname) {
         this.classname = classname;
     }
+    public List<ArchetypeInput> getArchetypes() {
+        return archetypes == null ? Collections.<ArchetypeInput>emptyList() : new ArrayList<ArchetypeInput>();
+    }
+    public void setArchetypes(List<ArchetypeInput> archetypes) {
+        this.archetypes = new ArrayList<ArchetypeInput>(archetypes);
+    }
+    public HitpointsInput getHitpoints() {
+        return hitpoints;
+    }
+    public void setHitpoints(HitpointsInput hitpoints) {
+        this.hitpoints = hitpoints;
+    }
+    public List<SkillInput> getSkills() {
+        return skills == null ? Collections.<SkillInput>emptyList() : new ArrayList<SkillInput>();
+    }
+    public void setSkills(List<SkillInput> skills) {
+        this.skills = new ArrayList<SkillInput>(skills);
+    }
     public int getOrdinal() {
         return ordinal;
     }
     public void setOrdinal(int ordinal) {
         this.ordinal = ordinal;
     }
+    public int getClassOrdinal() {
+        return classOrdinal;
+    }
+    public void setClassOrdinal(int classOrdinal) {
+        this.classOrdinal = classOrdinal;
+    }
     public String toString() {
-        return "Level[" + classname + "]";
+        return "Level[PC-" + ordinal + "/" + classname + "-" + classOrdinal + "]";
     }
 }
