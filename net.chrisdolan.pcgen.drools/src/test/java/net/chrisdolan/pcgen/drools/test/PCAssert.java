@@ -1,6 +1,8 @@
 package net.chrisdolan.pcgen.drools.test;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.chrisdolan.pcgen.drools.Session;
@@ -53,6 +55,12 @@ public class PCAssert {
 
     public static void assertSpeed(Session session, int speedExpected) {
         assertInteger(session, "Query.Speed", speedExpected);
+    }
+
+    public static void assertConditions(Session session, String... expectedConditions) {
+        List<String> gotConditions = session.queryColumn(String.class, "Query.Conditions");
+        Assert.assertEquals(Arrays.asList(expectedConditions), gotConditions);
+        
     }
 
     private static void assertInteger(Session session, String query, int expected) {

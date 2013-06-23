@@ -4,6 +4,10 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Conditions"
+    Condition(condition : type)
+end
+
 declare Condition
     type : String
 end

@@ -31,6 +31,7 @@ public class TestPC {
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 14);
         PCAssert.assertSaves(session, 3, 4, 4);
         PCAssert.assertSpeed(session, 30);
+        PCAssert.assertConditions(session); // none...
 
         session.destroy();
     }

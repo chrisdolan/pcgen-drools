@@ -4,29 +4,29 @@
         <property name="CharacterName" value="Aarn"/>
         <property name="PlayerName" value="Chris Dolan"/>
         
-		<alignment name="LawfulEvil"/>
-	
-		<stat value="14" name="Strength"/>
-		<stat value="14" name="Dexterity"/>
-		<stat value="12" name="Constitution"/>
-		<stat value="10" name="Intelligence"/>
-		<stat value="14" name="Wisdom"/>
-		<stat value="8"  name="Charisma"/>
-	
-		<race name="Human" age="24">
-	       <favoredclass name="Monk"/>
-	       <statbonus name="Strength"/>
-	       <trait name="Suspicious"/>
-	       <trait name="DarkFear"/> <!-- homebrew campaign trait: grants low-light & undercommon, but will save vs. panic in darkness -->
-		</race>
+        <alignment name="LawfulEvil"/>
+    
+        <stat value="14" name="Strength"/>
+        <stat value="14" name="Dexterity"/>
+        <stat value="12" name="Constitution"/>
+        <stat value="10" name="Intelligence"/>
+        <stat value="14" name="Wisdom"/>
+        <stat value="8"  name="Charisma"/>
+    
+        <race name="Human" age="24">
+           <favoredclass name="Monk"/>
+           <statbonus name="Strength"/>
+           <trait name="Suspicious"/>
+           <trait name="DarkFear"/> <!-- homebrew campaign trait: grants low-light & undercommon, but will save vs. panic in darkness -->
+        </race>
 
-	<!-- todo: there should be a way to mark something as a known rulebend (like 
-		GM grants an additional feat or something) so the UI doesn't warn about it. 
-		But maybe that has to be done via a rule? -->
+    <!-- todo: there should be a way to mark something as a known rulebend (like 
+        GM grants an additional feat or something) so the UI doesn't warn about it. 
+        But maybe that has to be done via a rule? -->
 
-		<level class="Monk">
-		    <archetype class="Monk" name="HungryGhost"/>
-		    <hitpoints value="8"/>
+        <level class="Monk">
+            <archetype class="Monk" name="HungryGhost"/>
+            <hitpoints value="8"/>
             <skill ranks="1" name="Acrobatics"/>
             <skill ranks="1" name="Climb"/>
             <skill ranks="1" name="EscapeArtist"/>
@@ -38,8 +38,8 @@
             <feat name="ViciousStomp"/>
         </level>
 
-		<inventory>
-		</inventory>
+        <inventory>
+        </inventory>
     </input>
     <derived xmlns="http://chrisdolan.net/pcgen/drools/output">
         <property name="CharacterName">Aarn</property>

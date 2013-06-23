@@ -108,7 +108,7 @@ end
 rule "Hitpoints.Lethal.Dead"
     when
         Stat(name == StatInput.CON, $con:value)
-        CurrentHitpoints(type == "Lethal", value <= $con)
+        CurrentHitpoints(type == "Lethal", value <= (0-$con))
     then
         insertLogical(new Condition(ConditionInput.TYPE_DEAD));
 end
