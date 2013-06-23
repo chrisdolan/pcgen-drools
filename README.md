@@ -4,7 +4,7 @@ Synopsis
 Drools is a high-performance, generic *knowledge engine* with a
 concise syntax for defining rules. A knowledge engine is a collection
 of rules and facts that can infer downstream facts with minimal
-effort. This project takes advantage of Drools' statful mode, where
+effort. This project takes advantage of Drools' stateful mode, where
 one add and remove facts from the knowledge base, and see what
 changes.
 
