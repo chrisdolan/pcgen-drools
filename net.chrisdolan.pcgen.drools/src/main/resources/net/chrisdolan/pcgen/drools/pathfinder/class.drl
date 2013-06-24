@@ -4,6 +4,16 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Class.PCLevel"
+    PCLevel(level : value)
+end
+query "Query.Class.Level" (String classname)
+    Input(type == "ClassLevel", classname == subtype, level : value)
+end
+query "Query.Class.Level.All"
+    Input(type == "ClassLevel", classname : subtype, level : value)
+end
+
 rule "Class.Init"
     salience 1000
     when

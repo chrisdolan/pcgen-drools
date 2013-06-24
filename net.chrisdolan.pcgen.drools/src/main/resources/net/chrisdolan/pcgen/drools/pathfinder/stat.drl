@@ -4,6 +4,13 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Stat.All"
+    Stat(name : name, value : value)
+end 
+query "Query.Stat.Bonus.All"
+    StatBonus(name : name, value : value)
+end 
+
 rule "Stat.Init"
     salience 1000
     when

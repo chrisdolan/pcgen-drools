@@ -4,6 +4,10 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Property" (String key)
+    PropertyInput(name == key, value : value)
+end
+
 rule "PC.UserInput"
     salience 100
     when
@@ -30,8 +34,24 @@ rule "PC.UserInput"
              insertLogical(action);
 end
 
-rule "PC.Level.UserInput"
+rule "PC.Race.UserInput"
     salience 99
+    when
+        $r:RaceInput()
+    then
+        insertLogical(new Race($r.getName()));
+        if ($r.getAge() > 0)
+            insertLogical(new Age($r.getAge()));
+        for (FavoredClassInput fc : $r.getFavoredClasses())
+            insertLogical(fc);
+        for (TraitInput t : $r.getTraits())
+            insertLogical(t);
+        for (StatBonusInput sb : $r.getStatBonuses())
+            insertLogical(new ChoiceInput("StatBonusChoice", "Race", sb.getName()));
+end
+
+rule "PC.Level.UserInput"
+    salience 98
     when
         $lvl:LevelInput()
     then
@@ -46,3 +66,4 @@ rule "PC.Level.UserInput"
         for (FeatInput feat : $lvl.getFeats())
              insertLogical(feat);
 end
+

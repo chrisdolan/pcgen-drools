@@ -16,6 +16,11 @@ declare Input
    subtype : String
    value : int
 end
+declare ChoiceInput
+   type : String
+   subtype : String
+   value : String
+end
 declare Stack
    type : String
    subtype : String

@@ -3,6 +3,7 @@
     <rule name="pathfinder/pc.drl" type="DRL"/>
     
     <rule name="pathfinder/ability.drl" type="DRL"/>
+    <rule name="pathfinder/age.drl" type="DRL"/>
     <rule name="pathfinder/class.drl" type="DRL"/>
     <rule name="pathfinder/class-barbarian.drl" type="DRL"/>
     <rule name="pathfinder/class-bard.drl" type="DRL"/>
@@ -24,6 +25,7 @@
     <rule name="pathfinder/combat-initiative.drl" type="DRL"/>
     <rule name="pathfinder/condition.drl" type="DRL"/>
     <rule name="pathfinder/equipped.drl" type="DRL"/>
+    <rule name="pathfinder/favoredclass.drl" type="DRL"/>
     <rule name="pathfinder/languages.drl" type="DRL"/>
     <rule name="pathfinder/races.drl" type="DRL"/>
     <rule name="pathfinder/savingthrow.drl" type="DRL"/>

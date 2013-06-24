@@ -87,15 +87,50 @@ public class Engine {
             QueryResults queryResults = ksession.getQueryResults(queryname, args);
             Map<String, T> out = new HashMap<String, T>();
             String[] cols = queryResults.getIdentifiers();
-                QueryResultsRow row = queryResults.iterator().next();
+            QueryResultsRow row = queryResults.iterator().next();
+            for (String id : cols) {
+                Object object = row.get(id);
+                if (!cls.isAssignableFrom(object.getClass()))
+                    throw new ClassCastException(cls.getName() + " <- " + object.getClass());
+                @SuppressWarnings("unchecked")
+                T t = (T) object;
+                out.put(id, t);
+            }
+            return out;
+        }
+        public <T> Map<String, T> queryPairs(Class<T> cls, String queryname, Object... args) {
+            if (cls == String.class)
+                throw new IllegalArgumentException("Sorry, String is ambiguous in this method...");
+            QueryResults queryResults = ksession.getQueryResults(queryname, args);
+            Map<String, T> out = new HashMap<String, T>();
+            String[] cols = queryResults.getIdentifiers();
+            for (Iterator<QueryResultsRow> it = queryResults.iterator(); it.hasNext();) {
+                QueryResultsRow row = it.next();
+                String key = null;
+                T value = null;
                 for (String id : cols) {
-                    Object object = row.get(id);
-                    if (!cls.isAssignableFrom(object.getClass()))
-                        throw new ClassCastException(cls.getName() + " <- " + object.getClass());
-                    @SuppressWarnings("unchecked")
-                    T t = (T) object;
-                    out.put(id, t);
+                    Object o = row.get(id);
+                    if (o instanceof String) {
+                        if (key == null)
+                            key = (String) o;
+                        if (value != null)
+                            break;
+                    } else if (cls.isAssignableFrom(o.getClass())) {
+                        if (value == null) {
+                            @SuppressWarnings("unchecked")
+                            T t = (T) o;
+                            value = t;
+                        }
+                        if (key != null)
+                            break;
+                    }
                 }
+                if (key == null)
+                    throw new RuntimeException("query did not return a String column: " + queryname);
+                if (value == null)
+                    throw new RuntimeException("query did not return a " + cls.getSimpleName() + " column: " + queryname);
+                out.put(key, value);
+            }
             return out;
         }
         public <T> List<T> queryColumn(Class<T> cls, String queryname, Object... args) {
@@ -115,7 +150,10 @@ public class Engine {
         }
         public <T> T querySingle(Class<T> cls, String queryname, Object... args) {
             QueryResults queryResults = ksession.getQueryResults(queryname, args);
-            Object object = queryResults.iterator().next().get(queryResults.getIdentifiers()[args.length]);
+            Iterator<QueryResultsRow> iterator = queryResults.iterator();
+            if (!iterator.hasNext())
+                return null;
+            Object object = iterator.next().get(queryResults.getIdentifiers()[args.length]);
             if (!cls.isAssignableFrom(object.getClass()))
                 throw new ClassCastException(cls.getName() + " <- " + object.getClass());
             @SuppressWarnings("unchecked")

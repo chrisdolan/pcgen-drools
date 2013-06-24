@@ -3,6 +3,7 @@
     <input>
         <property name="CharacterName" value="Aarn"/>
         <property name="PlayerName" value="Chris Dolan"/>
+        <property name="RandomUnicode" value="éö¢"/>
         
         <alignment name="LawfulEvil"/>
     

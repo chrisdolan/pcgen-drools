@@ -1,0 +1,9 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Age
+    value : int
+end

@@ -1,0 +1,20 @@
+package net.chrisdolan.pcgen.drools;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.FavoredClass.All"
+    FavoredClass(name : name)
+end
+
+declare FavoredClass
+    name : String
+end
+
+rule "FavoredClass.UserInput"
+    when
+        FavoredClassInput($c:name)
+    then
+        insertLogical(new FavoredClass($c));
+end

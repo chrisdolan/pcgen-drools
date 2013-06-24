@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.chrisdolan.pcgen.drools.Session;
+import net.chrisdolan.pcgen.drools.input.StatInput;
 
 import org.junit.Assert;
 
@@ -64,6 +65,58 @@ public class PCAssert {
     }
     public static void assertHitpoints(Session session, int hitpoints) {
         assertInteger(session, "Query.Hitpoints", hitpoints);
+    }
+
+    public static void assertProperty(Session session, String key, String valueExpected) {
+        String valueGot = session.querySingle(String.class, "Query.Property", key);
+        Assert.assertEquals(valueExpected, valueGot);
+    }
+
+    public static void assertRace(Session session, String raceExpected) {
+        String raceGot = session.querySingle(String.class, "Query.Race.Name");
+        Assert.assertEquals(raceExpected, raceGot);
+    }
+
+    public static void assertPCLevel(Session session, int level) {
+        assertInteger(session, "Query.Class.PCLevel", level);
+    }
+
+    public static void assertClassLevel(Session session, String className, int levelExpected) {
+        int levelGot = session.querySingle(Integer.class, "Query.Class.Level", className);
+        Assert.assertEquals(levelExpected, levelGot);
+    }
+    public static void assertClassLevels(Session session, Map<String,Integer> expected) {
+        Map<String,Integer> got = session.queryPairs(Integer.class, "Query.Class.Level.All");
+        Assert.assertEquals(expected, got);
+    }
+
+    public static void assertFavoredClasses(Session session, String... expectedClasses) {
+        List<String> gotClasses = session.queryColumn(String.class, "Query.FavoredClass.All");
+        Assert.assertEquals(Arrays.asList(expectedClasses), gotClasses);
+    }
+
+    public static void assertStats(Session session, int str, int dex, int con, int int_, int wis, int cha) {
+        Map<String,Integer> got = session.queryPairs(Integer.class, "Query.Stat.All");
+        Map<String,Integer> expected = new HashMap<String, Integer>();
+        expected.put(StatInput.STR, str);
+        expected.put(StatInput.DEX, dex);
+        expected.put(StatInput.CON, con);
+        expected.put(StatInput.INT, int_);
+        expected.put(StatInput.WIS, wis);
+        expected.put(StatInput.CHA, cha);
+        Assert.assertEquals(expected, got);
+    }
+
+    public static void assertStatBonuses(Session session, int str, int dex, int con, int int_, int wis, int cha) {
+        Map<String,Integer> got = session.queryPairs(Integer.class, "Query.Stat.Bonus.All");
+        Map<String,Integer> expected = new HashMap<String, Integer>();
+        expected.put(StatInput.STR, str);
+        expected.put(StatInput.DEX, dex);
+        expected.put(StatInput.CON, con);
+        expected.put(StatInput.INT, int_);
+        expected.put(StatInput.WIS, wis);
+        expected.put(StatInput.CHA, cha);
+        Assert.assertEquals(expected, got);
     }
 
     private static void assertInteger(Session session, String query, int expected) {

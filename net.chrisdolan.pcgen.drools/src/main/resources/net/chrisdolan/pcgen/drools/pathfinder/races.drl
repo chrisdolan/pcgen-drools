@@ -4,15 +4,15 @@ package net.chrisdolan.pcgen.drools;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.Race.Name"
+    Race(race : name)
+end
+
 declare Race
     name : String
 end
-
-rule "Race.UserInput"
-    when
-        RaceInput($r:name)
-    then
-        insertLogical(new Race($r));
+declare RaceStatChoice
+    bonus : int
 end
 
 rule "Race.Dwarf"
@@ -83,7 +83,7 @@ rule "Race.HalfElf"
     when
         Race(name == RaceInput.HALFELF)
     then
-        // todo: stat
+        insertLogical(new RaceStatChoice(2));
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Ability("LowLightVision"));
@@ -101,7 +101,7 @@ rule "Race.HalfOrc"
     when
         Race(name == RaceInput.HALFORC)
     then
-        // todo: stat
+        insertLogical(new RaceStatChoice(2));
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Ability("Darkvision"));
@@ -138,10 +138,17 @@ rule "Race.Human"
     when
         Race(name == RaceInput.HUMAN)
     then
-        // todo: stat
+        insertLogical(new RaceStatChoice(2));
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Language("Common"));
         // todo: bonus feat
         // todo: bonus skill
+end
+rule "Race.StatBonuses"
+    when
+        RaceStatChoice($bonus : bonus)
+        ChoiceInput(type == "StatBonusChoice", subtype == "Race", $stat:value)
+    then
+        insertLogical(new Input(StatInput.TYPE + $stat, "Race", $bonus));
 end

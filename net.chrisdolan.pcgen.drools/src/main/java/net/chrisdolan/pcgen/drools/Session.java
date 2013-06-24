@@ -18,6 +18,7 @@ public interface Session {
     QueryResults query(String queryname, Object... args);
     List<Object> queryAll(String queryname, Object... args);
     <T> Map<String,T> queryToMap(Class<T> cls, String queryname, Object... args);
+    <T> Map<String,T> queryPairs(Class<T> cls, String queryname, Object... args);
     <T> List<T> queryColumn(Class<T> cls, String queryname, Object... args);
     <T> T querySingle(Class<T> cls, String queryname, Object... args);
 
