@@ -67,6 +67,8 @@ rule "Combat.CMB.Init"
         insertLogical(new CMBType("Overrun"));
         insertLogical(new CMBType("Sunder"));
         insertLogical(new CMBType("Trip"));
+        insertLogical(new StackRule("CMB", "Other", "Sum"));
+        insertLogical(new StackRule("CMD", "Other", "Sum"));
 end
 
 declare CMBType

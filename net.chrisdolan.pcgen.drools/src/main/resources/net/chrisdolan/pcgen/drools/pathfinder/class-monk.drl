@@ -21,6 +21,7 @@ rule "Class.Monk.Ability.AC.level"
         Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v > 20 ? 5 : $v/4));
+        insertLogical(new Input("CMD", "Other", $v > 20 ? 5 : $v/4));
 end
 rule "Class.Monk.Ability.AC.Wis"
     when
@@ -28,4 +29,5 @@ rule "Class.Monk.Ability.AC.Wis"
         StatBonus(name == StatInput.WIS, $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
+        insertLogical(new Input("CMD", "Other", $v));
 end

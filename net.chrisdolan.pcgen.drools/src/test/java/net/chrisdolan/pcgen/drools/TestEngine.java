@@ -323,18 +323,18 @@ public class TestEngine {
         session.run();
         assertBABFirst(session, 14);
         assertCMB(session, "Grapple", 18);
-        assertCMD(session, "Grapple", 29);
+        assertCMD(session, "Grapple", 33); // +4 for monk level CMD bonus
         session.retract(last);
         session.insert(last = new TestInput("ClassLevel", "Monk", 20));
         session.run();
         assertBABFirst(session, 15);
         assertCMB(session, "Grapple", 19);
-        assertCMD(session, "Grapple", 30);
+        assertCMD(session, "Grapple", 35); // +5 for monk level CMD bonus
         session.insert(last = new TestInput("ClassLevel", "Fighter", 20));
         session.run();
         assertBABFirst(session, 35);
         assertCMB(session, "Grapple", 39);
-        assertCMD(session, "Grapple", 50);
+        assertCMD(session, "Grapple", 55);
         session.destroy();
     }
 
