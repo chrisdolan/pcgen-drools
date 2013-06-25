@@ -20,7 +20,7 @@ public class CompileRules {
 //            throw new IllegalStateException("dest file exist: " + dest.getAbsolutePath());
         }
 
-        Engine engine = Engine.getEngine("pathfinder");
+        Engine engine = Engine.getEngine(new Ruleset("pathfinder"));
         Collection<KnowledgePackage> kpackages = engine.getKbase().getKnowledgePackages();
 
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(dest));

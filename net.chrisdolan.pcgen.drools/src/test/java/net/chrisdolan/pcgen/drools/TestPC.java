@@ -12,7 +12,6 @@ import org.junit.Test;
 
 
 public class TestPC {
-    private static final String[] RULESETS = {"pathfinder", "test_pathfinder"};
 
     @Test
     public void testMonk() throws DroolsParserException, IOException {
@@ -20,7 +19,7 @@ public class TestPC {
         PC pc = pcReader.read(getClass().getResource("testmonk.xml"));
         Assert.assertNotNull(pc);
 
-        Session session = Engine.createSession(RULESETS);
+        Session session = Engine.createSession(new Ruleset(pc.getRulesets()));
         session.insert(pc.getInput());
         session.run();
 

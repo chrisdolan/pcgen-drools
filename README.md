@@ -1,15 +1,22 @@
 Synopsis
 --------
 
+This code is an experimental reimplementation of the PCGen backend
+using Drools.
+
+PCGen is a Java desktop application that aids in creation of
+role-playing characters for many different gaming systems, including
+Dungeons & Dragons and Pathfinder.
+
 Drools is a high-performance, generic *knowledge engine* with a
 concise syntax for defining rules. A knowledge engine is a collection
 of rules and facts that can infer downstream facts with minimal
-effort. This project takes advantage of Drools' stateful mode, where
-one add and remove facts from the knowledge base, and see what
-changes.
+effort.
 
-For example, add a level of Monk and see how the Armor Class changes,
-or add the Shaken condition and see how attack bonuses change. We just
+This project takes advantage of Drools' stateful mode, where one add
+and remove facts from the knowledge base, and see what changes. For
+example, add a level of Monk and see how the Armor Class changes, or
+add the Shaken condition and see how attack bonuses change. We just
 need to make a bunch of if/then rules and Drools takes care of *how*
 to propagate the facts.
 
@@ -23,9 +30,9 @@ slow to be usable, largely due to the effort involved to parse the
 rules and storing them in a database but that sounded like a lot of
 work.
 
-I'd previously used Drools and Drools Planner in my day job, so I was
-familiar with the rules syntax (and knew their limitations...) I
-announced my initial work here:
+I'd previously used Drools in my day job, so I was familiar with the
+rules syntax (and knew its limitations...) I announced my initial
+work here:
 http://tech.groups.yahoo.com/group/pcgen_developers/message/3363
 
 Architecture
@@ -46,12 +53,12 @@ Here's what the API currently looks like:
 
         Session session = Engine.createSession("pathfinder");
         
-        session.insert(new AbilityInput(AbilityInput.STR, 10));
-        session.insert(new AbilityInput(AbilityInput.CON, 8));
-        session.insert(new AbilityInput(AbilityInput.DEX, 16));
-        session.insert(new AbilityInput(AbilityInput.INT, 10));
-        session.insert(new AbilityInput(AbilityInput.WIS, 11));
-        session.insert(new AbilityInput(AbilityInput.CHA, 12));
+        session.insert(new StatInput(StatInput.STR, 10));
+        session.insert(new StatInput(StatInput.CON, 8));
+        session.insert(new StatInput(StatInput.DEX, 16));
+        session.insert(new StatInput(StatInput.INT, 10));
+        session.insert(new StatInput(StatInput.WIS, 11));
+        session.insert(new StatInput(StatInput.CHA, 12));
         FactHandle stun = session.insert(new ConditionInput(ConditionInput.TYPE_STUNNED));
         session.run();
         int ac = session.querySingle(Integer.class, "Query.ArmorClass");
@@ -65,6 +72,17 @@ Here's what the API currently looks like:
         System.out.println("AC is " + ac);
         
         session.destroy();
+
+I've also created a strawman XML syntax for PCs which can be used like so:
+
+        PCReader pcReader = new PCReader();
+        PC pc = pcReader.read(new File("testmonk.xml"));
+        Session session = Engine.createSession(new Ruleset(pc.getRulesets()));
+        session.insert(pc.getInput());
+        session.run();
+        // ...
+
+Look for XML files in the test folder for example(s).
 
 License
 -------

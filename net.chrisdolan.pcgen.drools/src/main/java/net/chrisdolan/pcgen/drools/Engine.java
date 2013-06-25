@@ -1,11 +1,8 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +22,9 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.conf.EventProcessingOption;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.UrlResource;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -35,18 +34,8 @@ import org.drools.runtime.rule.QueryResultsRow;
 
 public class Engine {
     private KnowledgeBase kbase;
-    private ArrayList<String> names;
-    private final Ruleset.Reader rulesetReader;
-
-    {
-        Ruleset.Reader r;
-        try {
-            r = new JAXBRulesetReader(); // this will fail on Android
-        } catch (Throwable t) {
-            r = new XStreamRulesetReader();
-        }
-        rulesetReader = r;
-    }
+    private Ruleset rs;
+    private final Ruleset.Reader rulesetReader = new XStreamRulesetReader();
 
     private static class EngineSession implements Session {
         private StatefulKnowledgeSession ksession;
@@ -193,18 +182,25 @@ public class Engine {
         }
     }
 
-    public Engine(String... names) throws IOException, DroolsParserException {
-        this.names = new ArrayList<String>(Arrays.asList(names));
+    public Engine(Ruleset rs) throws IOException, DroolsParserException {
+        this.rs = rs;
 
         Collection<KnowledgePackage> kpkgs = null;
-        if (this.names.size() == 1 && this.names.get(0).endsWith(".ser")) {
-            kpkgs = readSerializedRules(this.names.get(0));
-        } else {
+//        if (this.names.size() == 1 && this.names.get(0).endsWith(".ser")) {
+//            kpkgs = readSerializedRules(this.names.get(0));
+        {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder batch = kbuilder.batch();
-            for (String name : names)
-                for (Rule rule : readRuleset(name).getRules())
-                    batch.add(new ClassPathResource(rule.getName(), getClass()), ResourceType.getResourceType(rule.getType()));
+            for (Rule rule : rulesetReader.flatten(rs).getRules()) {
+                Resource r;
+                if (rule.getUri() == null)
+                    r = new ClassPathResource(rule.getName(), getClass());
+                else if (rule.getUri().isAbsolute())
+                    r = new UrlResource(rule.getUri().toURL());
+                else
+                    r = new ClassPathResource(rule.getUri().toString(), getClass());
+                batch.add(r, ResourceType.getResourceType(rule.getType()));
+            }
             batch.build();
             if (kbuilder.hasErrors())
                 throw new DroolsParserException(kbuilder.getErrors().toString());
@@ -216,47 +212,59 @@ public class Engine {
         config.setOption(EventProcessingOption.STREAM);
         kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
         kbase.addKnowledgePackages(kpkgs);
+        System.out.println("Created engine for ruleset " + rs);
     }
     
-    private Collection<KnowledgePackage> readSerializedRules(String path) throws IOException {
-        InputStream is = getClass().getResourceAsStream(path);
-        try {
-            ObjectInputStream ois = new ObjectInputStream(is);
-            try {
-                Object o = ois.readObject();
-                if (!(o instanceof Collection))
-                    throw new IOException("deserialization expected a Collection, got: " + o.getClass());
-                @SuppressWarnings({ "rawtypes" })
-                Collection c = (Collection)o;
-                if (c.isEmpty())
-                    throw new IOException("deserialization got an empty collection");
-                Object item = c.iterator().next();
-                if (!(item instanceof KnowledgePackage))
-                    throw new IOException("deserialization expected a Collection of KnowledgePackage, got: " + item.getClass());
-                @SuppressWarnings("unchecked")
-                Collection<KnowledgePackage> ck = c;
-                return ck;
-            } catch (ClassNotFoundException e) {
-                throw new IOException(e);
-            } finally {
-                ois.close();
-            }
-        } catch (RuntimeException e) {
-            throw new IOException(e);
-        } finally {
-            is.close();
-        }
-    }
+//    private Collection<KnowledgePackage> readSerializedRules(String path) throws IOException {
+//        InputStream is = getClass().getResourceAsStream(path);
+//        try {
+//            ObjectInputStream ois = new ObjectInputStream(is);
+//            try {
+//                Object o = ois.readObject();
+//                if (!(o instanceof Collection))
+//                    throw new IOException("deserialization expected a Collection, got: " + o.getClass());
+//                @SuppressWarnings({ "rawtypes" })
+//                Collection c = (Collection)o;
+//                if (c.isEmpty())
+//                    throw new IOException("deserialization got an empty collection");
+//                Object item = c.iterator().next();
+//                if (!(item instanceof KnowledgePackage))
+//                    throw new IOException("deserialization expected a Collection of KnowledgePackage, got: " + item.getClass());
+//                @SuppressWarnings("unchecked")
+//                Collection<KnowledgePackage> ck = c;
+//                return ck;
+//            } catch (ClassNotFoundException e) {
+//                throw new IOException(e);
+//            } finally {
+//                ois.close();
+//            }
+//        } catch (RuntimeException e) {
+//            throw new IOException(e);
+//        } finally {
+//            is.close();
+//        }
+//    }
 
+    public static Session createSession(Ruleset rs) throws DroolsParserException, IOException {
+        return getEngine(rs).createSession();
+    }
     public static Session createSession(String... names) throws DroolsParserException, IOException {
-        return getEngine(names).createSession();
+        Ruleset ruleset = new Ruleset();
+        //ruleset.setUrl(new URL("."));
+        List<Ruleset> rulesets = new ArrayList<Ruleset>();
+        for (String name : names)
+            rulesets.add(new Ruleset(name));
+        ruleset.setRulesets(rulesets);
+            
+        return createSession(ruleset);
     }
 
     private static String lastUsedName;
     private static Engine lastUsed;
     private static Map<String, WeakReference<Engine>> engines = new HashMap<String, WeakReference<Engine>>();
-    public static Engine getEngine(String... names) throws DroolsParserException, IOException {
-        String key = Arrays.toString(names);
+
+    public static Engine getEngine(Ruleset rs) throws DroolsParserException, IOException {
+        String key = rs.toString();
         synchronized (engines) {
             if (key.equals(lastUsedName) && lastUsed != null)
                 return lastUsed;
@@ -267,7 +275,7 @@ public class Engine {
             }
             if (engine == null) {
                 try {
-                    engine = new Engine(names);
+                    engine = new Engine(rs);
                 } catch (RuntimeException e) {
                     throw new IOException(e);
                 }
@@ -283,13 +291,8 @@ public class Engine {
         return new EngineSession(kbase.newStatefulKnowledgeSession());
     }
 
-    private Ruleset readRuleset(String name) throws IOException {
-        return rulesetReader.read(getClass().getResource(name + ".xml"));
-    }
-
-    @Override
     public String toString() {
-        return "Engine" + names;
+        return "Engine[" + rs + "]";
     }
 
     // Just for Compile action

@@ -1,5 +1,6 @@
 package net.chrisdolan.pcgen.drools;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -12,6 +13,9 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
 public class PCReader {
     private boolean ignoreAllUnknowns = false;
 
+    public PC read(File file) throws IOException {
+        return read(file.getAbsoluteFile().toURI().toURL());
+    }
     public PC read(URL url) throws IOException {
         try {
             XStream xstream = new XStream() {
