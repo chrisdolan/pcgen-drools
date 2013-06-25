@@ -41,6 +41,10 @@ public class TestPC {
         PCAssert.assertPCLevel(session, 1);
         PCAssert.assertClassLevel(session, "Monk", 1);
         PCAssert.assertFavoredClasses(session, "Monk");
+        PCAssert.assertHasLanguage(session, "Common");
+        // test DarkFear custom rule:
+        PCAssert.assertHasAbility(session, "LowLightVision");
+        PCAssert.assertHasLanguage(session, "Undercommon");
 
         session.destroy();
     }

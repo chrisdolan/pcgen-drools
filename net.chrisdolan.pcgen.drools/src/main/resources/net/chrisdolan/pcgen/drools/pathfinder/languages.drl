@@ -1,8 +1,12 @@
-package net.chrisdolan.pcgen.drools;
+package net.chrisdolan.pcgen.drools.pathfinder;
     dialect "java"
 
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Language.All"
+    Language(name : name)
+end
 
 declare Language
     name : String

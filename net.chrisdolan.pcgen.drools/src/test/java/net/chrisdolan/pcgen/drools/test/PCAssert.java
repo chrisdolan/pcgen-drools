@@ -119,6 +119,16 @@ public class PCAssert {
         Assert.assertEquals(expected, got);
     }
 
+    public static void assertHasAbility(Session session, String name) {
+        List<String> got = session.queryColumn(String.class, "Query.Ability.All");
+        Assert.assertTrue(got.contains(name));
+    }
+
+    public static void assertHasLanguage(Session session, String language) {
+        List<String> got = session.queryColumn(String.class, "Query.Language.All");
+        Assert.assertTrue(got.contains(language));
+    }
+
     private static void assertInteger(Session session, String query, int expected) {
         int got = session.querySingle(Integer.class, query);
         Assert.assertEquals(expected, got);

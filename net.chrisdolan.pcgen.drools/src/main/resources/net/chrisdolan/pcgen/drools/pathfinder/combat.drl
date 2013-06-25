@@ -1,4 +1,4 @@
-package net.chrisdolan.pcgen.drools;
+package net.chrisdolan.pcgen.drools.pathfinder;
     dialect "java"
 
 import net.chrisdolan.pcgen.drools.input.*;

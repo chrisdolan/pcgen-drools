@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import org.drools.conf.EventProcessingOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.ObjectFilter;
@@ -191,14 +193,18 @@ public class Engine {
         {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder batch = kbuilder.batch();
-            for (Rule rule : rulesetReader.flatten(rs).getRules()) {
+            Ruleset flattened = rulesetReader.flatten(rs);
+            for (Rule rule : flattened.getRules()) {
                 Resource r;
-                if (rule.getUri() == null)
+                if (rule.getBody() != null && !rule.getBody().matches("\\s*")) {
+                    r = new ReaderResource(new StringReader(rule.getBody()));
+                } else if (rule.getUri() == null) {
                     r = new ClassPathResource(rule.getName(), getClass());
-                else if (rule.getUri().isAbsolute())
+                } else if (rule.getUri().isAbsolute()) {
                     r = new UrlResource(rule.getUri().toURL());
-                else
+                } else {
                     r = new ClassPathResource(rule.getUri().toString(), getClass());
+                }
                 batch.add(r, ResourceType.getResourceType(rule.getType()));
             }
             batch.build();

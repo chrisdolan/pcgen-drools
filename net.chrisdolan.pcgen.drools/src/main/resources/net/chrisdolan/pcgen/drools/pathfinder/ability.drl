@@ -1,8 +1,12 @@
-package net.chrisdolan.pcgen.drools;
+package net.chrisdolan.pcgen.drools.pathfinder;
     dialect "java"
 
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Ability.All"
+    Ability(name : name)
+end
 
 declare Ability
     name : String
@@ -20,6 +24,12 @@ rule "Ability.Feat.UserInput"
         FeatInput($n:name, $t:type)
     then
         insertLogical(new Ability("Feat." + $n + ($t == null ? "" : "." + $t)));
+end
+rule "Ability.Trait.UserInput"
+    when
+        TraitInput($n:name)
+    then
+        insertLogical(new Ability("Trait." + $n));
 end
 
 rule "Ability.SlowAndSteady"

@@ -29,7 +29,7 @@ public class XStreamRulesetReader implements Ruleset.Reader {
                 throw new IOException("Unmarshalled XML is not a Ruleset, but is: " + o.getClass());
             Ruleset rs = (Ruleset) o;
             rs.setUri(uri);
-            rs = flatten(rs);
+            //rs = flatten(rs);
             return rs;
         } catch (XStreamException e) {
             throw new IOException(e);
@@ -51,16 +51,35 @@ public class XStreamRulesetReader implements Ruleset.Reader {
                     r.setUri(baseUri);
                 rules.addAll(flatten(r).getRules());
             }
-            for (Rule r : rs.getRules()) {
-                String relUri = r.getName();
-                r.setUri(baseUri == null ? new URI(relUri) : baseUri.resolve(relUri));
+            for (Rule rule : rs.getRules()) {
+                Rule r = new Rule();
+                r.setName(rule.getName());
+                r.setType(rule.getType());
+                r.setBody(rule.getBody());
+                if (rule.getName() != null) {
+                    String relUri = rule.getName();
+                    r.setUri(baseUri == null ? new URI(relUri) : baseUri.resolve(relUri));
+                }
                 rules.add(r);
             }
 
             List<Rule> rulelist = new ArrayList<Rule>(rules);
             Collections.sort(rulelist, new Comparator<Rule>() {
                 public int compare(Rule o1, Rule o2) {
-                    return o1.getUri().toString().compareTo(o2.getUri().toString());
+                    URI uri1 = o1.getUri();
+                    URI uri2 = o2.getUri();
+
+                    if (uri1 == null) {
+                        if (uri2 == null)
+                            return o1.toString().compareTo(o2.toString());
+                        else
+                            return 1;
+                    } else {
+                        if (uri2 == null)
+                            return -1;
+                        else
+                            return uri1.compareTo(uri2);
+                    }
                 }
             });
 

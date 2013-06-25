@@ -1,5 +1,20 @@
 <pc xmlns="http://chrisdolan.net/pcgen/drools/input">
+
     <ruleset name="pathfinder"/>
+    <ruleset>
+        <rule type="DRL">
+            // add an example custom rule
+            package test; dialect "java"
+            import net.chrisdolan.pcgen.drools.pathfinder.*;
+            rule "DarkFear"
+              when Ability(name=="Trait.DarkFear")
+              then
+                insertLogical(new Ability("LowLightVision"));
+                insertLogical(new Language("Undercommon"));
+            end
+        </rule>
+    </ruleset>
+
     <input>
         <property name="CharacterName" value="Aarn"/>
         <property name="PlayerName" value="Chris Dolan"/>
