@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -176,6 +177,11 @@ public class Engine {
                 list.add(o.toString());
             Collections.sort(list);
             return list;
+        }
+
+        public void dump(PrintStream stream) {
+            for (String s : dump())
+                stream.println(s);
         }
 
         public void destroy() {

@@ -1,5 +1,6 @@
 package net.chrisdolan.pcgen.drools;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,5 +26,6 @@ public interface Session {
     <T> Collection<T> searchByClass(Class<T> cls);
     Collection<Object> search(ObjectFilter filter);
     List<String> dump();
+    void dump(PrintStream stream);
 
 }

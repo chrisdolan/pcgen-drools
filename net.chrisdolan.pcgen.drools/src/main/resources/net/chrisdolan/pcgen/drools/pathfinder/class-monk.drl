@@ -31,3 +31,110 @@ rule "Class.Monk.Ability.AC.Wis"
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
         insertLogical(new Input("CMD", "Other", $v));
 end
+rule "Class.Monk.Ability.Base"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
+    then
+        insertLogical(new AbilityGrant(new Ability("StunningFist")));
+        insertLogical(new AbilityGrant(new Ability("FlurryOfBlows")));
+        insertLogical(new AbilityGrant(new Ability("ImprovedUnarmedStrike")));
+        if ($lvl >= 2) {
+            insertLogical(new AbilityGrant(new Ability("Evasion")));
+        }
+        if ($lvl >= 3) {
+            insertLogical(new AbilityGrant(new Ability("Monk.FastMovement")));
+            insertLogical(new AbilityGrant(new Ability("Monk.ManeuverTraining")));
+            insertLogical(new AbilityGrant(new Ability("Monk.StillMind")));
+        }
+        if ($lvl >= 4) {
+            insertLogical(new AbilityGrant(new Ability("Monk.SlowFall")));
+        }
+        if ($lvl >= 5) {
+            insertLogical(new AbilityGrant(new Ability("Monk.HighJump")));
+            insertLogical(new AbilityGrant(new Ability("Monk.PurityOfBody")));
+        }
+        if ($lvl >= 7) {
+            insertLogical(new AbilityGrant(new Ability("Monk.WholenessOfBody")));
+        }
+        if ($lvl >= 9) {
+            insertLogical(new AbilityGrant(new Ability("ImprovedEvasion")));
+        }
+        if ($lvl >= 11) {
+            insertLogical(new AbilityGrant(new Ability("Monk.DiamondBody")));
+        }
+        if ($lvl >= 12) {
+            insertLogical(new AbilityGrant(new Ability("Monk.AbundantStep")));
+        }
+        if ($lvl >= 13) {
+            insertLogical(new AbilityGrant(new Ability("Monk.DiamondSoul")));
+        }
+        if ($lvl >= 15) {
+            insertLogical(new AbilityGrant(new Ability("Monk.QuiveringPalm")));
+        }
+        if ($lvl >= 17) {
+            insertLogical(new AbilityGrant(new Ability("Monk.TimelessBody")));
+            insertLogical(new AbilityGrant(new Ability("Monk.TongueOfTheSunAndMoon")));
+        }
+        if ($lvl >= 19) {
+            insertLogical(new AbilityGrant(new Ability("Monk.EmptyBody")));
+        }
+        if ($lvl >= 20) {
+            insertLogical(new AbilityGrant(new Ability("Monk.PerfectSelf")));
+        }
+end
+
+// TODO: more than one AbilityReplacement of the same ability is an archetype conflict
+
+rule "Archetype.Monk.Ability.HungryGhost"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
+        Archetype(classname == "Monk", name == "HungryGhost")
+    then
+        insertLogical(new AbilityGrant(new Ability("PunishingKick")));
+        insertLogical(new AbilityReplacement(new Ability("StunningFist")));
+        if ($lvl >= 5) {
+            insertLogical(new AbilityGrant(new Ability("Monk.StealKi")));
+            insertLogical(new AbilityReplacement(new Ability("Monk.PurityOfBody")));
+        }
+        if ($lvl >= 7) {
+            insertLogical(new AbilityGrant(new Ability("Monk.LifeFunnel")));
+            insertLogical(new AbilityReplacement(new Ability("Monk.WholenessOfBody")));
+        }
+        if ($lvl >= 11) {
+            insertLogical(new AbilityGrant(new Ability("Monk.LifeFromAStone")));
+            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondBody")));
+        }
+        if ($lvl >= 13) {
+            insertLogical(new AbilityGrant(new Ability("Monk.SippingDemon")));
+            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondSoul")));
+        }
+end
+
+rule "Class.Monk.FastMovement"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", $lvl : value)
+        not(not Ability(name == "Monk.FastMovement"))
+    then
+        insertLogical(new Input("Speed", "Monk", 10*($lvl/3)));
+end
+rule "Class.Monk.ManeuverTraining"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", $lvl : value)
+        not(not Ability(name == "Monk.ManeuverTraining"))
+        Input(type == "BAB", subtype == "ClassLevel" + "Monk", $bab : value)
+    then
+        insertLogical(new Input("CMB", "Monk.ManeuverTraining", $lvl-$bab)); // replace monk BAB contribution to CMB with level 
+end
+rule "Class.Monk.HighJump"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", $lvl : value)
+        not(not Ability(name == "Monk.HighJump"))
+    then
+        insertLogical(new Input("Skill.Acrobatics.Jump", "Monk.HighJump", $lvl)); 
+end
+rule "Class.Monk.PerfectSelf"
+    when
+        not(not Ability(name == "Monk.PerfectSelf"))
+    then
+        insertLogical(new DR(10, new String[]{"Chaotic"})); 
+end

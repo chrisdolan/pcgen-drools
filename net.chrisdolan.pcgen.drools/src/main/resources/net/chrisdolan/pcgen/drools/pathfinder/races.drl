@@ -15,6 +15,16 @@ declare RaceStatChoice
     bonus : int
 end
 
+rule "Race.Missing"
+    when
+        not Race()
+    then
+        // Treat as humanoid, without the specific human advantages. Mainly for unit tests or early PC creation
+        insertLogical(new Size("Medium"));
+        insertLogical(new Input("Speed", "Base", 30));
+        insertLogical(new Language("Common"));
+end
+
 rule "Race.Dwarf"
     when
         Race(name == RaceInput.DWARF)

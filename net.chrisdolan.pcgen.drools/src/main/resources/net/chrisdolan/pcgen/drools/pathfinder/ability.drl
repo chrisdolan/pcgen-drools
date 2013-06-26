@@ -11,6 +11,12 @@ end
 declare Ability
     name : String
 end
+declare AbilityGrant
+    ability : Ability
+end
+declare AbilityReplacement
+    ability : Ability
+end
 
 rule "Ability.UserInput"
     when
@@ -32,18 +38,10 @@ rule "Ability.Trait.UserInput"
         insertLogical(new Ability("Trait." + $n));
 end
 
-rule "Ability.SlowAndSteady"
+rule "Ability.Grant"
     when
-        Ability(name == "SlowAndSteady")
+        AbilityGrant($ability : ability)
+        not AbilityReplacement(ability.name == $ability.name)
     then
-        insertLogical(new Ability("Speed.IgnoreArmor"));
-        insertLogical(new Ability("Speed.IgnoreEncumbrance"));
-end
-
-rule "Ability.Toughness"
-    when
-        Ability(name == "Feat.Toughness")
-        PCLevel($lvl:value)
-    then
-        insertLogical(new Input("Hitpoints", "Toughness", $lvl <= 3 ? 3 : $lvl));
+        insertLogical($ability);
 end

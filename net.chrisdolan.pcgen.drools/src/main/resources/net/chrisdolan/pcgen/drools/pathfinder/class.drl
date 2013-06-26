@@ -24,6 +24,10 @@ end
 declare PCLevel
     value : int
 end
+declare Archetype
+    classname : String
+    name : String
+end
 
 rule "Class.Level.Total"
     when
@@ -44,12 +48,19 @@ rule "Class.PCLevel.Total"
     then
         insertLogical(new PCLevel($sum));
 end
-rule "Class.Archetype.Missing"
+rule "Class.Archetype.UserInput"
     when
         Input(type == "ClassLevel", $class:subtype, value > 0)
-        not ArchetypeInput($class == classname, name != "Base")
+        ArchetypeInput($class == classname, name != "Base", $name : name)
     then
-        insertLogical(new ArchetypeInput($class, "Base"));
+        insertLogical(new Archetype($class, $name));
+end
+rule "Class.Archetype.Base"
+    when
+        Input(type == "ClassLevel", $class:subtype, value > 0)
+        //not ArchetypeInput($class == classname, name != "Base")
+    then
+        insertLogical(new Archetype($class, "Base"));
 end
 /*
 rule "Class.Archetype"

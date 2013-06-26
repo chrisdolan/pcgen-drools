@@ -3,6 +3,8 @@
     <rule name="pathfinder/pc.drl" type="DRL"/>
     
     <rule name="pathfinder/ability.drl" type="DRL"/>
+    <rule name="pathfinder/ability-feats.drl" type="DRL"/>
+    <rule name="pathfinder/ability-special.drl" type="DRL"/>
     <rule name="pathfinder/age.drl" type="DRL"/>
     <rule name="pathfinder/class.drl" type="DRL"/>
     <rule name="pathfinder/class-barbarian.drl" type="DRL"/>
@@ -21,6 +23,7 @@
     <rule name="pathfinder/combat-armorclass.drl" type="DRL"/>
     <rule name="pathfinder/combat-bab.drl" type="DRL"/>
     <rule name="pathfinder/combat-cmb.drl" type="DRL"/>
+    <rule name="pathfinder/combat-dr.drl" type="DRL"/>
     <rule name="pathfinder/combat-hitpoints.drl" type="DRL"/>
     <rule name="pathfinder/combat-initiative.drl" type="DRL"/>
     <rule name="pathfinder/condition.drl" type="DRL"/>

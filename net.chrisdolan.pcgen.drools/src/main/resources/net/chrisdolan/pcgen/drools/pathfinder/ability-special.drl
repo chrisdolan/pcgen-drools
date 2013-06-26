@@ -1,0 +1,13 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Ability.SlowAndSteady"
+    when
+        Ability(name == "SlowAndSteady")
+    then
+        insertLogical(new Ability("Speed.IgnoreArmor"));
+        insertLogical(new Ability("Speed.IgnoreEncumbrance"));
+end
