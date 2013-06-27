@@ -14,6 +14,12 @@ public class ArmorClass {
     public static final String SUBTYPE_SIZE = "Size";
     public static final String SUBTYPE_OTHER = "Other";
 
+    public static final String SUBTYPE_CIRCUMSTANCE = "Circumstance";
+    public static final String SUBTYPE_INSIGHT = "Insight";
+    public static final String SUBTYPE_MORALE = "Morale";
+    public static final String SUBTYPE_PROFANE = "Profane";
+    public static final String SUBTYPE_SACRED = "Sacred";
+
     public static final String ACTYPE_NORMAL = "Normal";
     public static final String ACTYPE_TOUCH = "Touch";
     public static final String ACTYPE_RANGE = "Range";

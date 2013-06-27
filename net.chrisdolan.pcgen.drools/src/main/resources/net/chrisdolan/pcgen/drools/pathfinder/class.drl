@@ -4,9 +4,6 @@ package net.chrisdolan.pcgen.drools.pathfinder;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
-query "Query.Class.PCLevel"
-    PCLevel(level : value)
-end
 query "Query.Class.Level" (String classname)
     Input(type == "ClassLevel", classname == subtype, level : value)
 end
@@ -21,9 +18,6 @@ rule "Class.Init"
         insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
 end
 
-declare PCLevel
-    value : int
-end
 declare Archetype
     classname : String
     name : String
@@ -38,15 +32,6 @@ rule "Class.Level.Total"
         )
     then
         insertLogical(new Input("ClassLevel", $class, $sum));
-end
-rule "Class.PCLevel.Total"
-    when
-        Number(intValue > 0, $sum : intValue) from accumulate(
-            $l : LevelInput(),
-            count($l)
-        )
-    then
-        insertLogical(new PCLevel($sum));
 end
 rule "Class.Archetype.UserInput"
     when

@@ -140,6 +140,20 @@ rule "CMD.Stat.Dex"
     then
         insertLogical(new Input("CMD", "StatDex", $dex));
 end
+rule "CMD.AC"
+    when
+        Stack(type == ArmorClass.TYPE,
+              subtype == ArmorClass.SUBTYPE_CIRCUMSTANCE ||
+              subtype == ArmorClass.SUBTYPE_DEFLECTION ||
+              subtype == ArmorClass.SUBTYPE_DODGE ||
+              subtype == ArmorClass.SUBTYPE_INSIGHT ||
+              subtype == ArmorClass.SUBTYPE_MORALE ||
+              subtype == ArmorClass.SUBTYPE_PROFANE ||
+              subtype == ArmorClass.SUBTYPE_SACRED,
+              $st:subtype, $ac:value)
+    then
+        insertLogical(new Input("CMD", "AC."+$st, $ac));
+end
 rule "CMD.Base.Total"
     when
         Number($sum : intValue) from accumulate(

@@ -24,12 +24,14 @@ rule "Condition.General.NoDexAC"
         not(not Condition(type == "NoDexAC"))
     then
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEXTERITY, "None"));
+        insertLogical(new StackRule("CMB", "StatDex", "None"));
 end
 rule "Condition.General.NoDodgeAC"
     when
         not(not Condition(type == "NoDodgeAC"))
     then
         insertLogical(new StackRule(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, "None"));
+        insertLogical(new StackRule("CMB", "AC."+ArmorClass.SUBTYPE_DODGE, "None"));
 end
 rule "Condition.General.YesDodgeAC"
     when

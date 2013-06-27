@@ -4,10 +4,21 @@ package net.chrisdolan.pcgen.drools.pathfinder;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+declare ClassBonusFeat
+    classname : String
+    level : int
+end
+
 rule "Ability.Toughness"
     when
         Ability(name == "Feat.Toughness")
         PCLevel($lvl:value)
     then
         insertLogical(new Input("Hitpoints", "Toughness", $lvl <= 3 ? 3 : $lvl));
+end
+rule "Ability.ImprovedInitiative"
+    when
+        Ability(name == "Feat.ImprovedInitiative")
+    then
+        insertLogical(new Input(Initiative.TYPE, Initiative.SUBTYPE_OTHER, 4));
 end

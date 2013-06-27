@@ -16,35 +16,53 @@ rule "Age.Aging"
         insertLogical(new Condition($age >= $venerable ? "Age.Venerable" : $age >= $old ? "Age.Old" : "Age.MiddleAge"));
 end
 
-rule "Age.MiddleAge"
+rule "Age.MiddleAge.Penalty"
     when
         not(not Condition(type == "Age.MiddleAge"))
+        not Ability(name == "NoAgingPenalties")
     then
         insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -1));
         insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -1));
         insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -1));
+end
+rule "Age.MiddleAge.Bonus"
+    when
+        not(not Condition(type == "Age.MiddleAge"))
+    then
         insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 1));
         insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 1));
         insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 1));
 end
-rule "Age.Old"
+rule "Age.Old.Penalty"
     when
         not(not Condition(type == "Age.Old"))
+        not Ability(name == "NoAgingPenalties")
     then
         insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -3));
         insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -3));
         insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -3));
+end
+rule "Age.Old.Bonus"
+    when
+        not(not Condition(type == "Age.Old"))
+    then
         insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 2));
         insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 2));
         insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 2));
 end
-rule "Age.Venerable"
+rule "Age.Venerable.Penalty"
     when
         not(not Condition(type == "Age.Venerable"))
+        not Ability(name == "NoAgingPenalties")
     then
         insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -6));
         insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -6));
         insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -6));
+end
+rule "Age.Venerable.Bonus"
+    when
+        not(not Condition(type == "Age.Venerable"))
+    then
         insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 3));
         insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 3));
         insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 3));

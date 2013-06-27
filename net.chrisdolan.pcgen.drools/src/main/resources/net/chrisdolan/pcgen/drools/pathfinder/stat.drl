@@ -92,7 +92,6 @@ rule "Stat.Bonus.Capped"
         insertLogical(new StatBonus($attname, Math.min($cap, $att/2 - 5)));
 end
 
-
 rule "Validation.Stat.Unknown"
     when
         StatInput($name:name)

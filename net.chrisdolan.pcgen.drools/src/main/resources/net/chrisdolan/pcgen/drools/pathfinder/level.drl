@@ -1,0 +1,43 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Class.PCLevel"
+    PCLevel(level : value)
+end
+
+declare PCLevel
+    value : int
+end
+declare LevelStatChoice
+    level : int
+end
+
+rule "Level.PCLevel.Total"
+    when
+        Number(intValue > 0, $sum : intValue) from accumulate(
+            $l : LevelInput(),
+            count($l)
+        )
+    then
+        insertLogical(new PCLevel($sum));
+end
+
+rule "Level.StatBonuses"
+    when
+        PCLevel($lvl:value)
+    then
+        for (int i=4; i <= $lvl; i+=4)
+            insertLogical(new LevelStatChoice(i));
+end
+
+rule "Level.StatBonuses.UserInput"
+    when
+        LevelStatChoice($level : level)
+        ChoiceInput(type == "StatBonusChoice", subtype == "Level"+$level, $stat:value)
+    then
+        insertLogical(new Input(StatInput.TYPE + $stat, "Level"+$level, 1));
+end
+

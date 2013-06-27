@@ -336,8 +336,8 @@ public class TestEngine {
         session.insert(new RaceInput("Human", 70));
         session.run();
         PCAssert.assertBABFirst(session, 35);
-        PCAssert.assertCMB(session, "Grapple", 41); // -6 STR for age => -3 CMB
-        PCAssert.assertCMD(session, "Grapple", 50); // -6 STR, -6 DEX, +3 WIS for age => net -5 CMD
+        PCAssert.assertCMB(session, "Grapple", 44); // would be -6 STR for age => -3 CMB, except TimelessBody => +0
+        PCAssert.assertCMD(session, "Grapple", 56); // would be -6 STR, -6 DEX, +3 WIS for age => net -5 CMD, except TimelessBody => +1
         session.destroy();
     }
 

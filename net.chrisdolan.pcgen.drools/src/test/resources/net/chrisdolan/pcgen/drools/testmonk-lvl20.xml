@@ -1,0 +1,245 @@
+<pc xmlns="http://chrisdolan.net/pcgen/drools/input">
+
+	<ruleset name="test_pathfinder" />
+	<ruleset>
+		<rule type="DRL">
+			// add an example custom rule
+			package test; dialect "java"
+			import net.chrisdolan.pcgen.drools.pathfinder.*;
+			rule "DarkFear"
+			when Ability(name=="Trait.DarkFear")
+			then
+			insertLogical(new Ability("LowLightVision"));
+			insertLogical(new Language("Undercommon"));
+			end
+		</rule>
+	</ruleset>
+
+	<input>
+		<property name="CharacterName" value="Aarn" />
+		<property name="PlayerName" value="Chris Dolan" />
+
+		<alignment name="LawfulEvil" />
+
+		<stat value="14" name="Strength" />
+		<stat value="14" name="Dexterity" />
+		<stat value="12" name="Constitution" />
+		<stat value="10" name="Intelligence" />
+		<stat value="14" name="Wisdom" />
+		<stat value="8" name="Charisma" />
+
+		<race name="Human" age="24">
+			<favoredclass name="Monk" />
+			<statbonus name="Strength" />
+			<trait name="Suspicious" />
+			<trait name="DarkFear" />
+		</race>
+
+		<level class="Monk"> <!-- 1 -->
+			<archetype class="Monk" name="HungryGhost" />
+			<hitpoints value="8" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+			<feat source="class" name="CombatReflexes" />
+			<feat name="Toughness" />
+			<feat name="ViciousStomp" />
+		</level>
+		<level class="Monk"> <!-- 2 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+			<feat source="class" name="DeflectArrows" />
+		</level>
+		<level class="Monk"> <!-- 3 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="PowerAttack" />
+     	</level>
+		<level class="Monk"> <!-- 4 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+        	<statbonus name="Constitution" />
+		</level>
+		<level class="Monk"> <!-- 5 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="SnakeStyle" />
+		</level>
+		<level class="Monk"> <!-- 6 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat source="class" name="ImprovedDisarm" />
+		</level>
+		<level class="Monk"> <!-- 7 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="SnakeSidewind" />
+		</level>
+		<level class="Monk"> <!-- 8 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <statbonus name="Constitution" />
+		</level>
+		<level class="Monk"> <!-- 9 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="SnakeFang" />
+		</level>
+		<level class="Monk"> <!-- 10 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat source="class" name="ImprovedCritical" type="UnarmedStrike" />
+		</level>
+		<level class="Monk"> <!-- 11 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="HammerTheGap" />
+		</level>
+		<level class="Monk"> <!-- 12 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <statbonus name="Wisdom" />
+		</level>
+		<level class="Monk"> <!-- 13 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="DimensionalAgility" />
+		</level>
+		<level class="Monk"> <!-- 14 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat source="class" name="Mobility" />
+		</level>
+		<level class="Monk"> <!-- 15 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="SpiderStep" />
+		</level>
+		<level class="Monk"> <!-- 16 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <statbonus name="Wisdom" />
+		</level>
+		<level class="Monk"> <!-- 17 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="CloudStep" />
+		</level>
+		<level class="Monk"> <!-- 18 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat source="class" name="ImprovedTrip" />
+		</level>
+		<level class="Monk"> <!-- 19 -->
+			<hitpoints value="5" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <feat name="ImprovedInitiative" />
+		</level>
+		<level class="Monk"> <!-- 20 -->
+			<hitpoints value="4" />
+			<skill ranks="1" name="Acrobatics" />
+			<skill ranks="1" name="Climb" />
+			<skill ranks="1" name="EscapeArtist" />
+			<skill ranks="1" name="Perception" />
+			<skill ranks="1" name="SenseMotive" />
+			<favoredclassbonus name="Hitpoint" />
+            <statbonus name="Strength" />
+		</level>
+
+		<inventory>
+		</inventory>
+	</input>
+</pc>

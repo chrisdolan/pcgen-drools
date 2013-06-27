@@ -8,6 +8,12 @@ query "Query.Initiative"
     Initiative(initiative : value)
 end
 
+rule "Initiative.Init"
+    when
+    then
+        insertLogical(new StackRule(Initiative.TYPE, Initiative.SUBTYPE_OTHER, "Sum"));
+end
+
 rule "Initiative.DEX"
     when
         StatBonus(name == StatInput.DEX, $dex:value)

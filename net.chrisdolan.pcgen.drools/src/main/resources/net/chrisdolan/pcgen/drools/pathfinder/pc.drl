@@ -65,5 +65,7 @@ rule "PC.Level.UserInput"
              insertLogical($lvl.getFavoredClassBonus());
         for (FeatInput feat : $lvl.getFeats())
              insertLogical(feat);
+        if ($lvl.getStatBonus() != null)
+            insertLogical(new ChoiceInput("StatBonusChoice", "Level"+$lvl.getOrdinal(), $lvl.getStatBonus().getName()));
 end
 

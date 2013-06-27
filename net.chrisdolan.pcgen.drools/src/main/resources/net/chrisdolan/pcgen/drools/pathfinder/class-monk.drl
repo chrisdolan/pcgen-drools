@@ -132,6 +132,12 @@ rule "Class.Monk.HighJump"
     then
         insertLogical(new Input("Skill.Acrobatics.Jump", "Monk.HighJump", $lvl)); 
 end
+rule "Class.Monk.TimelessBody"
+    when
+        not(not Ability(name == "Monk.TimelessBody"))
+    then
+        insertLogical(new Ability("NoAgingPenalties")); // Bug: this should not be retroactive to aging before this level... 
+end
 rule "Class.Monk.PerfectSelf"
     when
         not(not Ability(name == "Monk.PerfectSelf"))

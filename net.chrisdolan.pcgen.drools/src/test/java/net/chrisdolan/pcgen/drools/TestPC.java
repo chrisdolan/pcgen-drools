@@ -3,8 +3,11 @@ package net.chrisdolan.pcgen.drools;
 import java.io.IOException;
 
 import net.chrisdolan.pcgen.drools.input.PC;
+import net.chrisdolan.pcgen.drools.input.StatInput;
 import net.chrisdolan.pcgen.drools.test.PCAssert;
+import net.chrisdolan.pcgen.drools.test.TestInput;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
+import net.chrisdolan.pcgen.drools.type.SavingThrow;
 
 import org.drools.compiler.DroolsParserException;
 import org.junit.Assert;
@@ -14,7 +17,7 @@ import org.junit.Test;
 public class TestPC {
 
     @Test
-    public void testMonk() throws DroolsParserException, IOException {
+    public void testMonkLevel1() throws DroolsParserException, IOException {
         PCReader pcReader = new PCReader();
         PC pc = pcReader.read(getClass().getResource("testmonk.xml"));
         Assert.assertNotNull(pc);
@@ -57,6 +60,55 @@ public class TestPC {
         // test DarkFear custom rule:
         PCAssert.assertHasAbility(session, "LowLightVision");
         PCAssert.assertHasLanguage(session, "Undercommon");
+
+        session.destroy();
+    }
+
+    @Test
+    public void testMonkLevel20() throws DroolsParserException, IOException {
+        PCReader pcReader = new PCReader();
+        PC pc = pcReader.read(getClass().getResource("testmonk-lvl20.xml"));
+        Assert.assertNotNull(pc);
+
+        Session session = Engine.createSession(new Ruleset(pc.getRulesets()));
+        session.insert(pc.getInput());
+
+        // Hacks for unsupported features...
+        session.insert(new TestInput(StatInput.TYPE + StatInput.STR, "MagicItem", 6)); // belt
+        session.insert(new TestInput(StatInput.TYPE + StatInput.DEX, "MagicItem", 6));
+        session.insert(new TestInput(StatInput.TYPE + StatInput.CON, "MagicItem", 6));
+        session.insert(new TestInput(StatInput.TYPE + StatInput.WIS, "MagicItem", 6)); // headband
+        session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_ARMOR, 8)); // bracers
+        session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEFLECTION, 5)); // ring
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.FORT, "MagicItem", 5)); // cloak
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.REFL, "MagicItem", 5));
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.WILL, "MagicItem", 5));
+        
+        session.run();
+
+        for (String s : session.dump())
+            System.out.println(s);
+
+        PCAssert.assertNoViolations(session);
+
+        PCAssert.assertProperty(session, "CharacterName", "Aarn");
+
+        PCAssert.assertStats(session, 23, 20, 20, 10, 22, 8); // str, dex, con, int, wis, cha
+
+        PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 39);
+        PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 31);
+        PCAssert.assertBABFirst(session, 15);
+        PCAssert.assertCMB(session, "Grapple", 26);
+        PCAssert.assertCMD(session, "Grapple", 52);
+        PCAssert.assertClassLevel(session, "Monk", 20);
+        PCAssert.assertConditions(session); // none...
+        PCAssert.assertEncumbrance(session, "Light");
+        PCAssert.assertFavoredClasses(session, "Monk");
+        PCAssert.assertHitpoints(session, 233);
+        PCAssert.assertInitiative(session, 9);
+        PCAssert.assertPCLevel(session, 20);
+        PCAssert.assertSaves(session, 22, 22, 23); // fort, refl, will
+        PCAssert.assertSpeed(session, 90);
 
         session.destroy();
     }

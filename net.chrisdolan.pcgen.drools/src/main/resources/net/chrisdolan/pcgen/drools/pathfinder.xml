@@ -32,6 +32,7 @@
     <rule name="pathfinder/equipped.drl" type="DRL"/>
     <rule name="pathfinder/favoredclass.drl" type="DRL"/>
     <rule name="pathfinder/languages.drl" type="DRL"/>
+    <rule name="pathfinder/level.drl" type="DRL"/>
     <rule name="pathfinder/meta.drl" type="DRL"/>
     <rule name="pathfinder/races.drl" type="DRL"/>
     <rule name="pathfinder/savingthrow.drl" type="DRL"/>

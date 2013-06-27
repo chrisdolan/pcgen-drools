@@ -29,6 +29,9 @@ public class LevelInput {
     @XStreamImplicit(itemFieldName="feat")
     private List<FeatInput> feats = new ArrayList<FeatInput>();
 
+    @XStreamAlias("statbonus")
+    private StatBonusInput statBonus;
+
     /**
      * The ordinal is to track which levels were added first, which matters for prereqs and some bonuses.
      * It doesn't need to be serialized because it's implicit in the order of the XML layout.
@@ -76,6 +79,12 @@ public class LevelInput {
     }
     public void setFeats(List<FeatInput> feats) {
         this.feats = new ArrayList<FeatInput>(feats);
+    }
+    public StatBonusInput getStatBonus() {
+        return statBonus;
+    }
+    public void setStatBonus(StatBonusInput statBonus) {
+        this.statBonus = statBonus;
     }
     public int getOrdinal() {
         return ordinal;
