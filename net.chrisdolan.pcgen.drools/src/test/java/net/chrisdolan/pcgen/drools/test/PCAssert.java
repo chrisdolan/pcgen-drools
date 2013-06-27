@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools.test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,11 @@ public class PCAssert {
     public static void assertHasLanguage(Session session, String language) {
         List<String> got = session.queryColumn(String.class, "Query.Language.All");
         Assert.assertTrue(got.contains(language));
+    }
+
+    public static void assertNoViolations(Session session) {
+        List<String> got = session.queryColumn(String.class, "Query.Violations.Descriptions");
+        Assert.assertEquals(Collections.<String>emptyList(), got);
     }
 
     private static void assertInteger(Session session, String query, int expected) {

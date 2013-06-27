@@ -7,3 +7,66 @@ import net.chrisdolan.pcgen.drools.type.*;
 declare Age
     value : int
 end
+
+rule "Age.Aging"
+    when
+        Age($age:value)
+        RacialAge($age >= middleage, $old : old, $venerable : venerable)
+    then
+        insertLogical(new Condition($age >= $venerable ? "Age.Venerable" : $age >= $old ? "Age.Old" : "Age.MiddleAge"));
+end
+
+rule "Age.MiddleAge"
+    when
+        not(not Condition(type == "Age.MiddleAge"))
+    then
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -1));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -1));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -1));
+        insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 1));
+        insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 1));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 1));
+end
+rule "Age.Old"
+    when
+        not(not Condition(type == "Age.Old"))
+    then
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -3));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -3));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -3));
+        insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 2));
+        insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 2));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 2));
+end
+rule "Age.Venerable"
+    when
+        not(not Condition(type == "Age.Venerable"))
+    then
+        insertLogical(new Input(StatInput.TYPE + StatInput.STR, "Age", -6));
+        insertLogical(new Input(StatInput.TYPE + StatInput.DEX, "Age", -6));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CON, "Age", -6));
+        insertLogical(new Input(StatInput.TYPE + StatInput.INT, "Age", 3));
+        insertLogical(new Input(StatInput.TYPE + StatInput.WIS, "Age", 3));
+        insertLogical(new Input(StatInput.TYPE + StatInput.CHA, "Age", 3));
+end
+
+
+rule "Validation.Age.Missing"
+    when
+        not Age()
+        RacialAge($defage:adulthood)
+    then
+        insertLogical(new MissingInputViolation("Please choose an age", new Age($defage)));
+end
+rule "Validation.Age.TooMany"
+    when
+        $list : List(size > 1) from collect(Age())
+    then
+        insertLogical(new ExcessInputViolation("Too many ages: " + $list, $list.toArray()));
+end
+rule "Validation.Age.TooYoung"
+    when
+        Age(value < 0)
+    then
+        insertLogical(new Violation("Age must be greater than 0"));
+end

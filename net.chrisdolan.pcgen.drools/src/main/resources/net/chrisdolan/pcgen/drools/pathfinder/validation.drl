@@ -1,0 +1,31 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+query "Query.Violations"
+    violation : Violation()
+end
+query "Query.Violations.Descriptions"
+    Violation(violation : description)
+end
+query "Query.Violations.MissingInputs"
+    violation : MissingInputViolation()
+end
+
+declare Violation
+    description : String
+end
+
+declare MissingInputViolation extends Violation
+    defaultvalue : Object
+end
+
+declare MissingPrereqViolation extends Violation
+    violators : Object[]
+end
+
+declare ExcessInputViolation extends Violation
+    violators : Object[]
+end

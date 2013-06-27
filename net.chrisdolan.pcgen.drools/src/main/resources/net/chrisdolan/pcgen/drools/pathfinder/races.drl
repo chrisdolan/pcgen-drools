@@ -14,6 +14,15 @@ end
 declare RaceStatChoice
     bonus : int
 end
+declare RacialAge
+    adulthood : int
+    middleage : int
+    old       : int
+    venerable : int
+end
+declare AgeType
+    name : String
+end
 
 rule "Race.Missing"
     when
@@ -23,6 +32,7 @@ rule "Race.Missing"
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Language("Common"));
+        insertLogical(new RacialAge(15,35,53,70));
 end
 
 rule "Race.Dwarf"
@@ -46,6 +56,7 @@ rule "Race.Dwarf"
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Dwarven"));
+        insertLogical(new RacialAge(40,125,188,250));
 end
 
 rule "Race.Elf"
@@ -65,6 +76,7 @@ rule "Race.Elf"
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Elven"));
+        insertLogical(new RacialAge(110,175,263,350));
 end
 
 rule "Race.Gnome"
@@ -87,6 +99,7 @@ rule "Race.Gnome"
         insertLogical(new Language("Common"));
         insertLogical(new Language("Gnome"));
         insertLogical(new Language("Sylvan"));
+        insertLogical(new RacialAge(40,100,150,200));
 end
 
 rule "Race.HalfElf"
@@ -105,6 +118,7 @@ rule "Race.HalfElf"
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Elven"));
+        insertLogical(new RacialAge(20,62,93,125));
 end
 
 rule "Race.HalfOrc"
@@ -121,6 +135,7 @@ rule "Race.HalfOrc"
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Orc"));
+        insertLogical(new RacialAge(14,30,45,60));
 end
 
 rule "Race.Halfling"
@@ -142,6 +157,7 @@ rule "Race.Halfling"
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Halfling"));
+        insertLogical(new RacialAge(20,50,75,100));
 end
 
 rule "Race.Human"
@@ -154,6 +170,7 @@ rule "Race.Human"
         insertLogical(new Language("Common"));
         // todo: bonus feat
         // todo: bonus skill
+        insertLogical(new RacialAge(15,35,53,70));
 end
 rule "Race.StatBonuses"
     when
@@ -161,4 +178,19 @@ rule "Race.StatBonuses"
         ChoiceInput(type == "StatBonusChoice", subtype == "Race", $stat:value)
     then
         insertLogical(new Input(StatInput.TYPE + $stat, "Race", $bonus));
+end
+
+
+rule "Validation.Race.Missing"
+    when
+        not Race()
+    then
+        insertLogical(new MissingInputViolation("Please choose a race", new Race("Human")));
+end
+rule "Validation.Race.Unknown"
+    when
+        Race($name : name)
+        not Size()
+    then
+        insertLogical(new Violation("Unknown/incomplete race: " + $name));
 end

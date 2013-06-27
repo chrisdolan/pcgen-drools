@@ -138,3 +138,11 @@ rule "Class.Monk.PerfectSelf"
     then
         insertLogical(new DR(10, new String[]{"Chaotic"})); 
 end
+
+rule "Validation.Monk"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0)
+        $alignment : Alignment(!name.startsWith("Lawful"))
+    then
+        insertLogical(new MissingPrereqViolation("Monks must be Lawful", new Object[]{$alignment}));
+end

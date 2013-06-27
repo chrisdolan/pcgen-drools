@@ -1,0 +1,66 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+import java.util.List;
+
+
+rule "Alignment.Init"
+    when
+    then
+        insertLogical(new AlignmentType("LawfulGood"));
+        insertLogical(new AlignmentType("LawfulNeutral"));
+        insertLogical(new AlignmentType("LawfulEvil"));
+        insertLogical(new AlignmentType("NeutralGood"));
+        insertLogical(new AlignmentType("TrueNeutral"));
+        insertLogical(new AlignmentType("NeutralEvil"));
+        insertLogical(new AlignmentType("ChaoticGood"));
+        insertLogical(new AlignmentType("ChaoticNeutral"));
+        insertLogical(new AlignmentType("ChaoticEvil"));
+end
+
+declare Alignment
+    name : String
+end
+declare AlignmentType
+    name : String
+end
+
+rule "Alignment.UserInput"
+    when
+        AlignmentInput($name:name)
+        AlignmentType($name == name)
+    then
+        insertLogical(new Alignment($name));
+end
+
+
+rule "Validation.Alignment.Missing"
+    when
+        not Alignment()
+    then
+        insertLogical(new MissingInputViolation("Please select an alignment", new Alignment("TrueNeutral")));
+end
+rule "Validation.Alignment.TooMany"
+    when
+        $list : List(size > 1) from collect(Alignment())
+    then
+        insertLogical(new ExcessInputViolation("Too many alignments: " + $list, $list.toArray()));
+end
+
+rule "Validation.Alignment.Types"
+    when
+        Alignment($name:name)
+        not AlignmentType($name == name)
+    then
+        insertLogical(new Violation("Unknown alignment: " + $name));
+end
+rule "Validation.AlignmentInput.Types"
+    when
+        AlignmentInput($name:name)
+        not AlignmentType($name == name)
+    then
+        insertLogical(new Violation("Unknown alignment: " + $name));
+end
+

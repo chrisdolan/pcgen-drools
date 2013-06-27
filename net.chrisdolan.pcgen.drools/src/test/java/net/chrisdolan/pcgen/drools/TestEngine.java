@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.LevelInput;
+import net.chrisdolan.pcgen.drools.input.RaceInput;
 import net.chrisdolan.pcgen.drools.input.StatInput;
 import net.chrisdolan.pcgen.drools.test.PCAssert;
 import net.chrisdolan.pcgen.drools.test.SpecialTestInput;
@@ -332,6 +333,11 @@ public class TestEngine {
         PCAssert.assertCMB(session, "Grapple", 44);
         PCAssert.assertCMD(session, "Grapple", 55);
         PCAssert.assertSpeed(session, 90);
+        session.insert(new RaceInput("Human", 70));
+        session.run();
+        PCAssert.assertBABFirst(session, 35);
+        PCAssert.assertCMB(session, "Grapple", 41); // -6 STR for age => -3 CMB
+        PCAssert.assertCMD(session, "Grapple", 50); // -6 STR, -6 DEX, +3 WIS for age => net -5 CMD
         session.destroy();
     }
 

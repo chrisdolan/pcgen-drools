@@ -1,0 +1,34 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+declare Property
+    name : String
+    value : String
+end
+
+rule "Meta.Property.UserInput"
+    when
+        PropertyInput($name:name, $value:value)
+    then
+        insertLogical(new Property($name, $value));
+end
+
+
+rule "Validation.Meta.Duplicates"
+    // Bug: this emits a violation for every set permutation...
+    when
+        $p1 : Property($name:name)
+        $p2 : Property($name == name, this != $p1)
+    then
+        insertLogical(new ExcessInputViolation("Too many properties with name: " + $name, new Object[]{$p1,$p2}));
+end
+
+rule "Validation.Meta.CharacterName.Missing"
+    when
+        not Property(name == "CharacterName")
+    then
+        insertLogical(new MissingInputViolation("Please choose a character name", new Property("CharacterName", "PC")));
+end

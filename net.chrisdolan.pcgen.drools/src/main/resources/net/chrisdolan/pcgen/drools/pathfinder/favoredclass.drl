@@ -18,3 +18,12 @@ rule "FavoredClass.UserInput"
     then
         insertLogical(new FavoredClass($c));
 end
+
+
+rule "Validation.FavoredClass.Missing"
+    when
+        Race()
+        not FavoredClassInput()
+    then
+        insertLogical(new MissingInputViolation("Please choose a favored class", null));
+end

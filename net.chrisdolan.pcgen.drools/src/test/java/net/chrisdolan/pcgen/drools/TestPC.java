@@ -26,6 +26,8 @@ public class TestPC {
         for (String s : session.dump())
             System.out.println(s);
 
+        PCAssert.assertNoViolations(session);
+
         PCAssert.assertProperty(session, "NoSuchProperty", null);
         PCAssert.assertProperty(session, "CharacterName", "Aarn");
         PCAssert.assertProperty(session, "RandomUnicode", "éö¢");

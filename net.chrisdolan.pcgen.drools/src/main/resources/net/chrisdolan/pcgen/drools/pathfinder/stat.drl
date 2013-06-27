@@ -91,3 +91,28 @@ rule "Stat.Bonus.Capped"
     then
         insertLogical(new StatBonus($attname, Math.min($cap, $att/2 - 5)));
 end
+
+
+rule "Validation.Stat.Unknown"
+    when
+        StatInput($name:name)
+        not StatName($name == name)
+    then
+        insertLogical(new Violation("Unknown stat type: " + $name));
+end
+
+rule "Validation.Stat.Missing"
+    when
+        StatName($name:name)
+        not StatInput($name == name)
+    then
+        insertLogical(new MissingInputViolation("Please choose a value for stat " + $name, new StatInput($name, 10)));
+end
+
+rule "Validation.Stat.Floor"
+    when
+        Stat($name:name, value < 0, $value : value)
+    then
+        insertLogical(new Violation("Negative stat value: " + $name + " = " + $value));
+end
+
