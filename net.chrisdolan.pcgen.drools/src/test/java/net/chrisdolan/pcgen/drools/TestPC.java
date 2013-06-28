@@ -15,6 +15,9 @@ import org.junit.Test;
 
 
 public class TestPC {
+    static {
+        Engine.setUseCache(false);
+    }
 
     @Test
     public void testMonkLevel1() throws DroolsParserException, IOException {

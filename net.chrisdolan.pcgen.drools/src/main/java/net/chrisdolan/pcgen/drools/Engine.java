@@ -51,8 +51,18 @@ public class Engine {
     private KnowledgeBase kbase;
     private Ruleset rs;
     private static final Ruleset.Reader rulesetReader = new XStreamRulesetReader();
-    private static final int cacheLimit = 20;
 
+    private static int cacheLimit = 20;
+    private static boolean useCache = true;
+
+    public static void setCacheLimit(int cacheLimit) {
+        Engine.cacheLimit = cacheLimit;
+    }
+    public static void setUseCache(boolean useCache) {
+        Engine.useCache = useCache;
+    }
+
+    
     private static class EngineSession implements Session {
         private StatefulKnowledgeSession ksession;
 
@@ -204,11 +214,17 @@ public class Engine {
     public Engine(Ruleset rs) throws IOException, DroolsParserException {
         this.rs = rs;
 
-//        Ruleset flattened = rulesetReader.flatten(rs);
-        Ruleset flattened = rulesetReader.inline(rs);
+        Ruleset flattened;
+        Collection<KnowledgePackage> kpkgs = null;
+        String rsHash = null;
+        if (useCache) {
+            flattened = rulesetReader.inline(rs);
+            rsHash = cacheHash(flattened);
+            kpkgs = cacheRead(rsHash);
+        } else {
+            flattened = rulesetReader.flatten(rs);
+        }
 
-        String rsHash = cacheHash(flattened);
-        Collection<KnowledgePackage> kpkgs = cacheRead(rsHash);
         if (null == kpkgs) {
 //        if (this.names.size() == 1 && this.names.get(0).endsWith(".ser")) {
 //            kpkgs = readSerializedRules(this.names.get(0));
@@ -232,7 +248,8 @@ public class Engine {
                 throw new DroolsParserException(kbuilder.getErrors().toString());
 
             kpkgs = kbuilder.getKnowledgePackages();
-            cacheWrite(rsHash, kpkgs);
+            if (useCache)
+                cacheWrite(rsHash, kpkgs);
         }
         //KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, getClass().getClassLoader());
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();

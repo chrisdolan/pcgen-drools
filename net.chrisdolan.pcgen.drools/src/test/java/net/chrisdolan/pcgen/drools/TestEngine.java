@@ -17,6 +17,9 @@ import org.junit.Test;
 
 public class TestEngine {
     private static final String[] RULESETS = {"pathfinder", "test_pathfinder"};
+    static {
+        Engine.setUseCache(false);
+    }
 
     /**
      * Fires up an empty engine and just prints all of the injected facts. This
