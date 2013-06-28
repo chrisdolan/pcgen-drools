@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -21,7 +22,9 @@ public class Ruleset {
 
     public interface Reader {
         Ruleset read(URI url) throws IOException;
+        void write(Ruleset rs, Writer w) throws IOException;
         Ruleset flatten(Ruleset rs) throws IOException;
+        Ruleset inline(Ruleset rs) throws IOException;
     }
 
     @XStreamOmitField
@@ -243,20 +246,21 @@ public class Ruleset {
             sb.append(" ]");
             return sb.toString();
         }
-        private String hash(String s) {
-            try {
-                byte[] digest = MessageDigest.getInstance("MD5").digest(s.getBytes(Charset.forName("UTF-8")));
-                StringBuilder sb = new StringBuilder();
-                for (byte b : digest) {
-                    String hexString = Integer.toHexString(b);
-                    if (hexString.length() == 1)
-                        sb.append('0');
-                    sb.append(hexString);
-                }
-                return sb.toString();
-            } catch (NoSuchAlgorithmException e) {
-                return s;
-            } 
-        }
+    }
+
+    public static String hash(String s) {
+        try {
+            byte[] digest = MessageDigest.getInstance("MD5").digest(s.getBytes(Charset.forName("UTF-8")));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                String hexString = Integer.toHexString(b & 0xff);
+                if (hexString.length() == 1)
+                    sb.append('0');
+                sb.append(hexString);
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return s;
+        } 
     }
 }

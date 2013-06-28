@@ -16,8 +16,26 @@ rule "Class.Init"
     when
     then
         insertLogical(new StackRule("BAB", "ClassLevel", "Sum"));
+        insertLogical(new ClassName("Barbarian"));
+        insertLogical(new ClassName("Bard"));
+        insertLogical(new ClassName("Cleric"));
+        insertLogical(new ClassName("Druid"));
+        insertLogical(new ClassName("Fighter"));
+        insertLogical(new ClassName("Monk"));
+        insertLogical(new ClassName("Paladin"));
+        insertLogical(new ClassName("Ranger"));
+        insertLogical(new ClassName("Rogue"));
+        insertLogical(new ClassName("Sorcerer"));
+        insertLogical(new ClassName("Wizard"));
 end
 
+declare ClassName
+    name : String
+end
+declare ArchetypeName
+    classname : String
+    name : String
+end
 declare Archetype
     classname : String
     name : String
@@ -109,4 +127,21 @@ rule "Class.Save.Progression.Slow"
         SaveProgression(classname == $class, $save:save, type == "Slow")
     then
         insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel"+$class, $v/3));
+end
+
+
+rule "Validation.Class.Unknown"
+    when
+        Input(type == "ClassLevel", $classname:subtype, value > 0)
+        not ClassName(name == $classname)
+    then
+        insertLogical(new Violation("Unknown class " + $classname));
+end
+
+rule "Validation.Archetype.Unknown"
+    when
+        Archetype($classname:classname, $name:name, name != "Base")
+        not ArchetypeName(classname == $classname, name == $name)
+    then
+        insertLogical(new Violation("Unknown archetype " + $classname + ", " + $name));
 end

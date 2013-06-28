@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Fighter.Init"
     when
     then
+        insertLogical(new ClassName("Fighter"));
         insertLogical(new MaxClassLevel("Fighter", 20));
         insertLogical(new HitDie("Fighter", 10));
         insertLogical(new BABProgression("Fighter", "Fast"));

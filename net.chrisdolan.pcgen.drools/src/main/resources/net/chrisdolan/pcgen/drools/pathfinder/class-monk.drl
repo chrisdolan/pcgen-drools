@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Monk.Init"
     when
     then
+        insertLogical(new ClassName("Monk"));
         insertLogical(new MaxClassLevel("Monk", 20));
         insertLogical(new HitDie("Monk", 8));
         insertLogical(new BABProgression("Monk", "Medium"));
@@ -33,80 +34,53 @@ rule "Class.Monk.Ability.AC.Wis"
 end
 rule "Class.Monk.Ability.Base"
     when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
+        Input(type == "ClassLevel", subtype == "Monk", $classname : subtype, value > 0, $lvl : value)
     then
-        insertLogical(new AbilityGrant(new Ability("StunningFist")));
-        insertLogical(new AbilityGrant(new Ability("FlurryOfBlows")));
-        insertLogical(new AbilityGrant(new Ability("ImprovedUnarmedStrike")));
+        insertLogical(new AbilityGrant(new Ability("StunningFist"), $classname));
+        insertLogical(new AbilityGrant(new Ability("FlurryOfBlows"), $classname));
+        insertLogical(new AbilityGrant(new Ability("ImprovedUnarmedStrike"), $classname));
         if ($lvl >= 2) {
-            insertLogical(new AbilityGrant(new Ability("Evasion")));
+            insertLogical(new AbilityGrant(new Ability("Evasion"), $classname));
         }
         if ($lvl >= 3) {
-            insertLogical(new AbilityGrant(new Ability("Monk.FastMovement")));
-            insertLogical(new AbilityGrant(new Ability("Monk.ManeuverTraining")));
-            insertLogical(new AbilityGrant(new Ability("Monk.StillMind")));
+            insertLogical(new AbilityGrant(new Ability("Monk.FastMovement"), $classname));
+            insertLogical(new AbilityGrant(new Ability("Monk.ManeuverTraining"), $classname));
+            insertLogical(new AbilityGrant(new Ability("Monk.StillMind"), $classname));
         }
         if ($lvl >= 4) {
-            insertLogical(new AbilityGrant(new Ability("Monk.SlowFall")));
+            insertLogical(new AbilityGrant(new Ability("Monk.SlowFall"), $classname));
         }
         if ($lvl >= 5) {
-            insertLogical(new AbilityGrant(new Ability("Monk.HighJump")));
-            insertLogical(new AbilityGrant(new Ability("Monk.PurityOfBody")));
+            insertLogical(new AbilityGrant(new Ability("Monk.HighJump"), $classname));
+            insertLogical(new AbilityGrant(new Ability("Monk.PurityOfBody"), $classname));
         }
         if ($lvl >= 7) {
-            insertLogical(new AbilityGrant(new Ability("Monk.WholenessOfBody")));
+            insertLogical(new AbilityGrant(new Ability("Monk.WholenessOfBody"), $classname));
         }
         if ($lvl >= 9) {
-            insertLogical(new AbilityGrant(new Ability("ImprovedEvasion")));
+            insertLogical(new AbilityGrant(new Ability("ImprovedEvasion"), $classname));
         }
         if ($lvl >= 11) {
-            insertLogical(new AbilityGrant(new Ability("Monk.DiamondBody")));
+            insertLogical(new AbilityGrant(new Ability("Monk.DiamondBody"), $classname));
         }
         if ($lvl >= 12) {
-            insertLogical(new AbilityGrant(new Ability("Monk.AbundantStep")));
+            insertLogical(new AbilityGrant(new Ability("Monk.AbundantStep"), $classname));
         }
         if ($lvl >= 13) {
-            insertLogical(new AbilityGrant(new Ability("Monk.DiamondSoul")));
+            insertLogical(new AbilityGrant(new Ability("Monk.DiamondSoul"), $classname));
         }
         if ($lvl >= 15) {
-            insertLogical(new AbilityGrant(new Ability("Monk.QuiveringPalm")));
+            insertLogical(new AbilityGrant(new Ability("Monk.QuiveringPalm"), $classname));
         }
         if ($lvl >= 17) {
-            insertLogical(new AbilityGrant(new Ability("Monk.TimelessBody")));
-            insertLogical(new AbilityGrant(new Ability("Monk.TongueOfTheSunAndMoon")));
+            insertLogical(new AbilityGrant(new Ability("Monk.TimelessBody"), $classname));
+            insertLogical(new AbilityGrant(new Ability("Monk.TongueOfTheSunAndMoon"), $classname));
         }
         if ($lvl >= 19) {
-            insertLogical(new AbilityGrant(new Ability("Monk.EmptyBody")));
+            insertLogical(new AbilityGrant(new Ability("Monk.EmptyBody"), $classname));
         }
         if ($lvl >= 20) {
-            insertLogical(new AbilityGrant(new Ability("Monk.PerfectSelf")));
-        }
-end
-
-// TODO: more than one AbilityReplacement of the same ability is an archetype conflict
-
-rule "Archetype.Monk.Ability.HungryGhost"
-    when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
-        Archetype(classname == "Monk", name == "HungryGhost")
-    then
-        insertLogical(new AbilityGrant(new Ability("PunishingKick")));
-        insertLogical(new AbilityReplacement(new Ability("StunningFist")));
-        if ($lvl >= 5) {
-            insertLogical(new AbilityGrant(new Ability("Monk.StealKi")));
-            insertLogical(new AbilityReplacement(new Ability("Monk.PurityOfBody")));
-        }
-        if ($lvl >= 7) {
-            insertLogical(new AbilityGrant(new Ability("Monk.LifeFunnel")));
-            insertLogical(new AbilityReplacement(new Ability("Monk.WholenessOfBody")));
-        }
-        if ($lvl >= 11) {
-            insertLogical(new AbilityGrant(new Ability("Monk.LifeFromAStone")));
-            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondBody")));
-        }
-        if ($lvl >= 13) {
-            insertLogical(new AbilityGrant(new Ability("Monk.SippingDemon")));
-            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondSoul")));
+            insertLogical(new AbilityGrant(new Ability("Monk.PerfectSelf"), $classname));
         }
 end
 

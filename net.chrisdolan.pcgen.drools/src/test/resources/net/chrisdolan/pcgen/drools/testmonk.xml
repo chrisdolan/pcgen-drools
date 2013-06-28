@@ -1,6 +1,6 @@
 <pc xmlns="http://chrisdolan.net/pcgen/drools/input">
 
-    <ruleset name="pathfinder"/>
+    <ruleset name="pathfinder-advancedplayersguide"/>
     <ruleset>
         <rule type="DRL">
             // add an example custom rule

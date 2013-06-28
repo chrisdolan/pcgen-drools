@@ -13,9 +13,11 @@ declare Ability
 end
 declare AbilityGrant
     ability : Ability
+    source : Object
 end
 declare AbilityReplacement
     ability : Ability
+    source : Object
 end
 
 rule "Ability.UserInput"
@@ -45,3 +47,12 @@ rule "Ability.Grant"
     then
         insertLogical($ability);
 end
+
+rule "Validation.AbilityReplacement.Conflict"
+    when
+        $r1:AbilityReplacement($n:ability.name)
+        $r2:AbilityReplacement($n == ability.name, this != $r1, this.hashCode > $r1.hashCode)
+    then
+        insertLogical(new ConflictViolation("Two rules both tried to remove ability " + $n, new Object[]{$r1,$r2}));
+end
+

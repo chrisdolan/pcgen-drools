@@ -1,0 +1,13 @@
+package net.chrisdolan.pcgen.drools.pathfinder.advancedplayersguide;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+import net.chrisdolan.pcgen.drools.pathfinder.*;
+
+rule "APG.Class.Summoner.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new ClassName("Summoner"));
+end

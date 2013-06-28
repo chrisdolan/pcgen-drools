@@ -17,15 +17,15 @@ end
 declare Violation
     description : String
 end
-
 declare MissingInputViolation extends Violation
     defaultvalue : Object
 end
-
 declare MissingPrereqViolation extends Violation
     violators : Object[]
 end
-
 declare ExcessInputViolation extends Violation
+    violators : Object[]
+end
+declare ConflictViolation extends Violation
     violators : Object[]
 end

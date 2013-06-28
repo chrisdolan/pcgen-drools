@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Druid.Init"
     when
     then
+        insertLogical(new ClassName("Druid"));
         insertLogical(new MaxClassLevel("Druid", 20));
         insertLogical(new HitDie("Druid", 8));
         insertLogical(new BABProgression("Druid", "Medium"));

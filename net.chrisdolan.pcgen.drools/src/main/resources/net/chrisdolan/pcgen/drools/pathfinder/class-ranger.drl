@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Ranger.Init"
     when
     then
+        insertLogical(new ClassName("Ranger"));
         insertLogical(new MaxClassLevel("Ranger", 20));
         insertLogical(new HitDie("Ranger", 10));
         insertLogical(new BABProgression("Ranger", "Fast"));

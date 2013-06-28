@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Paladin.Init"
     when
     then
+        insertLogical(new ClassName("Paladin"));
         insertLogical(new MaxClassLevel("Paladin", 20));
         insertLogical(new HitDie("Paladin", 10));
         insertLogical(new BABProgression("Paladin", "Fast"));

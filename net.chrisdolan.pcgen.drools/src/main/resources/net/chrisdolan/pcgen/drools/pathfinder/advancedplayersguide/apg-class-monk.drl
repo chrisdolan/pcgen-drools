@@ -1,0 +1,38 @@
+package net.chrisdolan.pcgen.drools.pathfinder.advancedplayersguide;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+import net.chrisdolan.pcgen.drools.pathfinder.*;
+
+rule "APG.Class.Monk.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new ArchetypeName("Monk", "HungryGhost"));
+end
+
+rule "APG.Archetype.Monk.Ability.HungryGhost"
+    when
+        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
+        $a : Archetype(classname == "Monk", name == "HungryGhost")
+    then
+        insertLogical(new AbilityGrant(new Ability("PunishingKick"), $a));
+        insertLogical(new AbilityReplacement(new Ability("StunningFist"), $a));
+        if ($lvl >= 5) {
+            insertLogical(new AbilityGrant(new Ability("Monk.StealKi"), $a));
+            insertLogical(new AbilityReplacement(new Ability("Monk.PurityOfBody"), $a));
+        }
+        if ($lvl >= 7) {
+            insertLogical(new AbilityGrant(new Ability("Monk.LifeFunnel"), $a));
+            insertLogical(new AbilityReplacement(new Ability("Monk.WholenessOfBody"), $a));
+        }
+        if ($lvl >= 11) {
+            insertLogical(new AbilityGrant(new Ability("Monk.LifeFromAStone"), $a));
+            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondBody"), $a));
+        }
+        if ($lvl >= 13) {
+            insertLogical(new AbilityGrant(new Ability("Monk.SippingDemon"), $a));
+            insertLogical(new AbilityReplacement(new Ability("Monk.DiamondSoul"), $a));
+        }
+end

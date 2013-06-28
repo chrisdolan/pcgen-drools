@@ -1,4 +1,4 @@
 <ruleset>
-    <ruleset name="pathfinder"/>
+    <ruleset name="pathfinder-advancedplayersguide"/>
     <rule name="pathfinder/test.drl" type="DRL"/>
 </ruleset>

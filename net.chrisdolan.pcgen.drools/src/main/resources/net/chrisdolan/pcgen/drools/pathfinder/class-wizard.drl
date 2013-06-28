@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Wizard.Init"
     when
     then
+        insertLogical(new ClassName("Wizard"));
         insertLogical(new MaxClassLevel("Wizard", 20));
         insertLogical(new HitDie("Wizard", 6));
         insertLogical(new BABProgression("Wizard", "Slow"));

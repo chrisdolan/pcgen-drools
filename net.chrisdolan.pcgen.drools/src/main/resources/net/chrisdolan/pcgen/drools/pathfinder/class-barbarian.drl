@@ -7,6 +7,7 @@ import net.chrisdolan.pcgen.drools.type.*;
 rule "Class.Barbarian.Init"
     when
     then
+        insertLogical(new ClassName("Barbarian"));
         insertLogical(new MaxClassLevel("Barbarian", 20));
         insertLogical(new HitDie("Barbarian", 12));
         insertLogical(new BABProgression("Barbarian", "Fast"));

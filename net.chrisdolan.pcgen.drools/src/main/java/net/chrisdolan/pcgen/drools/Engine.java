@@ -1,16 +1,28 @@
 package net.chrisdolan.pcgen.drools;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.chrisdolan.pcgen.drools.Ruleset.Rule;
 
@@ -38,7 +50,8 @@ import org.drools.runtime.rule.QueryResultsRow;
 public class Engine {
     private KnowledgeBase kbase;
     private Ruleset rs;
-    private final Ruleset.Reader rulesetReader = new XStreamRulesetReader();
+    private static final Ruleset.Reader rulesetReader = new XStreamRulesetReader();
+    private static final int cacheLimit = 20;
 
     private static class EngineSession implements Session {
         private StatefulKnowledgeSession ksession;
@@ -56,8 +69,6 @@ public class Engine {
 
         public void run() {
             ksession.fireAllRules();
-//            int nFired = ksession.fireAllRules();
-//            System.out.println("Fired " + nFired + " rules");
         }
 
         public QueryResults query(String queryname, Object... args) {
@@ -193,16 +204,19 @@ public class Engine {
     public Engine(Ruleset rs) throws IOException, DroolsParserException {
         this.rs = rs;
 
-        Collection<KnowledgePackage> kpkgs = null;
+//        Ruleset flattened = rulesetReader.flatten(rs);
+        Ruleset flattened = rulesetReader.inline(rs);
+
+        String rsHash = cacheHash(flattened);
+        Collection<KnowledgePackage> kpkgs = cacheRead(rsHash);
+        if (null == kpkgs) {
 //        if (this.names.size() == 1 && this.names.get(0).endsWith(".ser")) {
 //            kpkgs = readSerializedRules(this.names.get(0));
-        {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder batch = kbuilder.batch();
-            Ruleset flattened = rulesetReader.flatten(rs);
             for (Rule rule : flattened.getRules()) {
                 Resource r;
-                if (rule.getBody() != null && !rule.getBody().matches("\\s*")) {
+                if (rule.getBody() != null && !Pattern.matches("^\\s*$", rule.getBody())) {
                     r = new ReaderResource(new StringReader(rule.getBody()));
                 } else if (rule.getUri() == null) {
                     r = new ClassPathResource(rule.getName(), getClass());
@@ -218,6 +232,7 @@ public class Engine {
                 throw new DroolsParserException(kbuilder.getErrors().toString());
 
             kpkgs = kbuilder.getKnowledgePackages();
+            cacheWrite(rsHash, kpkgs);
         }
         //KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, getClass().getClassLoader());
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -226,36 +241,95 @@ public class Engine {
         kbase.addKnowledgePackages(kpkgs);
         System.out.println("Created engine for ruleset " + rs);
     }
+
+    private static String cacheHash(Ruleset ruleset) throws IOException {
+        StringWriter sw = new StringWriter();
+        rulesetReader.write(ruleset, sw);
+        return Ruleset.hash(sw.toString());
+    }
     
-//    private Collection<KnowledgePackage> readSerializedRules(String path) throws IOException {
-//        InputStream is = getClass().getResourceAsStream(path);
-//        try {
-//            ObjectInputStream ois = new ObjectInputStream(is);
-//            try {
-//                Object o = ois.readObject();
-//                if (!(o instanceof Collection))
-//                    throw new IOException("deserialization expected a Collection, got: " + o.getClass());
-//                @SuppressWarnings({ "rawtypes" })
-//                Collection c = (Collection)o;
-//                if (c.isEmpty())
-//                    throw new IOException("deserialization got an empty collection");
-//                Object item = c.iterator().next();
-//                if (!(item instanceof KnowledgePackage))
-//                    throw new IOException("deserialization expected a Collection of KnowledgePackage, got: " + item.getClass());
-//                @SuppressWarnings("unchecked")
-//                Collection<KnowledgePackage> ck = c;
-//                return ck;
-//            } catch (ClassNotFoundException e) {
-//                throw new IOException(e);
-//            } finally {
-//                ois.close();
-//            }
-//        } catch (RuntimeException e) {
-//            throw new IOException(e);
-//        } finally {
-//            is.close();
-//        }
-//    }
+    private static Collection<KnowledgePackage> cacheRead(String rsHash) {
+//        return null;
+        try {
+            File file = new File(getCacheDir(), rsHash + ".ser");
+            InputStream is = new FileInputStream(file);
+            try {
+                ObjectInputStream ois = new ObjectInputStream(is);
+                try {
+                    Object o = ois.readObject();
+                    if (!(o instanceof Collection))
+                        throw new IOException("deserialization expected a Collection, got: " + o.getClass());
+                    @SuppressWarnings({ "rawtypes" })
+                    Collection c = (Collection)o;
+                    if (c.isEmpty())
+                        throw new IOException("deserialization got an empty collection");
+                    Object item = c.iterator().next();
+                    if (!(item instanceof KnowledgePackage))
+                        throw new IOException("deserialization expected a Collection of KnowledgePackage, got: " + item.getClass());
+                    @SuppressWarnings("unchecked")
+                    Collection<KnowledgePackage> ck = c;
+                    return ck;
+                } catch (ClassNotFoundException e) {
+                    throw new IOException(e);
+                } finally {
+                    ois.close();
+                }
+            } catch (RuntimeException e) {
+                throw new IOException(e);
+            } finally {
+                is.close();
+            }
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private void cacheWrite(String rsHash, Collection<KnowledgePackage> kpkgs) throws IOException {
+        File cacheDir = getCacheDir();
+
+        if (cacheLimit > 0) {
+            File[] cachedFiles = cacheDir.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    return f.getName().endsWith(".ser");
+                }
+            });
+            if (cachedFiles.length >= cacheLimit) {
+                // need to trim oldest files from cache
+                Arrays.sort(cachedFiles, new Comparator<File>() {
+                    public int compare(File f1, File f2) {
+                        long m1 = f1.lastModified();
+                        long m2 = f2.lastModified();
+                        return m1 < m2 ? -1 : m2 > m1 ? 1 : 0;
+                    }
+                });
+                for (int i = 0; i < cachedFiles.length - cacheLimit; ++i)
+                    cachedFiles[i].delete();
+            }
+        }
+
+        File file = new File(cacheDir, rsHash + ".ser");
+        OutputStream os = new FileOutputStream(file);
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            try {
+                oos.writeObject(kpkgs);
+            } finally {
+                oos.close();
+            }
+        } catch (RuntimeException e) {
+            throw new IOException(e);
+        } finally {
+            os.close();
+        }
+    }
+
+    private static File getCacheDir() throws IOException {
+        File f = new File(System.getProperty("user.home"), ".pcgen-drools/cache");
+        f.mkdirs();
+        if (!f.exists())
+            throw new IOException("Failed to create cache dir");
+        return f;
+    }
 
     public static Session createSession(Ruleset rs) throws DroolsParserException, IOException {
         return getEngine(rs).createSession();

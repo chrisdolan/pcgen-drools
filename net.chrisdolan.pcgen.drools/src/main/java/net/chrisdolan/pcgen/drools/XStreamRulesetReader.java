@@ -1,15 +1,20 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.chrisdolan.pcgen.drools.Ruleset.Rule;
 
@@ -31,6 +36,16 @@ public class XStreamRulesetReader implements Ruleset.Reader {
             rs.setUri(uri);
             //rs = flatten(rs);
             return rs;
+        } catch (XStreamException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public void write(Ruleset rs, Writer w) throws IOException {
+        try {
+            XStream xstream = new XStream();
+            xstream.autodetectAnnotations(true);
+            xstream.toXML(rs, w);
         } catch (XStreamException e) {
             throw new IOException(e);
         }
@@ -90,5 +105,52 @@ public class XStreamRulesetReader implements Ruleset.Reader {
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
+    }
+
+    public Ruleset inline(Ruleset rs) throws IOException {
+            URI baseUri = rs.getUri();
+            Ruleset flattened = flatten(rs);
+            List<Rule> rulelist = new ArrayList<Rule>();
+            char[] buf = new char[4096];
+            StringBuilder sb = new StringBuilder(4096);
+            for (Rule rule : flattened.getRules()) {
+                final Rule r;
+                if (rule.getBody() != null && !Pattern.matches("^\\s*$", rule.getBody())) {
+                    r = rule;
+                } else {
+                    final URL url;
+                    if (rule.getUri() == null) {
+                        url = getClass().getResource(rule.getName());
+                    } else if (rule.getUri().isAbsolute()) {
+                        url = rule.getUri().toURL();
+                    } else {
+                        url = getClass().getResource(rule.getUri().toString());
+                    }
+                    InputStream is = url.openStream();
+                    try {
+                        InputStreamReader reader = new InputStreamReader(is, Charset.forName("UTF-8"));
+                        try {
+                            sb.setLength(0);
+                            while (true) {
+                                int read = reader.read(buf);
+                                if (read < 0) break;
+                                sb.append(buf, 0, read);
+                            }
+                            r = new Rule();
+                            r.setBody(sb.toString());
+                            r.setType(rule.getType());
+                        } finally {
+                            reader.close();
+                        }
+                    } finally {
+                        is.close();
+                    }
+                }
+                rulelist.add(r);
+            }
+            Ruleset out = new Ruleset();
+            out.setUri(baseUri);
+            out.setRules(rulelist);
+            return out;
     }
 }

@@ -1,0 +1,12 @@
+<ruleset>
+    <ruleset name="pathfinder"/>
+
+    <rule name="pathfinder/advancedplayersguide/apg-class-alchemist.drl" type="DRL"/>
+    <rule name="pathfinder/advancedplayersguide/apg-class-cavalier.drl" type="DRL"/>
+    <rule name="pathfinder/advancedplayersguide/apg-class-inquisitor.drl" type="DRL"/>
+    <rule name="pathfinder/advancedplayersguide/apg-class-oracle.drl" type="DRL"/>
+    <rule name="pathfinder/advancedplayersguide/apg-class-summoner.drl" type="DRL"/>
+    <rule name="pathfinder/advancedplayersguide/apg-class-witch.drl" type="DRL"/>
+
+    <rule name="pathfinder/advancedplayersguide/apg-class-monk.drl" type="DRL"/>
+</ruleset>
