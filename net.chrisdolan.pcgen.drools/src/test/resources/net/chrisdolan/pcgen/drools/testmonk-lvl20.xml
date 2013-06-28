@@ -2,17 +2,17 @@
 
 	<ruleset name="test_pathfinder" />
 	<ruleset>
-		<rule type="DRL">
-			// add an example custom rule
-			package test; dialect "java"
-			import net.chrisdolan.pcgen.drools.pathfinder.*;
-			rule "DarkFear"
-			when Ability(name=="Trait.DarkFear")
-			then
-			insertLogical(new Ability("LowLightVision"));
-			insertLogical(new Language("Undercommon"));
-			end
-		</rule>
+        <rule type="DRL">
+            // add an example custom rule
+            package test; dialect "java"
+            import net.chrisdolan.pcgen.drools.pathfinder.*;
+            rule "DarkFear"
+              when Ability(name=="Trait.DarkFear")
+              then
+                insertLogical(new Ability("LowLightVision"));
+                insertLogical(new Language("Undercommon"));
+            end
+        </rule>
 	</ruleset>
 
 	<input>
