@@ -6,6 +6,7 @@ import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.LevelInput;
 import net.chrisdolan.pcgen.drools.input.RaceInput;
+import net.chrisdolan.pcgen.drools.input.SkillInput;
 import net.chrisdolan.pcgen.drools.input.StatInput;
 import net.chrisdolan.pcgen.drools.test.PCAssert;
 import net.chrisdolan.pcgen.drools.test.SpecialTestInput;
@@ -43,6 +44,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 14);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 12);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -53,6 +55,7 @@ public class TestEngine {
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 12);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -65,6 +68,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 15);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 13);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -74,6 +78,7 @@ public class TestEngine {
         session.insert(new StatInput(StatInput.DEX, 18));
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 14);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -101,6 +106,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 17);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 17);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -112,6 +118,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 11);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 11);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -123,6 +130,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 6);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 6);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -135,6 +143,7 @@ public class TestEngine {
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 8);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_TOUCH, 5);
+        PCAssert.assertConditions(session, ConditionInput.TYPE_HELPLESS); // just the one
         session.destroy();
     }
 
@@ -149,6 +158,7 @@ public class TestEngine {
         PCAssert.assertAc(session, ArmorClass.ACTYPE_MELEE_TOUCH, 6);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_RANGE, 14);
         PCAssert.assertAc(session, ArmorClass.ACTYPE_RANGE_TOUCH, 14);
+        PCAssert.assertConditions(session, ConditionInput.TYPE_PRONE); // just the one
         session.destroy();
     }
 
@@ -178,6 +188,7 @@ public class TestEngine {
         session.insert(lastSize = new SpecialTestInput("Size", "Small", 1));
         session.run();
         PCAssert.assertAc(session, ArmorClass.ACTYPE_NORMAL, 11);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -251,6 +262,7 @@ public class TestEngine {
         session.insert(ability = new StatInput(StatInput.DEX, 64));
         session.run();
         PCAssert.assertInitiative(session, 27);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 
@@ -274,7 +286,7 @@ public class TestEngine {
         session.insert(last = new TestInput("ClassLevel", "Monk", 20));
         session.run();
         PCAssert.assertSaves(session, 14, 13, 11);
-        session.insert(new ConditionInput("Shaken"));
+        session.insert(new ConditionInput(ConditionInput.TYPE_SHAKEN));
         session.run();
         PCAssert.assertSaves(session, 12, 11, 9);
         session.insert(last = new TestInput("ClassLevel", "Fighter", 1));
@@ -284,6 +296,7 @@ public class TestEngine {
         session.insert(last = new TestInput("ClassLevel", "Fighter", 20));
         session.run();
         PCAssert.assertSaves(session, 24, 17, 15);
+        PCAssert.assertConditions(session, ConditionInput.TYPE_SHAKEN); // just the one
         session.destroy();
     }
 
@@ -341,6 +354,22 @@ public class TestEngine {
         PCAssert.assertBABFirst(session, 35);
         PCAssert.assertCMB(session, "Grapple", 44); // would be -6 STR for age => -3 CMB, except TimelessBody => +0
         PCAssert.assertCMD(session, "Grapple", 56); // would be -6 STR, -6 DEX, +3 WIS for age => net -5 CMD, except TimelessBody => +1
+        PCAssert.assertConditions(session, "Age.Venerable"); // just the one
+        session.destroy();
+    }
+
+    @Test
+    public void testSkills() throws DroolsParserException, IOException {
+        Session session = Engine.createSession(RULESETS);
+        session.insert(new TestInput("ClassLevel", "Rogue", 1));
+        session.insert(new SkillInput("Stealth", null, 1, "Rogue"));
+        session.run();
+        PCAssert.assertSkill(session, "Stealth", 4);
+        session.insert(new TestInput("Weight", "PC", 90));
+        session.run();
+        PCAssert.assertSkill(session, "Stealth", -2);
+        session.dump(System.out);
+        PCAssert.assertConditions(session); // none
         session.destroy();
     }
 

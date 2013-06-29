@@ -22,6 +22,7 @@ declare SkillType
     name : String
     stat : String
     untrained : boolean
+    armorcheck : boolean
 end
 declare ClassSkill
     classname : String
@@ -39,42 +40,49 @@ rule "Skills.Init"
     salience 1000
     when
     then
-        insertLogical(new SkillType("Acrobatics", StatInput.DEX, true));
-        insertLogical(new SkillType("Acrobatics.Jump", StatInput.DEX, true));
-        insertLogical(new SkillType("Appraise", StatInput.INT, true));
-        insertLogical(new SkillType("Bluff", StatInput.CHA, true));
-        insertLogical(new SkillType("Climb", StatInput.STR, true));
-        insertLogical(new SkillType("Craft", StatInput.INT, true));
-        insertLogical(new SkillType("Diplomacy", StatInput.CHA, true));
-        insertLogical(new SkillType("DisableDevice", StatInput.DEX, false));
-        insertLogical(new SkillType("Disguise", StatInput.CHA, true));
-        insertLogical(new SkillType("EscapeArtist", StatInput.DEX, true));
-        insertLogical(new SkillType("Fly", StatInput.DEX, true));
-        insertLogical(new SkillType("HandleAnimal", StatInput.CHA, false));
-        insertLogical(new SkillType("Heal", StatInput.WIS, true));
-        insertLogical(new SkillType("Intimidate", StatInput.CHA, true));
-        insertLogical(new SkillType("Knowledge.Arcana", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Dungeoneering", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Engineering", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Geography", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.History", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Local", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Nature", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Nobility", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Planes", StatInput.INT, false));
-        insertLogical(new SkillType("Knowledge.Religion", StatInput.INT, false));
-        insertLogical(new SkillType("Linguistics", StatInput.INT, true));
-        insertLogical(new SkillType("Perception", StatInput.WIS, true));
-        insertLogical(new SkillType("Perform", StatInput.CHA, true));
-        insertLogical(new SkillType("Profession", StatInput.WIS, false));
-        insertLogical(new SkillType("Ride", StatInput.DEX, true));
-        insertLogical(new SkillType("SenseMotive", StatInput.WIS, true));
-        insertLogical(new SkillType("SleightOfHand", StatInput.DEX, false));
-        insertLogical(new SkillType("Spellcraft", StatInput.INT, false));
-        insertLogical(new SkillType("Stealth", StatInput.DEX, true));
-        insertLogical(new SkillType("Survival", StatInput.WIS, true));
-        insertLogical(new SkillType("Swim", StatInput.STR, true));
-        insertLogical(new SkillType("UseMagicDevice", StatInput.CHA, false));
+        insertLogical(new SkillType("Acrobatics", StatInput.DEX, true, true));
+        insertLogical(new SkillType("Acrobatics.Jump", StatInput.DEX, true, true));
+        insertLogical(new SkillType("Appraise", StatInput.INT, true, false));
+        insertLogical(new SkillType("Bluff", StatInput.CHA, true, false));
+        insertLogical(new SkillType("Climb", StatInput.STR, true, true));
+        insertLogical(new SkillType("Craft", StatInput.INT, true, false));
+        insertLogical(new SkillType("Diplomacy", StatInput.CHA, true, false));
+        insertLogical(new SkillType("DisableDevice", StatInput.DEX, false, true));
+        insertLogical(new SkillType("Disguise", StatInput.CHA, true, false));
+        insertLogical(new SkillType("EscapeArtist", StatInput.DEX, true, true));
+        insertLogical(new SkillType("Fly", StatInput.DEX, true, true));
+        insertLogical(new SkillType("HandleAnimal", StatInput.CHA, false, false));
+        insertLogical(new SkillType("Heal", StatInput.WIS, true, false));
+        insertLogical(new SkillType("Intimidate", StatInput.CHA, true, false));
+        insertLogical(new SkillType("Knowledge.Arcana", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Dungeoneering", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Engineering", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Geography", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.History", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Local", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Nature", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Nobility", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Planes", StatInput.INT, false, false));
+        insertLogical(new SkillType("Knowledge.Religion", StatInput.INT, false, false));
+        insertLogical(new SkillType("Linguistics", StatInput.INT, true, false));
+        insertLogical(new SkillType("Perception", StatInput.WIS, true, false));
+        insertLogical(new SkillType("Perform", StatInput.CHA, true, false));
+        insertLogical(new SkillType("Profession", StatInput.WIS, false, false));
+        insertLogical(new SkillType("Ride", StatInput.DEX, true, true));
+        insertLogical(new SkillType("SenseMotive", StatInput.WIS, true, false));
+        insertLogical(new SkillType("SleightOfHand", StatInput.DEX, false, true));
+        insertLogical(new SkillType("Spellcraft", StatInput.INT, false, false));
+        insertLogical(new SkillType("Stealth", StatInput.DEX, true, true));
+        insertLogical(new SkillType("Survival", StatInput.WIS, true, false));
+        insertLogical(new SkillType("Swim", StatInput.STR, true, true));
+        insertLogical(new SkillType("UseMagicDevice", StatInput.CHA, false, false));
+end
+
+rule "Skills.UserInput"
+    when
+        SkillInput($t:name, $st:category, $r:ranks, $classname:classname)
+    then
+        insertLogical(new SkillRanks($t + ($st == null ? "" : "." + $st), $t, $st, $r, $classname));
 end
 
 rule "Skills.Ranks"
@@ -95,9 +103,9 @@ rule "Skills.InventedSubtypes"
     when
         $newskills : Set() from accumulate(
             SkillRanks(subtype != null, type in ("Craft", "Profession", "Perform" ), $skill:name, $t:type)
-            and SkillType($t == name, $stat:stat, $untrained:untrained)
+            and SkillType($t == name, $stat:stat, $untrained:untrained, $armorcheck:armorcheck)
             and $cs : (List() from collect( ClassSkill($t== name) )),
-            collectSet( new _NewSkill( new SkillType($skill, $stat, $untrained), $cs ) )
+            collectSet( new _NewSkill( new SkillType($skill, $stat, $untrained, $armorcheck), $cs ) )
             )
     then
         for (Object o : $newskills) {
@@ -135,12 +143,33 @@ rule "Skills.TrainedClassSkill"
         not(not SkillRanks($skill == name, $class == classname))
         ClassSkill($class == classname, $skill == name)
     then
-        insertLogical(new Input("SkillBonus."+$skill, "Trained", 3)); // this should stack properly as Max
+        insertLogical(new Input("SkillBonus."+$skill, "Trained", 3)); // default stack of Max
+end
+
+rule "Skills.ArmorCheckPenalty"
+    when
+        ArmorCheckPenalty(value != 0, $v:value)
+        SkillType($skill:name, armorcheck == true)
+    then
+        insertLogical(new Input("SkillBonus."+$skill, "ArmorCheck", $v)); // should stack as Min, but there's just the one so don't bother...
 end
 
 rule "Skills.Total.Untrained"
     when
         SkillType($skill:name, true == untrained)
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "SkillBonus."+$skill),
+            sum($v)
+        )
+    then
+        insertLogical(new SkillBonus($skill, $sum));
+end
+
+rule "Skills.Total.Trained"
+    when
+        
+        SkillType($skill:name, false == untrained)
+        not(not SkillRanks($skill == name))
         Number($sum : intValue) from accumulate(
             Stack($v:value, type == "SkillBonus."+$skill),
             sum($v)

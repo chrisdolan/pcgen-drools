@@ -19,6 +19,9 @@ declare LoadLimit
     medium : int
     heavy : int
 end
+declare ArmorCheckPenalty
+    value : int
+end
 
 rule "Initialize.EncumbranceTable"
     salience 1000
@@ -118,4 +121,14 @@ rule "Encumbrance.Overloaded"
     then
         insertLogical(new Condition("NoDexAC"));
         insertLogical(new Input("Override", "Speed", 5));
+end
+
+rule "Encumbrance.ArmorCheckPenalty.Total"
+    when
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "ArmorCheck"),
+            sum($v)
+        )
+    then
+        insertLogical(new ArmorCheckPenalty($sum));
 end

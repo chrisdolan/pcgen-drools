@@ -17,17 +17,25 @@ public class SkillInput {
     @XStreamAsAttribute
     private int ranks;
 
+    private transient String classname; // populated from enclosing LevelInput
+
     public SkillInput() {
     }
     public SkillInput(String name, int ranks) {
         this.name = name;
-        this.category = null;
         this.ranks = ranks;
     }
     public SkillInput(String name, String category, int ranks) {
         this.name = name;
         this.category = category;
         this.ranks = ranks;
+    }
+
+    public SkillInput(String name, String category, int ranks, String classname) {
+        this.name = name;
+        this.category = category;
+        this.ranks = ranks;
+        this.classname = classname;
     }
 
     public String getName() {
@@ -47,6 +55,13 @@ public class SkillInput {
     }
     public void setRanks(int ranks) {
         this.ranks = ranks;
+    }
+
+    public String getClassname() {
+        return classname;
+    }
+    public void setClassname(String classname) {
+        this.classname = classname;
     }
 
     public String toString() {

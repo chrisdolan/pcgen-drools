@@ -131,6 +131,7 @@ rule "Hitpoints.Lethal.Dying"
 end
 rule "Hitpoints.Lethal.Disabled"
     when
+        Hitpoints(value > 0) // keeps this rule from firing in tests where PC has no HP. Harmless for real PCs
         CurrentHitpoints(type == "Lethal", value == 0)
     then
         insertLogical(new Condition(ConditionInput.TYPE_DISABLED));

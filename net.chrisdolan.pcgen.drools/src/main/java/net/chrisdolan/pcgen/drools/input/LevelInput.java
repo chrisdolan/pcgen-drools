@@ -101,4 +101,12 @@ public class LevelInput {
     public String toString() {
         return "Level[PC-" + ordinal + "/" + classname + "-" + classOrdinal + "]";
     }
+
+    private Object readResolve() {
+        if (skills != null) {
+            for (SkillInput s : skills)
+                s.setClassname(classname);
+        }
+        return this;
+    }
 }
