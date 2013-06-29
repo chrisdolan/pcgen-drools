@@ -58,6 +58,26 @@ public class TestPC {
         PCAssert.assertPCLevel(session, 1);
         PCAssert.assertRace(session, "Human");
         PCAssert.assertSaves(session, 3, 4, 4); // fort, refl, will
+        PCAssert.assertSkill(session, "Acrobatics", 6);
+        PCAssert.assertSkill(session, "Acrobatics.Jump", 2);
+        PCAssert.assertSkill(session, "Appraise", 0);
+        PCAssert.assertSkill(session, "Bluff", -1);
+        PCAssert.assertSkill(session, "Climb", 7);
+        PCAssert.assertSkill(session, "Craft", 0);
+        PCAssert.assertSkill(session, "Craft.UnderwaterBasketWeaving", 4);
+        PCAssert.assertSkill(session, "Diplomacy", -1);
+        PCAssert.assertSkill(session, "Disguise", -1);
+        PCAssert.assertSkill(session, "EscapeArtist", 6);
+        PCAssert.assertSkill(session, "Fly", 2);
+        PCAssert.assertSkill(session, "Heal", 2);
+        PCAssert.assertSkill(session, "Intimidate", -1);
+        PCAssert.assertSkill(session, "Perception", 2);
+        PCAssert.assertSkill(session, "Perform", -1);
+        PCAssert.assertSkill(session, "Ride", 2);
+        PCAssert.assertSkill(session, "SenseMotive", 7);
+        PCAssert.assertSkill(session, "Stealth", 2);
+        PCAssert.assertSkill(session, "Survival", 2);
+        PCAssert.assertSkill(session, "Swim", 3);
         PCAssert.assertSpeed(session, 30);
 
         // test DarkFear custom rule:

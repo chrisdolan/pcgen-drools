@@ -135,6 +135,11 @@ public class PCAssert {
         Assert.assertEquals(Collections.<String>emptyList(), got);
     }
 
+    public static void assertSkill(Session session, String name, int expected) {
+        int got = session.querySingle(Integer.class, "Query.Skills.SkillBonus", name);
+        Assert.assertEquals(expected, got);
+    }
+
     private static void assertInteger(Session session, String query, int expected) {
         int got = session.querySingle(Integer.class, query);
         Assert.assertEquals(expected, got);

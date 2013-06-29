@@ -53,14 +53,14 @@ rule "Class.Level.Total"
 end
 rule "Class.Archetype.UserInput"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0)
+        Input(type == "ClassLevel", $class:subtype)
         ArchetypeInput($class == classname, name != "Base", $name : name)
     then
         insertLogical(new Archetype($class, $name));
 end
 rule "Class.Archetype.Base"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0)
+        Input(type == "ClassLevel", $class:subtype)
         //not ArchetypeInput($class == classname, name != "Base")
     then
         insertLogical(new Archetype($class, "Base"));
@@ -94,21 +94,21 @@ end
 
 rule "Class.BAB.Progression.Fast"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        Input(type == "ClassLevel", $class:subtype, $v:value)
         BABProgression(classname == $class, type == "Fast")
     then
         insertLogical(new Input("BAB", "ClassLevel"+$class, $v));
 end
 rule "Class.BAB.Progression.Medium"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        Input(type == "ClassLevel", $class:subtype, $v:value)
         BABProgression(classname == $class, type == "Medium")
     then
         insertLogical(new Input("BAB", "ClassLevel"+$class, $v*3/4));
 end
 rule "Class.BAB.Progression.Slow"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        Input(type == "ClassLevel", $class:subtype, $v:value)
         BABProgression(classname == $class, type == "Slow")
     then
         insertLogical(new Input("BAB", "ClassLevel"+$class, $v/2));
@@ -116,14 +116,14 @@ end
 
 rule "Class.Save.Progression.Fast"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        Input(type == "ClassLevel", $class:subtype, $v:value)
         SaveProgression(classname == $class, $save:save, type == "Fast")
     then
         insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel"+$class, 2+$v/2));
 end
 rule "Class.Save.Progression.Slow"
     when
-        Input(type == "ClassLevel", $class:subtype, value > 0, $v:value)
+        Input(type == "ClassLevel", $class:subtype, $v:value)
         SaveProgression(classname == $class, $save:save, type == "Slow")
     then
         insertLogical(new Input(SavingThrow.TYPE + $save, "ClassLevel"+$class, $v/3));
@@ -132,7 +132,7 @@ end
 
 rule "Validation.Class.Unknown"
     when
-        Input(type == "ClassLevel", $classname:subtype, value > 0)
+        Input(type == "ClassLevel", $classname:subtype)
         not ClassName(name == $classname)
     then
         insertLogical(new Violation("Unknown class " + $classname));

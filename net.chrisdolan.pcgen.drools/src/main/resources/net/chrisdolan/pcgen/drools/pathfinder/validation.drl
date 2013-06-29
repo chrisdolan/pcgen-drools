@@ -17,6 +17,9 @@ end
 declare Violation
     description : String
 end
+declare InvalidInputViolation extends Violation
+    violators : Object[]
+end
 declare MissingInputViolation extends Violation
     defaultvalue : Object
 end

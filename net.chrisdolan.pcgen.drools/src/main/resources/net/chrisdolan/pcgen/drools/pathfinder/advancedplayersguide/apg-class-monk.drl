@@ -14,7 +14,7 @@ end
 
 rule "APG.Archetype.Monk.Ability.HungryGhost"
     when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0, $lvl : value)
+        Input(type == "ClassLevel", subtype == "Monk", $lvl : value)
         $a : Archetype(classname == "Monk", name == "HungryGhost")
     then
         insertLogical(new AbilityGrant(new Ability("PunishingKick"), $a));

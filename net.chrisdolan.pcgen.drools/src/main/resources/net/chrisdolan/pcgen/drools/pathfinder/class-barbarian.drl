@@ -5,6 +5,7 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "Class.Barbarian.Init"
+    salience 1000
     when
     then
         insertLogical(new ClassName("Barbarian"));

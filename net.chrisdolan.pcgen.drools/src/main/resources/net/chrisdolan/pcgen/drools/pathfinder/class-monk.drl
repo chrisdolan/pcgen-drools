@@ -5,6 +5,7 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "Class.Monk.Init"
+    salience 1000
     when
     then
         insertLogical(new ClassName("Monk"));
@@ -14,19 +15,34 @@ rule "Class.Monk.Init"
         insertLogical(new SaveProgression("Monk", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.WILL, "Fast"));
+        insertLogical(new ClassSkill("Monk", "Acrobatics"));
+        insertLogical(new ClassSkill("Monk", "Climb"));
+        insertLogical(new ClassSkill("Monk", "Craft"));
+        insertLogical(new ClassSkill("Monk", "EscapeArtist"));
+        insertLogical(new ClassSkill("Monk", "Intimidate"));
+        insertLogical(new ClassSkill("Monk", "Knowledge.History"));
+        insertLogical(new ClassSkill("Monk", "Knowledge.Religion"));
+        insertLogical(new ClassSkill("Monk", "Perception"));
+        insertLogical(new ClassSkill("Monk", "Perform"));
+        insertLogical(new ClassSkill("Monk", "Profession"));
+        insertLogical(new ClassSkill("Monk", "Ride"));
+        insertLogical(new ClassSkill("Monk", "SenseMotive"));
+        insertLogical(new ClassSkill("Monk", "Stealth"));
+        insertLogical(new ClassSkill("Monk", "Swim"));
+        
 end
 
 
 rule "Class.Monk.Ability.AC.level"
     when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0, $v:value)
+        Input(type == "ClassLevel", subtype == "Monk", $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v > 20 ? 5 : $v/4));
         insertLogical(new Input("CMD", "Other", $v > 20 ? 5 : $v/4));
 end
 rule "Class.Monk.Ability.AC.Wis"
     when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0)
+        Input(type == "ClassLevel", subtype == "Monk")
         StatBonus(name == StatInput.WIS, $v:value)
     then
         insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_OTHER, $v));
@@ -34,7 +50,7 @@ rule "Class.Monk.Ability.AC.Wis"
 end
 rule "Class.Monk.Ability.Base"
     when
-        Input(type == "ClassLevel", subtype == "Monk", $classname : subtype, value > 0, $lvl : value)
+        Input(type == "ClassLevel", subtype == "Monk", $classname : subtype, $lvl : value)
     then
         insertLogical(new AbilityGrant(new Ability("StunningFist"), $classname));
         insertLogical(new AbilityGrant(new Ability("FlurryOfBlows"), $classname));
@@ -121,7 +137,7 @@ end
 
 rule "Validation.Monk"
     when
-        Input(type == "ClassLevel", subtype == "Monk", value > 0)
+        Input(type == "ClassLevel", subtype == "Monk")
         $alignment : Alignment(!name.startsWith("Lawful"))
     then
         insertLogical(new MissingPrereqViolation("Monks must be Lawful", new Object[]{$alignment}));

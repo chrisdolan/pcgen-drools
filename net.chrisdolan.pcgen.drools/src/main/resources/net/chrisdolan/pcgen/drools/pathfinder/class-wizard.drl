@@ -5,6 +5,7 @@ import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
 rule "Class.Wizard.Init"
+    salience 1000
     when
     then
         insertLogical(new ClassName("Wizard"));

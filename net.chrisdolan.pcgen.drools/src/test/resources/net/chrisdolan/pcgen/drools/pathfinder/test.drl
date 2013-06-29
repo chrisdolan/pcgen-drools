@@ -17,3 +17,12 @@ rule "Test.TestInput.Size"
     then
         insertLogical(new Size($st));
 end
+
+rule "Typo.ClassSkill"
+    when
+        $cs : ClassSkill($classname:classname,$skill:name)
+        (not ClassName($classname == name) or not SkillType(name == $skill))
+    then
+        throw new Exception(""+$cs);
+end
+ 

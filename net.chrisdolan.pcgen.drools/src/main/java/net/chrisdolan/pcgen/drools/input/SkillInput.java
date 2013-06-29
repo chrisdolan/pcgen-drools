@@ -9,6 +9,10 @@ public class SkillInput {
     @XStreamAsAttribute
     private String name;
 
+    @XStreamAlias("category")
+    @XStreamAsAttribute
+    private String category;
+
     @XStreamAlias("ranks")
     @XStreamAsAttribute
     private int ranks;
@@ -17,6 +21,12 @@ public class SkillInput {
     }
     public SkillInput(String name, int ranks) {
         this.name = name;
+        this.category = null;
+        this.ranks = ranks;
+    }
+    public SkillInput(String name, String category, int ranks) {
+        this.name = name;
+        this.category = category;
         this.ranks = ranks;
     }
 
@@ -26,6 +36,12 @@ public class SkillInput {
     public void setName(String name) {
         this.name = name;
     }
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
     public int getRanks() {
         return ranks;
     }
@@ -34,6 +50,6 @@ public class SkillInput {
     }
 
     public String toString() {
-        return "Skill[" + name + "=" + ranks + "]";
+        return "Skill[" + name + (category == null ? "" : "." + category) + "=" + ranks + "]";
     }
 }

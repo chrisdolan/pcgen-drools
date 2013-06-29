@@ -1,0 +1,176 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+import java.util.Set;
+
+// field naming convention: a skill "name" is a skill "type.subtype" or just "type" if subtype is null
+
+query "Query.Skills.SkillBonus" (String skillname)
+    SkillBonus(name == skillname, value : value)
+end
+
+declare SkillRanks
+    name : String
+    type : String
+    subtype : String
+    ranks : int
+    classname : String
+end
+declare SkillType
+    name : String
+    stat : String
+    untrained : boolean
+end
+declare ClassSkill
+    classname : String
+    name : String
+end
+declare SkillBonus
+    name : String
+    value : int
+end
+
+rule "Skills.Init"
+    salience 1000
+    when
+    then
+        insertLogical(new SkillType("Acrobatics", StatInput.DEX, true));
+        insertLogical(new SkillType("Acrobatics.Jump", StatInput.DEX, true));
+        insertLogical(new SkillType("Appraise", StatInput.INT, true));
+        insertLogical(new SkillType("Bluff", StatInput.CHA, true));
+        insertLogical(new SkillType("Climb", StatInput.STR, true));
+        insertLogical(new SkillType("Craft", StatInput.INT, true));
+        insertLogical(new SkillType("Diplomacy", StatInput.CHA, true));
+        insertLogical(new SkillType("DisableDevice", StatInput.DEX, false));
+        insertLogical(new SkillType("Disguise", StatInput.CHA, true));
+        insertLogical(new SkillType("EscapeArtist", StatInput.DEX, true));
+        insertLogical(new SkillType("Fly", StatInput.DEX, true));
+        insertLogical(new SkillType("HandleAnimal", StatInput.CHA, false));
+        insertLogical(new SkillType("Heal", StatInput.WIS, true));
+        insertLogical(new SkillType("Intimidate", StatInput.CHA, true));
+        insertLogical(new SkillType("Knowledge.Arcana", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Dungeoneering", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Engineering", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Geography", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.History", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Local", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Nature", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Nobility", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Planes", StatInput.INT, false));
+        insertLogical(new SkillType("Knowledge.Religion", StatInput.INT, false));
+        insertLogical(new SkillType("Linguistics", StatInput.INT, true));
+        insertLogical(new SkillType("Perception", StatInput.WIS, true));
+        insertLogical(new SkillType("Perform", StatInput.CHA, true));
+        insertLogical(new SkillType("Profession", StatInput.WIS, false));
+        insertLogical(new SkillType("Ride", StatInput.DEX, true));
+        insertLogical(new SkillType("SenseMotive", StatInput.WIS, true));
+        insertLogical(new SkillType("SleightOfHand", StatInput.DEX, false));
+        insertLogical(new SkillType("Spellcraft", StatInput.INT, false));
+        insertLogical(new SkillType("Stealth", StatInput.DEX, true));
+        insertLogical(new SkillType("Survival", StatInput.WIS, true));
+        insertLogical(new SkillType("Swim", StatInput.STR, true));
+        insertLogical(new SkillType("UseMagicDevice", StatInput.CHA, false));
+end
+
+rule "Skills.Ranks"
+    salience 2
+    when
+        SkillRanks($skill:name, $r:ranks)
+    then
+        insertLogical(new Input("SkillBonus."+$skill, "Ranks", $r));
+end
+
+declare _NewSkill // just a temporary object, never injected
+    skillType : SkillType
+    classSkill : List
+end
+rule "Skills.InventedSubtypes"
+    // This injects new Craft, Profession and Perform subtypes.
+    salience 1
+    when
+        $newskills : Set() from accumulate(
+            SkillRanks(subtype != null, type in ("Craft", "Profession", "Perform" ), $skill:name, $t:type)
+            and SkillType($t == name, $stat:stat, $untrained:untrained)
+            and $cs : (List() from collect( ClassSkill($t== name) )),
+            collectSet( new _NewSkill( new SkillType($skill, $stat, $untrained), $cs ) )
+            )
+    then
+        for (Object o : $newskills) {
+            _NewSkill n = (_NewSkill) o;
+            insertLogical(n.getSkillType());
+            List cs = n.getClassSkill();
+            for (Object cso : cs) {
+                ClassSkill clsk = (ClassSkill) cso;
+                insertLogical(new ClassSkill(clsk.getClassname(), n.getSkillType().getName()));
+            } 
+        }
+end
+
+rule "Skills.Ability.Untrained"
+    when
+        SkillType($skill:name, $stat:stat, true == untrained)
+        StatBonus($stat == name, $v:value)
+    then
+        insertLogical(new Input("SkillBonus."+$skill, "Stat", $v));
+end
+
+rule "Skills.Ability.Trained"
+    when
+        SkillType($skill:name, $stat:stat, false == untrained)
+        StatBonus($stat == name, $v:value)
+        Stack(type == ("SkillBonus."+$skill), subtype == "Ranks", $t:type)
+    then
+        insertLogical(new Input($t, "Stat", $v));
+end
+
+rule "Skills.TrainedClassSkill"
+    when
+        SkillType($skill:name)
+        Input("ClassLevel" == type, $class:subtype)
+        not(not SkillRanks($skill == name, $class == classname))
+        ClassSkill($class == classname, $skill == name)
+    then
+        insertLogical(new Input("SkillBonus."+$skill, "Trained", 3)); // this should stack properly as Max
+end
+
+rule "Skills.Total.Untrained"
+    when
+        SkillType($skill:name, true == untrained)
+        Number($sum : intValue) from accumulate(
+            Stack($v:value, type == "SkillBonus."+$skill),
+            sum($v)
+        )
+    then
+        insertLogical(new SkillBonus($skill, $sum));
+end
+
+rule "Validation.Skills.PositiveRanks"
+    when
+        $r : SkillRanks($skill:type, ranks <= 0) 
+    then
+        insertLogical(new InvalidInputViolation("Skill ranks must be a positive number: " + $skill, new Object[]{$r}));
+end
+
+rule "Validation.Skills.DisallowedSubtype"
+    when
+        $r : SkillRanks(subtype != null, type not in ( "Knowledge", "Craft", "Profession", "Perform" ), $skill:type) 
+    then
+        insertLogical(new InvalidInputViolation("Skill type does not allow subtypes: " + $skill, new Object[]{$r}));
+end
+
+rule "Validation.Skills.RequiredSubtype"
+    when
+        $r : SkillRanks(subtype == null, type in ( "Knowledge", "Craft", "Profession", "Perform" ), $skill:type) 
+    then
+        insertLogical(new InvalidInputViolation("Skill type requires a subtype: " + $skill, new Object[]{$r}));
+end
+
+rule "Validation.Skills.DisallowedKnowledgeSubtype"
+    when
+        $r : SkillRanks(type == "Knowledge", subtype != null, $st:subtype)
+        not SkillType(name == ("Knowledge." + $st))
+    then
+        insertLogical(new InvalidInputViolation("No such Knowledge subtype: " + $st, new Object[]{$r}));
+end

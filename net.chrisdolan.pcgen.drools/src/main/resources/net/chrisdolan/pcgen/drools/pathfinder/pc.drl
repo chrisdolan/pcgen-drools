@@ -60,7 +60,7 @@ rule "PC.Level.UserInput"
         if ($lvl.getHitpoints() != null)
             insertLogical($lvl.getHitpoints());
         for (SkillInput skill : $lvl.getSkills())
-             insertLogical(skill);
+             insertLogical(new SkillRanks(skill.getName() + (skill.getCategory() == null ? "" : "." + skill.getCategory()), skill.getName(), skill.getCategory(), skill.getRanks(), $lvl.getClassname()));
         if ($lvl.getFavoredClassBonus() != null)
              insertLogical($lvl.getFavoredClassBonus());
         for (FeatInput feat : $lvl.getFeats())

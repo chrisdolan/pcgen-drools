@@ -35,7 +35,8 @@ end
 rule "Stack.Max.Default"
     // this is complicated because without a singleton StackRule to key off, we need to somehow select just one Input.
     // I had to add the hashCode to tie-break between two Inputs with the same value. Before that, I had a bug
-    // that ties each added a Stack item 
+    // that ties each added a Stack item
+    // caveat: it's *possible* that two inputs could have the same hashcode and that would break this horribly by injecting two stacks, but it's very unlikely
     when
         $s : Input($t:type, $st:subtype, $v:value, $o:hashCode)
         not Input(type == $t, subtype == $st, value > $v || (value == $v && hashCode < $o))

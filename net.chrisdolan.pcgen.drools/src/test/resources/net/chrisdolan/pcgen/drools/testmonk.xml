@@ -46,7 +46,7 @@
             <skill ranks="1" name="Acrobatics"/>
             <skill ranks="1" name="Climb"/>
             <skill ranks="1" name="EscapeArtist"/>
-            <skill ranks="1" name="Perception"/>
+            <skill ranks="1" name="Craft" category="UnderwaterBasketWeaving"/>
             <skill ranks="1" name="SenseMotive"/>
             <favoredclassbonus name="Hitpoint"/>
             <feat source="class" name="CombatReflexes"/>

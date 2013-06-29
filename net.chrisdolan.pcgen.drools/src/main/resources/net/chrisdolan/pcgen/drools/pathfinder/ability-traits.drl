@@ -1,0 +1,12 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Trait.Suspicious"
+    when
+        Ability(name == "Trait.Suspicious")
+    then
+        insertLogical(new Input("SkillBonus.SenseMotive", "Trait", 1));
+end
