@@ -16,3 +16,22 @@ rule "Class.Cleric.Init"
         insertLogical(new SaveProgression("Cleric", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Cleric", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Cleric.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Cleric")
+    then
+        insertLogical(new ClassSkill("Cleric", "Appraise"));
+        insertLogical(new ClassSkill("Cleric", "Craft"));
+        insertLogical(new ClassSkill("Cleric", "Diplomacy"));
+        insertLogical(new ClassSkill("Cleric", "Heal"));
+        insertLogical(new ClassSkill("Cleric", "Knowledge.Arcana"));
+        insertLogical(new ClassSkill("Cleric", "Knowledge.History"));
+        insertLogical(new ClassSkill("Cleric", "Knowledge.Nobility"));
+        insertLogical(new ClassSkill("Cleric", "Knowledge.Planes"));
+        insertLogical(new ClassSkill("Cleric", "Knowledge.Religion"));
+        insertLogical(new ClassSkill("Cleric", "Linguistics"));
+        insertLogical(new ClassSkill("Cleric", "Profession"));
+        insertLogical(new ClassSkill("Cleric", "SenseMotive"));
+        insertLogical(new ClassSkill("Cleric", "Spellcraft"));
+end

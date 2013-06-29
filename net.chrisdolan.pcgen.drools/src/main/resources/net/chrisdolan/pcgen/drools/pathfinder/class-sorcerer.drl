@@ -16,3 +16,18 @@ rule "Class.Sorcerer.Init"
         insertLogical(new SaveProgression("Sorcerer", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Sorcerer", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Sorcerer.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Sorcerer")
+    then
+        insertLogical(new ClassSkill("Sorcerer", "Appraise"));
+        insertLogical(new ClassSkill("Sorcerer", "Bluff"));
+        insertLogical(new ClassSkill("Sorcerer", "Craft"));
+        insertLogical(new ClassSkill("Sorcerer", "Fly"));
+        insertLogical(new ClassSkill("Sorcerer", "Intimidate"));
+        insertLogical(new ClassSkill("Sorcerer", "Knowledge.Arcana"));
+        insertLogical(new ClassSkill("Sorcerer", "Profession"));
+        insertLogical(new ClassSkill("Sorcerer", "Spellcraft"));
+        insertLogical(new ClassSkill("Sorcerer", "UseMagicDevice"));
+end

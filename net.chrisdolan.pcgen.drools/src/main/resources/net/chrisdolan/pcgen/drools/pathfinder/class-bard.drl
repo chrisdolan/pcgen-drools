@@ -16,3 +16,36 @@ rule "Class.Bard.Init"
         insertLogical(new SaveProgression("Bard", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Bard", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Bard.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Bard")
+    then
+        insertLogical(new ClassSkill("Bard", "Acrobatics"));
+        insertLogical(new ClassSkill("Bard", "Appraise"));
+        insertLogical(new ClassSkill("Bard", "Bluff"));
+        insertLogical(new ClassSkill("Bard", "Climb"));
+        insertLogical(new ClassSkill("Bard", "Craft"));
+        insertLogical(new ClassSkill("Bard", "Diplomacy"));
+        insertLogical(new ClassSkill("Bard", "Disguise"));
+        insertLogical(new ClassSkill("Bard", "Intimidate"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Arcana"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Dungeoneering"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Engineering"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Geography"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.History"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Local"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Nature"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Nobility"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Planes"));
+        insertLogical(new ClassSkill("Bard", "Knowledge.Religion"));
+        insertLogical(new ClassSkill("Bard", "Linguistics"));
+        insertLogical(new ClassSkill("Bard", "Perception"));
+        insertLogical(new ClassSkill("Bard", "Perform"));
+        insertLogical(new ClassSkill("Bard", "Profession"));
+        insertLogical(new ClassSkill("Bard", "SenseMotive"));
+        insertLogical(new ClassSkill("Bard", "SleightOfHand"));
+        insertLogical(new ClassSkill("Bard", "Spellcraft"));
+        insertLogical(new ClassSkill("Bard", "Stealth"));
+        insertLogical(new ClassSkill("Bard", "UseMagicDevice"));
+end

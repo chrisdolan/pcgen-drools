@@ -16,3 +16,23 @@ rule "Class.Ranger.Init"
         insertLogical(new SaveProgression("Ranger", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Ranger", SavingThrow.WILL, "Slow"));
 end
+rule "Class.Ranger.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Ranger")
+    then
+        insertLogical(new ClassSkill("Ranger", "Climb"));
+        insertLogical(new ClassSkill("Ranger", "Craft"));
+        insertLogical(new ClassSkill("Ranger", "HandleAnimal"));
+        insertLogical(new ClassSkill("Ranger", "Heal"));
+        insertLogical(new ClassSkill("Ranger", "Intimidate"));
+        insertLogical(new ClassSkill("Ranger", "Knowledge.Dungeoneering"));
+        insertLogical(new ClassSkill("Ranger", "Knowledge.Geography"));
+        insertLogical(new ClassSkill("Ranger", "Knowledge.Nature"));
+        insertLogical(new ClassSkill("Ranger", "Perception"));
+        insertLogical(new ClassSkill("Ranger", "Ride"));
+        insertLogical(new ClassSkill("Ranger", "Spellcraft"));
+        insertLogical(new ClassSkill("Ranger", "Stealth"));
+        insertLogical(new ClassSkill("Ranger", "Survival"));
+        insertLogical(new ClassSkill("Ranger", "Swim"));
+end

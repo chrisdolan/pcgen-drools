@@ -16,3 +16,19 @@ rule "Class.Paladin.Init"
         insertLogical(new SaveProgression("Paladin", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Paladin", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Paladin.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Paladin")
+    then
+        insertLogical(new ClassSkill("Paladin", "Craft"));
+        insertLogical(new ClassSkill("Paladin", "Diplomacy"));
+        insertLogical(new ClassSkill("Paladin", "HandleAnimal"));
+        insertLogical(new ClassSkill("Paladin", "Heal"));
+        insertLogical(new ClassSkill("Paladin", "Knowledge.Nobility"));
+        insertLogical(new ClassSkill("Paladin", "Knowledge.Religion"));
+        insertLogical(new ClassSkill("Paladin", "Profession"));
+        insertLogical(new ClassSkill("Paladin", "Ride"));
+        insertLogical(new ClassSkill("Paladin", "SenseMotive"));
+        insertLogical(new ClassSkill("Paladin", "Spellcraft"));
+end

@@ -16,3 +16,25 @@ rule "Class.Wizard.Init"
         insertLogical(new SaveProgression("Wizard", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Wizard", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Wizard.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Wizard")
+    then
+        insertLogical(new ClassSkill("Wizard", "Appraise"));
+        insertLogical(new ClassSkill("Wizard", "Craft"));
+        insertLogical(new ClassSkill("Wizard", "Fly"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Arcana"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Dungeoneering"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Engineering"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Geography"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.History"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Local"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Nature"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Nobility"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Planes"));
+        insertLogical(new ClassSkill("Wizard", "Knowledge.Religion"));
+        insertLogical(new ClassSkill("Wizard", "Linguistics"));
+        insertLogical(new ClassSkill("Wizard", "Profession"));
+        insertLogical(new ClassSkill("Wizard", "Spellcraft"));
+end

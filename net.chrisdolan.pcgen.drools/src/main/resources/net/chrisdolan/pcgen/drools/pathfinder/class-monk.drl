@@ -15,6 +15,12 @@ rule "Class.Monk.Init"
         insertLogical(new SaveProgression("Monk", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.WILL, "Fast"));
+end
+rule "Class.Monk.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Monk")
+    then
         insertLogical(new ClassSkill("Monk", "Acrobatics"));
         insertLogical(new ClassSkill("Monk", "Climb"));
         insertLogical(new ClassSkill("Monk", "Craft"));
@@ -29,7 +35,6 @@ rule "Class.Monk.Init"
         insertLogical(new ClassSkill("Monk", "SenseMotive"));
         insertLogical(new ClassSkill("Monk", "Stealth"));
         insertLogical(new ClassSkill("Monk", "Swim"));
-        
 end
 
 

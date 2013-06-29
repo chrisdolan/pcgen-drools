@@ -16,3 +16,19 @@ rule "Class.Fighter.Init"
         insertLogical(new SaveProgression("Fighter", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Fighter", SavingThrow.WILL, "Slow"));
 end
+rule "Class.Fighter.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Fighter")
+    then
+        insertLogical(new ClassSkill("Fighter", "Climb"));
+        insertLogical(new ClassSkill("Fighter", "Craft"));
+        insertLogical(new ClassSkill("Fighter", "HandleAnimal"));
+        insertLogical(new ClassSkill("Fighter", "Intimidate"));
+        insertLogical(new ClassSkill("Fighter", "Knowledge.Dungeoneering"));
+        insertLogical(new ClassSkill("Fighter", "Knowledge.Engineering"));
+        insertLogical(new ClassSkill("Fighter", "Profession"));
+        insertLogical(new ClassSkill("Fighter", "Ride"));
+        insertLogical(new ClassSkill("Fighter", "Survival"));
+        insertLogical(new ClassSkill("Fighter", "Swim"));
+end

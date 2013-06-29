@@ -16,3 +16,30 @@ rule "Class.Rogue.Init"
         insertLogical(new SaveProgression("Rogue", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Rogue", SavingThrow.WILL, "Slow"));
 end
+rule "Class.Rogue.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Rogue")
+    then
+        insertLogical(new ClassSkill("Rogue", "Acrobatics"));
+        insertLogical(new ClassSkill("Rogue", "Appraise"));
+        insertLogical(new ClassSkill("Rogue", "Bluff"));
+        insertLogical(new ClassSkill("Rogue", "Climb"));
+        insertLogical(new ClassSkill("Rogue", "Craft"));
+        insertLogical(new ClassSkill("Rogue", "Diplomacy"));
+        insertLogical(new ClassSkill("Rogue", "DisableDevice"));
+        insertLogical(new ClassSkill("Rogue", "Disguise"));
+        insertLogical(new ClassSkill("Rogue", "EscapeArtist"));
+        insertLogical(new ClassSkill("Rogue", "Intimidate"));
+        insertLogical(new ClassSkill("Rogue", "Knowledge.Dungeoneering"));
+        insertLogical(new ClassSkill("Rogue", "Knowledge.Local"));
+        insertLogical(new ClassSkill("Rogue", "Linguistics"));
+        insertLogical(new ClassSkill("Rogue", "Perception"));
+        insertLogical(new ClassSkill("Rogue", "Perform"));
+        insertLogical(new ClassSkill("Rogue", "Profession"));
+        insertLogical(new ClassSkill("Rogue", "SenseMotive"));
+        insertLogical(new ClassSkill("Rogue", "Spellcraft"));
+        insertLogical(new ClassSkill("Rogue", "Stealth"));
+        insertLogical(new ClassSkill("Rogue", "Swim"));
+        insertLogical(new ClassSkill("Rogue", "UseMagicDevice"));
+end

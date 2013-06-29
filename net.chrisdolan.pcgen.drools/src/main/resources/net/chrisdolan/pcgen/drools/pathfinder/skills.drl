@@ -27,6 +27,9 @@ declare ClassSkill
     classname : String
     name : String
 end
+declare ClassSkillOverride
+    classname : String
+end
 declare SkillBonus
     name : String
     value : int

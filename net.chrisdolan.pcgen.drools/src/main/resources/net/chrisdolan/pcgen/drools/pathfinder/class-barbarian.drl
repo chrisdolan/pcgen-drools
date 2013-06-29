@@ -16,6 +16,22 @@ rule "Class.Barbarian.Init"
         insertLogical(new SaveProgression("Barbarian", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Barbarian", SavingThrow.WILL, "Slow"));
 end
+rule "Class.Barbarian.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Barbarian")
+    then
+        insertLogical(new ClassSkill("Barbarian", "Acrobatics"));
+        insertLogical(new ClassSkill("Barbarian", "Climb"));
+        insertLogical(new ClassSkill("Barbarian", "Craft"));
+        insertLogical(new ClassSkill("Barbarian", "HandleAnimal"));
+        insertLogical(new ClassSkill("Barbarian", "Intimidate"));
+        insertLogical(new ClassSkill("Barbarian", "Knowledge.Nature"));
+        insertLogical(new ClassSkill("Barbarian", "Perception"));
+        insertLogical(new ClassSkill("Barbarian", "Ride"));
+        insertLogical(new ClassSkill("Barbarian", "Survival"));
+        insertLogical(new ClassSkill("Barbarian", "Swim"));
+end
 
 rule "Class.Barbarian.Rage"
     when

@@ -20,9 +20,36 @@ end
 
 rule "Typo.ClassSkill"
     when
-        $cs : ClassSkill($classname:classname,$skill:name)
+        $o : ClassSkill($classname:classname,$skill:name)
         (not ClassName($classname == name) or not SkillType(name == $skill))
     then
-        throw new Exception(""+$cs);
+        throw new Exception(""+$o);
 end
- 
+rule "Typo.MaxClassLevel"
+    when
+        $o : MaxClassLevel($classname:classname)
+        not ClassName($classname == name)
+    then
+        throw new Exception(""+$o);
+end
+rule "Typo.HitDie"
+    when
+        $o : HitDie($classname:classname)
+        not ClassName($classname == name)
+    then
+        throw new Exception(""+$o);
+end
+rule "Typo.BABProgression"
+    when
+        $o : BABProgression($classname:classname)
+        not ClassName($classname == name)
+    then
+        throw new Exception(""+$o);
+end
+rule "Typo.SaveProgression"
+    when
+        $o : SaveProgression($classname:classname)
+        not ClassName($classname == name)
+    then
+        throw new Exception(""+$o);
+end

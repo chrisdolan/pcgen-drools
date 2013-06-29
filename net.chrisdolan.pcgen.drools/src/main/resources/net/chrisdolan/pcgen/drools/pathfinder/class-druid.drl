@@ -16,3 +16,23 @@ rule "Class.Druid.Init"
         insertLogical(new SaveProgression("Druid", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Druid", SavingThrow.WILL, "Fast"));
 end
+rule "Class.Druid.ClassSkill.Init"
+    salience 1000
+    when
+        not ClassSkillOverride(classname == "Druid")
+    then
+        insertLogical(new ClassSkill("Druid", "Climb"));
+        insertLogical(new ClassSkill("Druid", "Craft"));
+        insertLogical(new ClassSkill("Druid", "Diplomacy"));
+        insertLogical(new ClassSkill("Druid", "Fly"));
+        insertLogical(new ClassSkill("Druid", "HandleAnimal"));
+        insertLogical(new ClassSkill("Druid", "Heal"));
+        insertLogical(new ClassSkill("Druid", "Knowledge.Geography"));
+        insertLogical(new ClassSkill("Druid", "Knowledge.Nature"));
+        insertLogical(new ClassSkill("Druid", "Perception"));
+        insertLogical(new ClassSkill("Druid", "Profession"));
+        insertLogical(new ClassSkill("Druid", "Ride"));
+        insertLogical(new ClassSkill("Druid", "Spellcraft"));
+        insertLogical(new ClassSkill("Druid", "Survival"));
+        insertLogical(new ClassSkill("Druid", "Swim"));
+end
