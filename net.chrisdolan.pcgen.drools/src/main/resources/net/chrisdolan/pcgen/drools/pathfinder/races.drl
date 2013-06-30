@@ -72,7 +72,7 @@ rule "Race.Elf"
         insertLogical(new Ability("Elf.Immunities"));
         insertLogical(new Input("CasterLevel.SR", "Racial", 2));
         insertLogical(new Ability("Elf.Magic.Spellcraft"));
-        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Elven"));
@@ -93,7 +93,7 @@ rule "Race.Gnome"
         insertLogical(new Ability("Gnome.Magic"));
         insertLogical(new Ability("Gnome.Hatred"));
         insertLogical(new Ability("Gnome.IllusionResistance"));
-        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
         insertLogical(new Ability("Gnome.Obsession"));
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
@@ -113,7 +113,7 @@ rule "Race.HalfElf"
         // todo: skill focus
         // todo: elf blood
         insertLogical(new Ability("Elf.Immunities"));
-        insertLogical(new Input("Skill.Perception", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
         // todo: multitalented
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
@@ -129,7 +129,7 @@ rule "Race.HalfOrc"
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Ability("Darkvision"));
-        insertLogical(new Input("Skill.Intimidate", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Intimidate", "Racial", 2));
         // todo: orc blood
         // todo: orc ferocity
         // todo: weapon familiarity
@@ -151,9 +151,9 @@ rule "Race.Halfling"
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, "Racial", 1));
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, "Racial", 1));
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Racial", 1));
-        insertLogical(new Input("Skill.Perception", "Racial", 2));
-        insertLogical(new Input("Skill.Acrobatics", "Racial", 2));
-        insertLogical(new Input("Skill.Climb", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Acrobatics", "Racial", 2));
+        insertLogical(new Input("SkillBonus.Climb", "Racial", 2));
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Halfling"));

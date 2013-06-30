@@ -34,14 +34,16 @@ rule "Action.FightingDefensively"
     when
         not(not Action(type == ActionInput.TYPE_FIGHTING_DEFENSIVELY))
         not Action(type == ActionInput.TYPE_TOTAL_DEFENSE) // they don't stack
+        SkillBonus(name == "Acrobatics", $sv:value)
     then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 2));
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, $sv >= 3 ? 3 : 2));
         insertLogical(new Input("Attack", "FightingDefensively", -4));
 end
 rule "Action.TotalDefense"
     when
         not(not Action(type == ActionInput.TYPE_TOTAL_DEFENSE))
+        SkillBonus(name == "Acrobatics", $sv:value)
     then
-        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 4));
+        insertLogical(new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, $sv >= 3 ? 6 : 4));
         // todo: no attacks
 end

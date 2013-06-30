@@ -368,7 +368,11 @@ public class TestEngine {
         session.insert(new TestInput("Weight", "PC", 90));
         session.run();
         PCAssert.assertSkill(session, "Stealth", -2);
+        PCAssert.assertSkill(session, "Intimidate", 0);
+        session.insert(new RaceInput(RaceInput.HALFORC));
+        session.run();
         session.dump(System.out);
+        PCAssert.assertSkill(session, "Intimidate", 2);
         PCAssert.assertConditions(session); // none
         session.destroy();
     }
