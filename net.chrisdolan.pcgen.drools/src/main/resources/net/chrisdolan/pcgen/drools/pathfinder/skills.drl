@@ -206,3 +206,11 @@ rule "Validation.Skills.DisallowedKnowledgeSubtype"
     then
         insertLogical(new InvalidInputViolation("No such Knowledge subtype: " + $st, new Object[]{$r}));
 end
+
+rule "Validation.Skills.MaxRanks"
+    when
+        PCLevel($lvl:value)
+        $r : SkillRanks($skill:name, ranks > $lvl, $ranks:ranks)
+    then
+        insertLogical(new InvalidInputViolation("Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
+end
