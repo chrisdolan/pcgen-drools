@@ -10,11 +10,15 @@ end
 query "Query.Violations.Descriptions"
     Violation(violation : description)
 end
+query "Query.Violations.Codes"
+    Violation(violation : code)
+end
 query "Query.Violations.MissingInputs"
     violation : MissingInputViolation()
 end
 
 declare Violation
+    code : String
     description : String
 end
 declare InvalidInputViolation extends Violation

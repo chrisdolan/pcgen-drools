@@ -145,5 +145,5 @@ rule "Validation.Monk"
         Input(type == "ClassLevel", subtype == "Monk")
         $alignment : Alignment(!name.startsWith("Lawful"))
     then
-        insertLogical(new MissingPrereqViolation("Monks must be Lawful", new Object[]{$alignment}));
+        insertLogical(new MissingPrereqViolation("Monk.Lawful", "Monks must be Lawful", new Object[]{$alignment}));
 end

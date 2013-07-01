@@ -74,17 +74,17 @@ rule "Validation.Age.Missing"
         not Age()
         RacialAge($defage:adulthood)
     then
-        insertLogical(new MissingInputViolation("Please choose an age", new Age($defage)));
+        insertLogical(new MissingInputViolation("Age.Missing", "Please choose an age", new Age($defage)));
 end
 rule "Validation.Age.TooMany"
     when
         $list : List(size > 1) from collect(Age())
     then
-        insertLogical(new ExcessInputViolation("Too many ages: " + $list, $list.toArray()));
+        insertLogical(new ExcessInputViolation("Age.Excess", "Too many ages: " + $list, $list.toArray()));
 end
 rule "Validation.Age.TooYoung"
     when
-        Age(value < 0)
+        $age : Age(value < 0)
     then
-        insertLogical(new Violation("Age must be greater than 0"));
+        insertLogical(new InvalidInputViolation("Age.Invalid", "Age must be greater than 0", new Object[]{$age}));
 end

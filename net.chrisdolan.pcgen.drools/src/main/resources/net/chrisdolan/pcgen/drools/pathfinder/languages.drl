@@ -26,14 +26,14 @@ rule "Validate.Language.RacialBonus"
         not RacialBonusLanguage($langname == name)
         not(not RacialBonusLanguage())
     then
-        insertLogical(new InvalidInputViolation("Language is not on the racial list for " + $race + ": " + $langname, new Object[]{$lang}));  
+        insertLogical(new InvalidInputViolation("Language.Racial.Invalid", "Language is not on the racial list for " + $race + ": " + $langname, new Object[]{$lang}));  
 end
 
 rule "Validate.Language.IntBased"
     when
-        $langs : List($numlang : size) from accumulate(
-            $lang : LanguageInput($langname : name)
-            and RaceInput(languages.contains($lang)),
+        $langs : List($numlang: size) from accumulate(
+            $lang : LanguageInput()
+            and RaceInput(languages contains $lang),
             collectList($lang)
         )
         Number($intAtLvl1 : intValue) from accumulate(
@@ -43,8 +43,36 @@ rule "Validate.Language.IntBased"
         )
     then
         int langsAtLvl1 = Math.max(0, $intAtLvl1/2 - 5);
+        //System.out.println("lang.int: numlang="+$numlang+", intAtLvl1="+$intAtLvl1+", langsAtLvl1="+langsAtLvl1);  
         if ($numlang > langsAtLvl1)
-            insertLogical(new ExcessInputViolation("Too many languages selected at level 1", $langs.toArray()));
+            insertLogical(new ExcessInputViolation("Language.Racial.Excess", "Too many languages selected at level 1", $langs.toArray()));
         else if ($numlang < langsAtLvl1)  
-            insertLogical(new MissingInputViolation("Please select " + (langsAtLvl1 - $numlang) + " language(s) for level 1", new Object[]{}));
+            insertLogical(new MissingInputViolation("Language.Racial.Missing", "Please select " + (langsAtLvl1 - $numlang) + " language(s) for level 1", new Object[]{}));
 end
+
+/*
+rule "Validate.Language.IntBased"
+    when
+        RaceInput($rlangs : languages)
+        $langs : List() from accumulate(
+            $lang : LanguageInput()// and $langs contains $lang
+//            and RaceInput(languages contains $lang)
+            , collectList($lang)
+        )
+        Number($intAtLvl1 : intValue) from accumulate(
+            // Just the level 1 inputs to Intelligence
+            Stack($v:value, type == (StatInput.TYPE + StatInput.INT), subtype in (StatInput.SUBTYPE_BASE, "Age", "Race")),
+            sum($v)
+        )
+    then
+        List filtered = new ArrayList($langs);
+        filtered.retainAll($rlangs);
+        int $numlang = filtered.size();
+        int $langsAtLvl1 = Math.max(0, $intAtLvl1/2 - 5);
+        System.out.println("lang.int: numlang="+$numlang+", intAtLvl1="+$intAtLvl1+", langsAtLvl1="+$langsAtLvl1);  
+        if ($numlang > $langsAtLvl1)
+            insertLogical(new ExcessInputViolation("Language.Racial.Excess", "Too many languages selected at level 1", $langs.toArray()));
+        else if ($numlang < $langsAtLvl1)  
+            insertLogical(new MissingInputViolation("Language.Racial.Missing", "Please select " + ($langsAtLvl1 - $numlang) + " language(s) for level 1", new Object[]{}));
+end
+*/

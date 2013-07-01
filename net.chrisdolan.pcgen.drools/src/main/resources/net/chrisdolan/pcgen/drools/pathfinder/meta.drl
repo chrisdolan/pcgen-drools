@@ -23,12 +23,12 @@ rule "Validation.Meta.Duplicates"
         $p1 : Property($name:name)
         $p2 : Property($name == name, this != $p1)
     then
-        insertLogical(new ExcessInputViolation("Too many properties with name: " + $name, new Object[]{$p1,$p2}));
+        insertLogical(new ConflictViolation("Property.Conflict", "Too many properties with name: " + $name, new Object[]{$p1,$p2}));
 end
 
 rule "Validation.Meta.CharacterName.Missing"
     when
         not Property(name == "CharacterName")
     then
-        insertLogical(new MissingInputViolation("Please choose a character name", new Property("CharacterName", "PC")));
+        insertLogical(new MissingInputViolation("Property.CharacterName.Missing", "Please choose a character name", new Property("CharacterName", "PC")));
 end

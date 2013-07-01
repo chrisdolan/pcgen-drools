@@ -3,6 +3,7 @@ package net.chrisdolan.pcgen.drools.test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +134,21 @@ public class PCAssert {
     public static void assertNoViolations(Session session) {
         List<String> got = session.queryColumn(String.class, "Query.Violations.Descriptions");
         Assert.assertEquals(Collections.<String>emptyList(), got);
+    }
+
+    public static void assertViolations(Session session, String... codes) {
+        List<String> got = session.queryColumn(String.class, "Query.Violations.Codes");
+        Assert.assertEquals(new HashSet<String>(Arrays.asList(codes)), new HashSet<String>(got));
+    }
+    public static void assertViolation(Session session, String code) {
+        List<String> got = session.queryColumn(String.class, "Query.Violations.Codes");
+        if (code.startsWith("!")) {
+            Assert.assertFalse("expected '"+code+"', got: " + got,
+                    got.contains(code.substring(1)));
+        } else {
+            Assert.assertTrue("expected '"+code+"', got: " + got,
+                    got.contains(code));
+        }
     }
 
     public static void assertSkill(Session session, String name, int expected) {

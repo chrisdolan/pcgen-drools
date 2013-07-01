@@ -53,6 +53,6 @@ rule "Validation.AbilityReplacement.Conflict"
         $r1:AbilityReplacement($n:ability.name)
         $r2:AbilityReplacement($n == ability.name, this != $r1, this.hashCode > $r1.hashCode)
     then
-        insertLogical(new ConflictViolation("Two rules both tried to remove ability " + $n, new Object[]{$r1,$r2}));
+        insertLogical(new ConflictViolation("Conflict.AbilityReplacement", "Two rules both tried to remove ability " + $n, new Object[]{$r1,$r2}));
 end
 

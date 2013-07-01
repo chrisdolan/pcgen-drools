@@ -216,12 +216,12 @@ rule "Validation.Race.Missing"
     when
         not Race()
     then
-        insertLogical(new MissingInputViolation("Please choose a race", new Race("Human")));
+        insertLogical(new MissingInputViolation("Race.Missing", "Please choose a race", new Race("Human")));
 end
 rule "Validation.Race.Unknown"
     when
-        Race($name : name)
+        $r : Race($name : name)
         not Size()
     then
-        insertLogical(new Violation("Unknown/incomplete race: " + $name));
+        insertLogical(new InvalidInputViolation("Race.Unknown", "Unknown/incomplete race: " + $name, new Object[]{$r}));
 end

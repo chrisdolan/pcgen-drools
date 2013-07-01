@@ -25,5 +25,5 @@ rule "Validation.FavoredClass.Missing"
         Race()
         not FavoredClassInput()
     then
-        insertLogical(new MissingInputViolation("Please choose a favored class", null));
+        insertLogical(new MissingInputViolation("FavoredClass.Missing", "Please choose a favored class", null));
 end

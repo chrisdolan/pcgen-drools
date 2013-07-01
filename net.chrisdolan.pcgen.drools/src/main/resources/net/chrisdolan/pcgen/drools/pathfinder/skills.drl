@@ -182,21 +182,21 @@ rule "Validation.Skills.PositiveRanks"
     when
         $r : SkillRanks($skill:type, ranks <= 0) 
     then
-        insertLogical(new InvalidInputViolation("Skill ranks must be a positive number: " + $skill, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Ranks.Invalid", "Skill ranks must be a positive number: " + $skill, new Object[]{$r}));
 end
 
 rule "Validation.Skills.DisallowedSubtype"
     when
         $r : SkillRanks(subtype != null, type not in ( "Knowledge", "Craft", "Profession", "Perform" ), $skill:type) 
     then
-        insertLogical(new InvalidInputViolation("Skill type does not allow subtypes: " + $skill, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Subtype.Invalid", "Skill type does not allow subtypes: " + $skill, new Object[]{$r}));
 end
 
 rule "Validation.Skills.RequiredSubtype"
     when
         $r : SkillRanks(subtype == null, type in ( "Knowledge", "Craft", "Profession", "Perform" ), $skill:type) 
     then
-        insertLogical(new InvalidInputViolation("Skill type requires a subtype: " + $skill, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Subtype.Missing", "Skill type requires a subtype: " + $skill, new Object[]{$r}));
 end
 
 rule "Validation.Skills.DisallowedKnowledgeSubtype"
@@ -204,7 +204,7 @@ rule "Validation.Skills.DisallowedKnowledgeSubtype"
         $r : SkillRanks(type == "Knowledge", subtype != null, $st:subtype)
         not SkillType(name == ("Knowledge." + $st))
     then
-        insertLogical(new InvalidInputViolation("No such Knowledge subtype: " + $st, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Knowledge.Invalid", "No such Knowledge subtype: " + $st, new Object[]{$r}));
 end
 
 rule "Validation.Skills.MaxRanks"
@@ -212,5 +212,5 @@ rule "Validation.Skills.MaxRanks"
         PCLevel($lvl:value)
         $r : SkillRanks($skill:name, ranks > $lvl, $ranks:ranks)
     then
-        insertLogical(new InvalidInputViolation("Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Ranks.Excess", "Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
 end

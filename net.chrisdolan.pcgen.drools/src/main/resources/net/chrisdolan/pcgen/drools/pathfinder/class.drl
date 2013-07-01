@@ -132,16 +132,16 @@ end
 
 rule "Validation.Class.Unknown"
     when
-        Input(type == "ClassLevel", $classname:subtype)
+        $i : Input(type == "ClassLevel", $classname:subtype)
         not ClassName(name == $classname)
     then
-        insertLogical(new Violation("Unknown class " + $classname));
+        insertLogical(new InvalidInputViolation("Class.Unknown", "Unknown class " + $classname, new Object[]{$i}));
 end
 
 rule "Validation.Archetype.Unknown"
     when
-        Archetype($classname:classname, $name:name, name != "Base")
+        $a : Archetype($classname:classname, $name:name, name != "Base")
         not ArchetypeName(classname == $classname, name == $name)
     then
-        insertLogical(new Violation("Unknown archetype " + $classname + ", " + $name));
+        insertLogical(new InvalidInputViolation("Archetype.Unknown", "Unknown archetype " + $classname + ", " + $name, new Object[]{$a}));
 end

@@ -1,9 +1,11 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
+import net.chrisdolan.pcgen.drools.input.LanguageInput;
 import net.chrisdolan.pcgen.drools.input.LevelInput;
 import net.chrisdolan.pcgen.drools.input.RaceInput;
 import net.chrisdolan.pcgen.drools.input.SkillInput;
@@ -371,9 +373,35 @@ public class TestEngine {
         PCAssert.assertSkill(session, "Intimidate", 0);
         session.insert(new RaceInput(RaceInput.HALFORC));
         session.run();
-        session.dump(System.out);
         PCAssert.assertSkill(session, "Intimidate", 2);
         PCAssert.assertConditions(session); // none
+        session.destroy();
+    }
+
+    @Test
+    public void testLanguages() throws DroolsParserException, IOException {
+        Session session = Engine.createSession(RULESETS);
+        LevelInput lvl = new LevelInput("Monk");
+        lvl.setLanguages(Arrays.asList(new LanguageInput("Baz"))); // this should not affect the racial violations at all
+        session.insert(lvl);
+        RaceInput last;
+        session.insert(last = new RaceInput(RaceInput.HUMAN));
+        session.insert(new StatInput(StatInput.INT, 12));
+        session.run();
+        PCAssert.assertViolation(session, "Language.Racial.Missing");
+        PCAssert.assertViolation(session, "!Language.Racial.Excess");
+        session.retract(last);
+        last.setLanguages(Arrays.asList(new LanguageInput("Foo"), new LanguageInput("Bar")));
+        session.insert(last);
+        session.run();
+        PCAssert.assertViolation(session, "!Language.Racial.Missing");
+        PCAssert.assertViolation(session, "Language.Racial.Excess");
+        session.retract(last);
+        last.setLanguages(Arrays.asList(new LanguageInput("Foo")));
+        session.insert(last);
+        session.run();
+        PCAssert.assertViolation(session, "!Language.Racial.Missing");
+        PCAssert.assertViolation(session, "!Language.Racial.Excess");
         session.destroy();
     }
 

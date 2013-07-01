@@ -40,27 +40,27 @@ rule "Validation.Alignment.Missing"
     when
         not Alignment()
     then
-        insertLogical(new MissingInputViolation("Please select an alignment", new Alignment("TrueNeutral")));
+        insertLogical(new MissingInputViolation("Alignment.Missing", "Please select an alignment", new Alignment("TrueNeutral")));
 end
 rule "Validation.Alignment.TooMany"
     when
         $list : List(size > 1) from collect(Alignment())
     then
-        insertLogical(new ExcessInputViolation("Too many alignments: " + $list, $list.toArray()));
+        insertLogical(new ExcessInputViolation("Alignment.Excess", "Too many alignments: " + $list, $list.toArray()));
 end
 
 rule "Validation.Alignment.Types"
     when
-        Alignment($name:name)
+        $a : Alignment($name:name)
         not AlignmentType($name == name)
     then
-        insertLogical(new Violation("Unknown alignment: " + $name));
+        insertLogical(new InvalidInputViolation("Alignment.Unknown", "Unknown alignment: " + $name, new Object[]{$a}));
 end
 rule "Validation.AlignmentInput.Types"
     when
-        AlignmentInput($name:name)
+        $a : AlignmentInput($name:name)
         not AlignmentType($name == name)
     then
-        insertLogical(new Violation("Unknown alignment: " + $name));
+        insertLogical(new InvalidInputViolation("Alignment.Unknown", "Unknown alignment: " + $name, new Object[]{$a}));
 end
 

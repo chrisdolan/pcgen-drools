@@ -94,10 +94,10 @@ end
 
 rule "Validation.Stat.Unknown"
     when
-        StatInput($name:name)
+        $s : StatInput($name:name)
         not StatName($name == name)
     then
-        insertLogical(new Violation("Unknown stat type: " + $name));
+        insertLogical(new InvalidInputViolation("Stat.Unknown", "Unknown stat type: " + $name, new Object[]{$s}));
 end
 
 rule "Validation.Stat.Missing"
@@ -105,13 +105,13 @@ rule "Validation.Stat.Missing"
         StatName($name:name)
         not StatInput($name == name)
     then
-        insertLogical(new MissingInputViolation("Please choose a value for stat " + $name, new StatInput($name, 10)));
+        insertLogical(new MissingInputViolation("Stat.Missing", "Please choose a value for stat " + $name, new StatInput($name, 10)));
 end
 
 rule "Validation.Stat.Floor"
     when
-        Stat($name:name, value < 0, $value : value)
+        $s : Stat($name:name, value < 0, $value : value)
     then
-        insertLogical(new Violation("Negative stat value: " + $name + " = " + $value));
+        insertLogical(new InvalidInputViolation("Stat.Invalid", "Negative stat value: " + $name + " = " + $value, new Object[]{$s}));
 end
 
