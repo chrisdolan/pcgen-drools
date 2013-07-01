@@ -28,3 +28,23 @@ rule "Validate.Language.RacialBonus"
     then
         insertLogical(new InvalidInputViolation("Language is not on the racial list for " + $race + ": " + $langname, new Object[]{$lang}));  
 end
+
+rule "Validate.Language.IntBased"
+    when
+        $langs : List($numlang : size) from accumulate(
+            $lang : LanguageInput($langname : name)
+            and RaceInput(languages.contains($lang)),
+            collectList($lang)
+        )
+        Number($intAtLvl1 : intValue) from accumulate(
+            // Just the level 1 inputs to Intelligence
+            Stack($v:value, type == (StatInput.TYPE + StatInput.INT), subtype in (StatInput.SUBTYPE_BASE, "Age", "Race")),
+            sum($v)
+        )
+    then
+        int langsAtLvl1 = Math.max(0, $intAtLvl1/2 - 5);
+        if ($numlang > langsAtLvl1)
+            insertLogical(new ExcessInputViolation("Too many languages selected at level 1", $langs.toArray()));
+        else if ($numlang < langsAtLvl1)  
+            insertLogical(new MissingInputViolation("Please select " + (langsAtLvl1 - $numlang) + " language(s) for level 1", new Object[]{}));
+end
