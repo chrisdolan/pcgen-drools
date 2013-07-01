@@ -23,6 +23,9 @@ end
 declare AgeType
     name : String
 end
+declare RacialBonusLanguage
+    name : String
+end
 
 rule "Race.Missing"
     when
@@ -57,6 +60,12 @@ rule "Race.Dwarf"
         insertLogical(new Language("Common"));
         insertLogical(new Language("Dwarven"));
         insertLogical(new RacialAge(40,125,188,250));
+        insertLogical(new RacialBonusLanguage("Giant"));
+        insertLogical(new RacialBonusLanguage("Gnome"));
+        insertLogical(new RacialBonusLanguage("Goblin"));
+        insertLogical(new RacialBonusLanguage("Orc"));
+        insertLogical(new RacialBonusLanguage("Terran"));
+        insertLogical(new RacialBonusLanguage("Undercommon"));
 end
 
 rule "Race.Elf"
@@ -77,6 +86,13 @@ rule "Race.Elf"
         insertLogical(new Language("Common"));
         insertLogical(new Language("Elven"));
         insertLogical(new RacialAge(110,175,263,350));
+        insertLogical(new RacialBonusLanguage("Celestial"));
+        insertLogical(new RacialBonusLanguage("Draconic"));
+        insertLogical(new RacialBonusLanguage("Gnoll"));
+        insertLogical(new RacialBonusLanguage("Gnome"));
+        insertLogical(new RacialBonusLanguage("Goblin"));
+        insertLogical(new RacialBonusLanguage("Orc"));
+        insertLogical(new RacialBonusLanguage("Sylvan"));
 end
 
 rule "Race.Gnome"
@@ -100,6 +116,12 @@ rule "Race.Gnome"
         insertLogical(new Language("Gnome"));
         insertLogical(new Language("Sylvan"));
         insertLogical(new RacialAge(40,100,150,200));
+        insertLogical(new RacialBonusLanguage("Draconic"));
+        insertLogical(new RacialBonusLanguage("Dwarven"));
+        insertLogical(new RacialBonusLanguage("Elven"));
+        insertLogical(new RacialBonusLanguage("Giant"));
+        insertLogical(new RacialBonusLanguage("Goblin"));
+        insertLogical(new RacialBonusLanguage("Orc"));
 end
 
 rule "Race.HalfElf"
@@ -136,6 +158,11 @@ rule "Race.HalfOrc"
         insertLogical(new Language("Common"));
         insertLogical(new Language("Orc"));
         insertLogical(new RacialAge(14,30,45,60));
+        insertLogical(new RacialBonusLanguage("Abyssal"));
+        insertLogical(new RacialBonusLanguage("Draconic"));
+        insertLogical(new RacialBonusLanguage("Giant"));
+        insertLogical(new RacialBonusLanguage("Gnoll"));
+        insertLogical(new RacialBonusLanguage("Goblin"));
 end
 
 rule "Race.Halfling"
@@ -158,6 +185,10 @@ rule "Race.Halfling"
         insertLogical(new Language("Common"));
         insertLogical(new Language("Halfling"));
         insertLogical(new RacialAge(20,50,75,100));
+        insertLogical(new RacialBonusLanguage("Dwarven"));
+        insertLogical(new RacialBonusLanguage("Elven"));
+        insertLogical(new RacialBonusLanguage("Gnome"));
+        insertLogical(new RacialBonusLanguage("Goblin"));
 end
 
 rule "Race.Human"

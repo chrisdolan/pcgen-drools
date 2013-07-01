@@ -48,6 +48,8 @@ rule "PC.Race.UserInput"
             insertLogical(t);
         for (StatBonusInput sb : $r.getStatBonuses())
             insertLogical(new ChoiceInput("StatBonusChoice", "Race", sb.getName()));
+        for (LanguageInput l : $r.getLanguages())
+            insertLogical(l);
 end
 
 rule "PC.Level.UserInput"
@@ -67,5 +69,7 @@ rule "PC.Level.UserInput"
              insertLogical(feat);
         if ($lvl.getStatBonus() != null)
             insertLogical(new ChoiceInput("StatBonusChoice", "Level"+$lvl.getOrdinal(), $lvl.getStatBonus().getName()));
+        for (LanguageInput l : $lvl.getLanguages())
+            insertLogical(l);
 end
 

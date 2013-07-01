@@ -32,6 +32,9 @@ public class LevelInput {
     @XStreamAlias("statbonus")
     private StatBonusInput statBonus;
 
+    @XStreamImplicit(itemFieldName="language")
+    private List<LanguageInput> languages = new ArrayList<LanguageInput>();
+
     /**
      * The ordinal is to track which levels were added first, which matters for prereqs and some bonuses.
      * It doesn't need to be serialized because it's implicit in the order of the XML layout.
@@ -85,6 +88,12 @@ public class LevelInput {
     }
     public void setStatBonus(StatBonusInput statBonus) {
         this.statBonus = statBonus;
+    }
+    public List<LanguageInput> getLanguages() {
+        return languages == null ? Collections.<LanguageInput>emptyList() : new ArrayList<LanguageInput>(languages);
+    }
+    public void setLanguages(List<LanguageInput> languages) {
+        this.languages = new ArrayList<LanguageInput>(languages);
     }
     public int getOrdinal() {
         return ordinal;

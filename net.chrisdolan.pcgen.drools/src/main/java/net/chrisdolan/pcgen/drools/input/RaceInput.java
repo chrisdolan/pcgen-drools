@@ -33,6 +33,8 @@ public class RaceInput {
     private List<TraitInput> traits = new ArrayList<TraitInput>();
     @XStreamImplicit(itemFieldName="statbonus")
     private List<StatBonusInput> statBonuses = new ArrayList<StatBonusInput>();
+    @XStreamImplicit(itemFieldName="language")
+    private List<LanguageInput> languages = new ArrayList<LanguageInput>();
 
     public RaceInput() {
     }
@@ -73,6 +75,12 @@ public class RaceInput {
     }
     public void setStatBonuses(List<StatBonusInput> statBonuses) {
         this.statBonuses = new ArrayList<StatBonusInput>(statBonuses);
+    }
+    public List<LanguageInput> getLanguages() {
+        return languages == null ? Collections.<LanguageInput>emptyList() : new ArrayList<LanguageInput>(languages);
+    }
+    public void setLanguages(List<LanguageInput> languages) {
+        this.languages = new ArrayList<LanguageInput>(languages);
     }
     public String toString() {
         return "Race[" + name + "]";

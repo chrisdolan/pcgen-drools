@@ -11,3 +11,20 @@ end
 declare Language
     name : String
 end
+
+rule "Language.UserInput"
+    when
+        LanguageInput($l:name)
+    then
+        insertLogical(new Language($l));
+end
+
+rule "Validate.Language.RacialBonus"
+    when
+        $lang : LanguageInput($langname : name)
+        RaceInput(languages.contains($lang), $race:name)
+        not RacialBonusLanguage($langname == name)
+        not(not RacialBonusLanguage())
+    then
+        insertLogical(new InvalidInputViolation("Language is not on the racial list for " + $race + ": " + $langname, new Object[]{$lang}));  
+end

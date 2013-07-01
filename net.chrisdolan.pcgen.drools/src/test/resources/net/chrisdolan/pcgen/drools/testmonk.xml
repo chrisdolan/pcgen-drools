@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <pc xmlns="http://chrisdolan.net/pcgen/drools/input">
 
     <ruleset name="test_pathfinder"/>

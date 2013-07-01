@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<equipment xmlns="http://chrisdolan.net/pcgen/drools/input">
+	<equipitem name="Amulet of Mighty Fists +5">
+		<equipbase name="Amulet" />
+		<equipquality type="Magic" />
+		<equipquality type="Wondrous" />
+		<equipquality type="+5" />
+		<equiprule>
+		    
+		</equiprule>
+	</equipitem>
+	<equipitem name="Headband of Inspired Wisdom +6">
+		<equipbase name="Headband" />
+		<equipquality type="Magic" />
+		<equipquality type="+6" />
+        <equipbonus style="int" type="StatWisdom" subtype="Enhancement" value="6"/>
+	</equipitem>
+</equipment>

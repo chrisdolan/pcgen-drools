@@ -1,4 +1,5 @@
-<ruleset>
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://chrisdolan.net/pcgen/drools/input">
     <ruleset name="pathfinder-advancedplayersguide"/>
     <rule name="pathfinder/test.drl" type="DRL"/>
 </ruleset>
