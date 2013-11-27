@@ -15,7 +15,6 @@ import net.chrisdolan.pcgen.drools.test.SpecialTestInput;
 import net.chrisdolan.pcgen.drools.test.TestInput;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 
-import org.drools.compiler.DroolsParserException;
 import org.junit.Test;
 
 public class TestEngine {
@@ -29,7 +28,7 @@ public class TestEngine {
      * is just for curiosity and diagnostics, not an actual test.
      */
     //@Test
-    public void testDump() throws DroolsParserException, IOException {
+    public void testDump() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.run();
         for (String s : session.dump())
@@ -38,7 +37,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testAC() throws DroolsParserException, IOException {
+    public void testAC() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.insert(ac(ArmorClass.SUBTYPE_DEFLECTION, 2));
@@ -51,7 +50,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACStack() throws DroolsParserException, IOException {
+    public void testACStack() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
@@ -62,7 +61,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACOther() throws DroolsParserException, IOException {
+    public void testACOther() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 2));
         session.insert(ac(ArmorClass.SUBTYPE_OTHER, 2));
@@ -75,7 +74,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACDex() throws DroolsParserException, IOException {
+    public void testACDex() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new StatInput(StatInput.DEX, 18));
         session.run();
@@ -85,7 +84,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACFlatFooted() throws DroolsParserException, IOException {
+    public void testACFlatFooted() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 1));
         session.insert(ac(ArmorClass.SUBTYPE_SHIELD, 5));
@@ -99,7 +98,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACMonk() throws DroolsParserException, IOException {
+    public void testACMonk() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new StatInput(StatInput.DEX, 12));
         session.insert(new StatInput(StatInput.WIS, 18));
@@ -113,7 +112,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACEncumberedMonk() throws DroolsParserException, IOException {
+    public void testACEncumberedMonk() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new StatInput(StatInput.DEX, 18));
         session.insert(new TestInput("Encumbrance", "Heavy", 1));
@@ -125,7 +124,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACChargeLunge() throws DroolsParserException, IOException {
+    public void testACChargeLunge() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new ActionInput(ActionInput.TYPE_CHARGE));
         session.insert(new ActionInput(ActionInput.TYPE_LUNGE));
@@ -137,7 +136,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACHelpless() throws DroolsParserException, IOException {
+    public void testACHelpless() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(ac(ArmorClass.SUBTYPE_ARMOR, 3));
         session.insert(new StatInput(StatInput.DEX, 12));
@@ -150,7 +149,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACProne() throws DroolsParserException, IOException {
+    public void testACProne() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new ConditionInput(ConditionInput.TYPE_PRONE));
         session.run();
@@ -165,7 +164,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testTwoConditions() throws DroolsParserException, IOException {
+    public void testTwoConditions() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new ConditionInput(ConditionInput.TYPE_STUNNED));
         session.insert(new ConditionInput(ConditionInput.TYPE_STUNNED));
@@ -176,7 +175,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testACSize() throws DroolsParserException, IOException {
+    public void testACSize() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         SpecialTestInput lastSize;
         session.insert(lastSize = new SpecialTestInput("Size", "Colossal", 1));
@@ -195,7 +194,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testWeightLimits() throws DroolsParserException, IOException {
+    public void testWeightLimits() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         StatInput ability;
         session.insert(ability = new StatInput(StatInput.STR, 11));
@@ -213,7 +212,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testEncumbrance() throws DroolsParserException, IOException {
+    public void testEncumbrance() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         TestInput last;
         session.insert(new StatInput(StatInput.STR, 11));
@@ -248,7 +247,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testInitiative() throws DroolsParserException, IOException {
+    public void testInitiative() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.run();
         PCAssert.assertInitiative(session, 0);
@@ -269,7 +268,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testSaves() throws DroolsParserException, IOException {
+    public void testSaves() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new StatInput(StatInput.CON, 14));
         session.insert(new StatInput(StatInput.DEX, 12));
@@ -303,7 +302,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testBAB() throws DroolsParserException, IOException {
+    public void testBAB() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new StatInput(StatInput.STR, 18));
         session.insert(new StatInput(StatInput.DEX, 12));
@@ -361,7 +360,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testSkills() throws DroolsParserException, IOException {
+    public void testSkills() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         session.insert(new TestInput("ClassLevel", "Rogue", 1));
         session.insert(new SkillInput("Stealth", null, 1, "Rogue"));
@@ -379,7 +378,7 @@ public class TestEngine {
     }
 
     @Test
-    public void testLanguages() throws DroolsParserException, IOException {
+    public void testLanguages() throws ParseException, IOException {
         Session session = Engine.createSession(RULESETS);
         LevelInput lvl = new LevelInput("Monk");
         lvl.setLanguages(Arrays.asList(new LanguageInput("Baz"))); // this should not affect the racial violations at all

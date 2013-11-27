@@ -8,11 +8,10 @@ import java.util.Collection;
 
 import javax.swing.JOptionPane;
 
-import org.drools.compiler.DroolsParserException;
 import org.drools.definition.KnowledgePackage;
 
 public class CompileRules {
-    public static void main(String[] args) throws DroolsParserException, IOException {
+    public static void main(String[] args) throws ParseException, IOException {
         File dest = new File(args[0]);
         if (dest.exists()) {
             if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, "Overwrite file " + dest.getAbsolutePath() + "?"))

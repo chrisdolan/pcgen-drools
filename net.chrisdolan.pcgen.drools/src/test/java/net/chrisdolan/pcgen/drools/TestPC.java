@@ -9,7 +9,6 @@ import net.chrisdolan.pcgen.drools.test.TestInput;
 import net.chrisdolan.pcgen.drools.type.ArmorClass;
 import net.chrisdolan.pcgen.drools.type.SavingThrow;
 
-import org.drools.compiler.DroolsParserException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class TestPC {
     }
 
     @Test
-    public void testMonkLevel1() throws DroolsParserException, IOException {
+    public void testMonkLevel1() throws ParseException, IOException {
         PCReader pcReader = new PCReader();
         PC pc = pcReader.read(getClass().getResource("testmonk.xml"));
         Assert.assertNotNull(pc);
@@ -88,7 +87,7 @@ public class TestPC {
     }
 
     @Test
-    public void testMonkLevel20() throws DroolsParserException, IOException {
+    public void testMonkLevel20() throws ParseException, IOException {
         PCReader pcReader = new PCReader();
         PC pc = pcReader.read(getClass().getResource("testmonk-lvl20.xml"));
         Assert.assertNotNull(pc);

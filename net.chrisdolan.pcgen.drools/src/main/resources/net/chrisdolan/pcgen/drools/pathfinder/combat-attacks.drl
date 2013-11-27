@@ -1,0 +1,19 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Attacks.UnarmedStrike"
+    when
+        $s : Size()
+    then
+        insertLogical(new AttackWeapon("UnarmedStrike", new DamageDice("NonLethal.Bludgeoning", "d3"), 0));
+        insertLogical(new AttackWeapon("UnarmedStrike", new DamageDice("Bludgeoning", "d3"), -4));
+end
+
+declare AttackWeapon
+    name : String
+    dmg : DamageDice
+    hitBonus : int
+end

@@ -61,7 +61,8 @@
     <derived xmlns="http://chrisdolan.net/pcgen/drools/output">
         <property name="CharacterName">Aarn</property>
         <property name="PlayerName">Chris Dolan</property>
-        <alignment name="LE"/>
+        <property name="RandomUnicode" value="éö¢"/>
+        <alignment name="LawfulEvil"/>
         <ability value="16" name="Strength"/>
         <ability value="14" name="Dexterity"/>
         <ability value="12" name="Constitution"/>
@@ -71,7 +72,7 @@
         <race name="Human" age="24">
             <favoredclass name="Monk"/>
         </race>
-        <class name="Monk" level="1"/>
+        <classlevel name="Monk" level="1"/>
         <hitpoints value="13"/>
         <armorclass actype="Normal" value="14"/>
         <armorclass actype="Touch" value="14"/>

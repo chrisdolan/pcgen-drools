@@ -23,18 +23,25 @@ public class TestDice {
     }
 
     @Test
-    public void test() {
+    public void testRolls() {
         Assert.assertEquals(1, roll("1"));
         Assert.assertEquals(3, roll("d6"));
         Assert.assertEquals(6, roll("2d6"));
         Assert.assertEquals(6, roll(" 2 d 6 "));
         Assert.assertEquals(9, roll("1d8+5"));
-        Assert.assertEquals(20+6-4+50+36, roll("10d5+6-4+d100+9d9"));
+        Assert.assertEquals(20+6-4+50+36, roll("10d5+2+d100+9d9"));
     }
 
     private static int roll(String dice) {
         DamageDice d = new DamageDice("Foo", dice);
         Assert.assertEquals(dice.replaceAll("\\s+", "").replaceAll("^1d", "d"), d.toString());
         return d.roll()[0].value;
+    }
+
+    @Test
+    public void testSize() {
+        Assert.assertEquals("d4", new DamageDice("1d6").adjustToSize("Small").toString());
+        Assert.assertEquals("d3", new DamageDice("1d6").adjustToSize("Tiny").toString());
+        Assert.assertEquals("d8", new DamageDice("1d6").adjustToSize("Large").toString());
     }
 }

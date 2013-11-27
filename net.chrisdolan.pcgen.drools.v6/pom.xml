@@ -1,16 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.chrisdolan.pcgen</groupId>
-    <artifactId>net.chrisdolan.pcgen.drools</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>PCGen Rules Engine</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.chrisdolan.pcgen</groupId>
+  <artifactId>net.chrisdolan.pcgen.drools.v6</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>PCGen Rules Engine Adaptor for Drools v6</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- http://maven.apache.org/general.html#encoding-warning -->
         <jdk.version>1.6</jdk.version>
-        <drools.runtime.version>5.5.0.Final</drools.runtime.version>
-        <!-- <drools.runtime.version>6.1.0-SNAPSHOT</drools.runtime.version> -->
+        <drools.runtime.version>6.1.0-SNAPSHOT</drools.runtime.version>
         <xstream.version>1.4.4</xstream.version>
         <junit.version>4.8.2</junit.version>
     </properties>
@@ -30,6 +28,15 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <version>${drools.runtime.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.chrisdolan.pcgen</groupId>
+            <artifactId>net.chrisdolan.pcgen.drools</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <exclusions>
+                <!-- <exclusion> <groupId>org.drools</groupId> <artifactId>drools-core</artifactId> 
+                    </exclusion> -->
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
@@ -59,5 +66,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
