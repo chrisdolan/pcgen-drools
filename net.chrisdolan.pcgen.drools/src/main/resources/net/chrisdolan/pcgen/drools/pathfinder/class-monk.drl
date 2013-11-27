@@ -125,7 +125,7 @@ rule "Class.Monk.HighJump"
         Input(type == "ClassLevel", subtype == "Monk", $lvl : value)
         not(not Ability(name == "Monk.HighJump"))
     then
-        insertLogical(new Input("Skill.Acrobatics.Jump", "Monk.HighJump", $lvl)); 
+        insertLogical(new Input("SkillBonus.Acrobatics.Jump", "Monk.HighJump", $lvl)); 
 end
 rule "Class.Monk.TimelessBody"
     when

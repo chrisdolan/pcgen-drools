@@ -78,7 +78,16 @@ rule "Skills.Init"
         insertLogical(new SkillType("UseMagicDevice", StatInput.CHA, false, false));
 end
 
+rule "Skills.StackRanksBySum"
+    salience 3
+    when
+        SkillType($n:name)
+    then
+        insertLogical(new StackRule("SkillBonus."+$n, "Ranks", "Sum"));
+end
+
 rule "Skills.UserInput"
+    salience 4
     when
         SkillInput($t:name, $st:category, $r:ranks, $classname:classname)
     then
@@ -91,6 +100,14 @@ rule "Skills.Ranks"
         SkillRanks($skill:name, $r:ranks)
     then
         insertLogical(new Input("SkillBonus."+$skill, "Ranks", $r));
+end
+
+rule "Skills.Ranks.Acrobatics.Jump"
+    salience 1
+    when
+        Input(type == "SkillBonus.Acrobatics", subtype == "Ranks" || subtype == "Trained", $st:subtype, $v:value)
+    then
+        insertLogical(new Input("SkillBonus.Acrobatics.Jump", $st, $v));
 end
 
 declare _NewSkill // just a temporary object, never injected
@@ -213,4 +230,11 @@ rule "Validation.Skills.MaxRanks"
         $r : SkillRanks($skill:name, ranks > $lvl, $ranks:ranks)
     then
         insertLogical(new InvalidInputViolation("Skill.Ranks.Excess", "Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
+end
+
+rule "Validation.Skills.Acrobatics.Jump.NoRanks"
+    when
+        $r : SkillRanks(name == "Acrobatics.Jump", ranks > 0, $skill:name)
+    then
+        insertLogical(new InvalidInputViolation("Skill.Ranks.Invalid", "Skill ranks not permitted in "+$skill, new Object[]{$r}));
 end

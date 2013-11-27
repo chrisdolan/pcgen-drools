@@ -58,7 +58,7 @@ public class TestPC {
         PCAssert.assertRace(session, "Human");
         PCAssert.assertSaves(session, 3, 4, 4); // fort, refl, will
         PCAssert.assertSkill(session, "Acrobatics", 6);
-        //PCAssert.assertSkill(session, "Acrobatics.Jump", 6); // not yet implememented...
+        PCAssert.assertSkill(session, "Acrobatics.Jump", 6);
         PCAssert.assertSkill(session, "Appraise", 0);
         PCAssert.assertSkill(session, "Bluff", -1);
         PCAssert.assertSkill(session, "Climb", 7);
@@ -77,6 +77,7 @@ public class TestPC {
         PCAssert.assertSkill(session, "Stealth", 2);
         PCAssert.assertSkill(session, "Survival", 2);
         PCAssert.assertSkill(session, "Swim", 3);
+        PCAssert.assertNoSkill(session, "UseMagicDevice");
         PCAssert.assertSpeed(session, 30);
 
         // test DarkFear custom rule:
@@ -97,14 +98,14 @@ public class TestPC {
 
         // Hacks for unsupported features...
         session.insert(new TestInput(StatInput.TYPE + StatInput.STR, "MagicItem", 6)); // belt
-        session.insert(new TestInput(StatInput.TYPE + StatInput.DEX, "MagicItem", 6));
-        session.insert(new TestInput(StatInput.TYPE + StatInput.CON, "MagicItem", 6));
+        session.insert(new TestInput(StatInput.TYPE + StatInput.DEX, "MagicItem", 6)); // belt
+        session.insert(new TestInput(StatInput.TYPE + StatInput.CON, "MagicItem", 6)); // belt
         session.insert(new TestInput(StatInput.TYPE + StatInput.WIS, "MagicItem", 6)); // headband
         session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_ARMOR, 8)); // bracers
         session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEFLECTION, 5)); // ring
         session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.FORT, "MagicItem", 5)); // cloak
-        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.REFL, "MagicItem", 5));
-        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.WILL, "MagicItem", 5));
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.REFL, "MagicItem", 5)); // cloak
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.WILL, "MagicItem", 5)); // cloak
         
         session.run();
 
@@ -131,6 +132,30 @@ public class TestPC {
         PCAssert.assertPCLevel(session, 20);
         PCAssert.assertSaves(session, 22, 22, 23); // fort, refl, will
         PCAssert.assertSpeed(session, 90);
+
+        PCAssert.assertSkill(session, "Acrobatics", 28); // 20 + 5 + 3
+        PCAssert.assertSkill(session, "Acrobatics.Jump", 72);
+        PCAssert.assertSkill(session, "Appraise", 0);
+        PCAssert.assertSkill(session, "Bluff", -1);
+        PCAssert.assertSkill(session, "Climb", 29); // 20 + 6 + 3
+        PCAssert.assertSkill(session, "Craft", 0);
+        PCAssert.assertNoSkill(session, "Craft.UnderwaterBasketWeaving");
+        PCAssert.assertSkill(session, "Diplomacy", -1);
+        PCAssert.assertSkill(session, "Disguise", -1);
+        PCAssert.assertSkill(session, "EscapeArtist", 28); // 20 + 5 + 3
+        PCAssert.assertSkill(session, "Fly", 5);
+        PCAssert.assertSkill(session, "Heal", 6);
+        PCAssert.assertSkill(session, "Intimidate", -1);
+        PCAssert.assertNoSkill(session, "Knowledge.Dungeoneering");
+        PCAssert.assertNoSkill(session, "Knowledge.Local");
+        PCAssert.assertSkill(session, "Perception", 29); // 20 + 6 + 3
+        PCAssert.assertSkill(session, "Perform", -1);
+        PCAssert.assertSkill(session, "Ride", 5);
+        PCAssert.assertSkill(session, "SenseMotive", 30); // TODO: should be 32 due to +2 from SnakeStyle
+        PCAssert.assertSkill(session, "Stealth", 5);
+        PCAssert.assertSkill(session, "Survival", 6);
+        PCAssert.assertSkill(session, "Swim", 6);
+        PCAssert.assertNoSkill(session, "UseMagicDevice");
 
         session.destroy();
     }

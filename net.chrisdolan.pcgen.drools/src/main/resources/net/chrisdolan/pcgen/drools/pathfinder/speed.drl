@@ -72,3 +72,10 @@ rule "Speed.Encumbrance.Heavy"
 end
 
 // override from Overloaded is in equipped.drl
+
+rule "Speed.Acrobatics.Jump" // p88: +4 for every 10 above 30ft, -4 for every 10 below 30ft
+    when
+        Speed($v:value)
+    then
+        insertLogical(new Input("SkillBonus.Acrobatics.Jump", "Racial", 4*(($v-30)/10)));
+end

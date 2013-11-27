@@ -151,8 +151,14 @@ public class PCAssert {
         }
     }
 
+    public static void assertNoSkill(Session session, String name) {
+        Integer gotObj = session.querySingle(Integer.class, "Query.Skills.SkillBonus", name);
+        Assert.assertNull(gotObj);
+    }
     public static void assertSkill(Session session, String name, int expected) {
-        int got = session.querySingle(Integer.class, "Query.Skills.SkillBonus", name);
+        Integer gotObj = session.querySingle(Integer.class, "Query.Skills.SkillBonus", name);
+        Assert.assertNotNull(gotObj);
+        int got = gotObj;
         Assert.assertEquals(expected, got);
     }
 
