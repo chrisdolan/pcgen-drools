@@ -15,6 +15,7 @@ rule "Class.Ranger.Init"
         insertLogical(new SaveProgression("Ranger", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Ranger", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Ranger", SavingThrow.WILL, "Slow"));
+        insertLogical(new SkillPointsPerLevel("Ranger", 6));
 end
 rule "Class.Ranger.ClassSkill.Init"
     salience 1000

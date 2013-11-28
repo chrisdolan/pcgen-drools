@@ -15,6 +15,7 @@ rule "Class.Fighter.Init"
         insertLogical(new SaveProgression("Fighter", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Fighter", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Fighter", SavingThrow.WILL, "Slow"));
+        insertLogical(new SkillPointsPerLevel("Fighter", 2));
 end
 rule "Class.Fighter.ClassSkill.Init"
     salience 1000

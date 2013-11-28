@@ -15,6 +15,7 @@ rule "Class.Paladin.Init"
         insertLogical(new SaveProgression("Paladin", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Paladin", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Paladin", SavingThrow.WILL, "Fast"));
+        insertLogical(new SkillPointsPerLevel("Paladin", 2));
 end
 rule "Class.Paladin.ClassSkill.Init"
     salience 1000

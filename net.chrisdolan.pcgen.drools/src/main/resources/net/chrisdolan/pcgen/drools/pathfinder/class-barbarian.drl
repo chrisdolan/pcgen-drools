@@ -15,6 +15,7 @@ rule "Class.Barbarian.Init"
         insertLogical(new SaveProgression("Barbarian", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Barbarian", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Barbarian", SavingThrow.WILL, "Slow"));
+        insertLogical(new SkillPointsPerLevel("Barbarian", 4));
 end
 rule "Class.Barbarian.ClassSkill.Init"
     salience 1000

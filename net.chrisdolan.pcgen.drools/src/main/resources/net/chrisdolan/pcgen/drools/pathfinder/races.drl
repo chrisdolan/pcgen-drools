@@ -26,6 +26,9 @@ end
 declare RacialBonusLanguage
     name : String
 end
+declare RacialBonusSkillPoint
+    value : int
+end
 
 rule "Race.Missing"
     when
@@ -200,7 +203,7 @@ rule "Race.Human"
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Language("Common"));
         // todo: bonus feat
-        // todo: bonus skill
+        insertLogical(new RacialBonusSkillPoint(1));
         insertLogical(new RacialAge(15,35,53,70));
 end
 rule "Race.StatBonuses"

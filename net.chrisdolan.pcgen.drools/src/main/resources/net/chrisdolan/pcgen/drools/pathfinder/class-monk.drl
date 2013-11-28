@@ -15,6 +15,7 @@ rule "Class.Monk.Init"
         insertLogical(new SaveProgression("Monk", SavingThrow.FORT, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Monk", SavingThrow.WILL, "Fast"));
+        insertLogical(new SkillPointsPerLevel("Monk", 4));
 end
 rule "Class.Monk.ClassSkill.Init"
     salience 1000

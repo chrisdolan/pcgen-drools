@@ -15,6 +15,7 @@ rule "Class.Wizard.Init"
         insertLogical(new SaveProgression("Wizard", SavingThrow.FORT, "Slow"));
         insertLogical(new SaveProgression("Wizard", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Wizard", SavingThrow.WILL, "Fast"));
+        insertLogical(new SkillPointsPerLevel("Wizard", 2));
 end
 rule "Class.Wizard.ClassSkill.Init"
     salience 1000

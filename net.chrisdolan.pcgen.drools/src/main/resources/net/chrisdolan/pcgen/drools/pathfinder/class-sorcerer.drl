@@ -15,6 +15,7 @@ rule "Class.Sorcerer.Init"
         insertLogical(new SaveProgression("Sorcerer", SavingThrow.FORT, "Slow"));
         insertLogical(new SaveProgression("Sorcerer", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Sorcerer", SavingThrow.WILL, "Fast"));
+        insertLogical(new SkillPointsPerLevel("Sorcerer", 2));
 end
 rule "Class.Sorcerer.ClassSkill.Init"
     salience 1000

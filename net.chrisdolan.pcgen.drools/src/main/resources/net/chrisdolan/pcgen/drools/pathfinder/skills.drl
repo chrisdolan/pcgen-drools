@@ -35,6 +35,17 @@ declare SkillBonus
     name : String
     value : int
 end
+declare ClassLevelSkillPoints
+    classname : String
+    value : int
+end
+declare SkillPointsPerLevel
+    classname : String
+    value : int
+end
+declare TotalClassLevelSkillPoints
+    value : int
+end
 
 rule "Skills.Init"
     salience 1000
@@ -100,6 +111,32 @@ rule "Skills.Ranks"
         SkillRanks($skill:name, $r:ranks)
     then
         insertLogical(new Input("SkillBonus."+$skill, "Ranks", $r));
+end
+
+rule "Skills.ClassLevels.Ranks.Total"
+    when
+        StatBonus(name == StatInput.INT, $intbonus:value)
+        Number($sum : intValue) from accumulate(
+            ClassLevelSkillPoints($ranks:value),
+            sum($ranks + $intbonus)
+        )
+    then
+        insertLogical(new TotalClassLevelSkillPoints($sum));
+end
+
+rule "Skills.ClassLevels.Ranks"
+    when
+        Input("ClassLevel" == type, $class:subtype, $lvl:value)
+        SkillPointsPerLevel($class == classname, $v:value)
+    then
+        insertLogical(new ClassLevelSkillPoints($class, $v*$lvl));
+end
+rule "Skills.ClassLevels.Ranks.Race"
+    when
+        Input("ClassLevel" == type, $class:subtype, $lvl:value)
+        RacialBonusSkillPoint($v:value)
+    then
+        insertLogical(new ClassLevelSkillPoints($class, $v*$lvl));
 end
 
 rule "Skills.Ranks.Acrobatics.Jump"
@@ -224,12 +261,23 @@ rule "Validation.Skills.DisallowedKnowledgeSubtype"
         insertLogical(new InvalidInputViolation("Skill.Knowledge.Invalid", "No such Knowledge subtype: " + $st, new Object[]{$r}));
 end
 
-rule "Validation.Skills.MaxRanks"
+rule "Validation.Skills.MaxRanksPerSkill"
     when
         PCLevel($lvl:value)
         $r : SkillRanks($skill:name, ranks > $lvl, $ranks:ranks)
     then
-        insertLogical(new InvalidInputViolation("Skill.Ranks.Excess", "Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
+        insertLogical(new InvalidInputViolation("Skill.Ranks.ExcessPerSkill", "Too many ranks in skill: " + $ranks + " vs. " + $lvl + " for " + $skill, new Object[]{$r}));
+end
+
+rule "Validation.Skills.TooManyRanks"
+    when
+        $tot : TotalClassLevelSkillPoints($allowedranks:value)
+        Number($sum : intValue, $sum > $allowedranks) from accumulate(
+            SkillRanks($ranks:ranks),
+            sum($ranks)
+        )
+    then
+        insertLogical(new InvalidInputViolation("Skill.Ranks.ExcessTotal", "Too many ranks used: " + $sum + " vs. " + $allowedranks, new Object[]{$tot}));
 end
 
 rule "Validation.Skills.Acrobatics.Jump.NoRanks"

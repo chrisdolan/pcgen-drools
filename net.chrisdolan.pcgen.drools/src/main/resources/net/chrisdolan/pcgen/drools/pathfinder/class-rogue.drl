@@ -15,6 +15,7 @@ rule "Class.Rogue.Init"
         insertLogical(new SaveProgression("Rogue", SavingThrow.FORT, "Slow"));
         insertLogical(new SaveProgression("Rogue", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Rogue", SavingThrow.WILL, "Slow"));
+        insertLogical(new SkillPointsPerLevel("Rogue", 8));
 end
 rule "Class.Rogue.ClassSkill.Init"
     salience 1000
