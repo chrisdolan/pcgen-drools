@@ -7,6 +7,8 @@ import java.util.Set;
 
 // field naming convention: a skill "name" is a skill "type.subtype" or just "type" if subtype is null
 
+// todo: aid another, p86
+
 query "Query.Skills.SkillBonus" (String skillname)
     SkillBonus(name == skillname, value : value)
 end

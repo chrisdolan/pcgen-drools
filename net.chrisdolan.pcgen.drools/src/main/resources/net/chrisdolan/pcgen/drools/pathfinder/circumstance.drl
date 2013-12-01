@@ -1,0 +1,22 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+
+declare Circumstance
+    name : String
+end
+declare CircumstantialInput
+    name : String
+    input : Input
+end
+
+rule "Circumstance"
+    when
+        Circumstance($name:name)
+        CircumstantialInput($name == name, $i:input)
+    then
+        insertLogical($i);
+end

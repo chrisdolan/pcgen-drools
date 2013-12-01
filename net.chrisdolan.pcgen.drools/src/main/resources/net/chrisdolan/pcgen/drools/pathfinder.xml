@@ -10,6 +10,7 @@
     <rule name="pathfinder/ability-traits.drl" type="DRL"/>
     <rule name="pathfinder/age.drl" type="DRL"/>
     <rule name="pathfinder/alignment.drl" type="DRL"/>
+    <rule name="pathfinder/circumstance.drl" type="DRL"/>
     <rule name="pathfinder/class.drl" type="DRL"/>
     <rule name="pathfinder/class-barbarian.drl" type="DRL"/>
     <rule name="pathfinder/class-bard.drl" type="DRL"/>

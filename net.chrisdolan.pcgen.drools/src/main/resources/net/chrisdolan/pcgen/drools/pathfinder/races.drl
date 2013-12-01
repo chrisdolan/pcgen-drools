@@ -52,6 +52,7 @@ rule "Race.Dwarf"
         insertLogical(new Input("Speed", "Base", 20));
         insertLogical(new Ability("SlowAndSteady"));
         insertLogical(new Ability("Darkvision"));
+        insertLogical(new CircumstantialInput("Opponent.Giant", new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 4)));
         insertLogical(new Ability("Dwarf.DefensiveTraining"));
         insertLogical(new Ability("Dwarf.Greed"));
         insertLogical(new Ability("Dwarf.Hatred"));
