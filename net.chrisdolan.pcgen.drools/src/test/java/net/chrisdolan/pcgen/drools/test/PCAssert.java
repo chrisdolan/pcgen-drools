@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.chrisdolan.pcgen.drools.Session;
 import net.chrisdolan.pcgen.drools.input.StatInput;
@@ -164,6 +165,12 @@ public class PCAssert {
 
     private static void assertInteger(Session session, String query, int expected) {
         int got = session.querySingle(Integer.class, query);
+        Assert.assertEquals(expected, got);
+    }
+
+    public static void assertCircumstances(Session session, Set<String> expected) {
+        @SuppressWarnings("unchecked")
+        Set<String> got = session.querySingle(Set.class, "Query.KnownCircumstances");
         Assert.assertEquals(expected, got);
     }
 }

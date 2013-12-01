@@ -4,6 +4,12 @@ package net.chrisdolan.pcgen.drools.pathfinder;
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
 
+query "Query.KnownCircumstances"
+    circumstances : Set() from accumulate(
+        CircumstantialInput($name : name),
+        collectSet( $name )
+    )
+end
 
 declare Circumstance
     name : String

@@ -2,7 +2,11 @@ package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import junit.framework.Assert;
 import net.chrisdolan.pcgen.drools.input.ActionInput;
 import net.chrisdolan.pcgen.drools.input.ConditionInput;
 import net.chrisdolan.pcgen.drools.input.LanguageInput;
@@ -401,6 +405,26 @@ public class TestEngine {
         session.run();
         PCAssert.assertViolation(session, "!Language.Racial.Missing");
         PCAssert.assertViolation(session, "!Language.Racial.Excess");
+        session.destroy();
+    }
+
+    @Test
+    public void testCircumstances() throws ParseException, IOException {
+        Session session = Engine.createSession(RULESETS);
+        RaceInput last;
+        session.insert(last = new RaceInput("Human"));
+        session.run();
+        PCAssert.assertCircumstances(session, Collections.<String>emptySet());
+        session.retract(last);
+
+        session.insert(last = new RaceInput("Dwarf"));
+        session.run();
+        @SuppressWarnings("unchecked")
+        Set<String> got = new HashSet<String>(session.querySingle(Set.class, "Query.KnownCircumstances"));
+        Set<String> expected = Collections.singleton("Opponent.Orc");
+        got.retainAll(expected); // expected is a subset of got, so the test doesn't break as we add new circumstances
+        Assert.assertEquals(expected, got);
+
         session.destroy();
     }
 

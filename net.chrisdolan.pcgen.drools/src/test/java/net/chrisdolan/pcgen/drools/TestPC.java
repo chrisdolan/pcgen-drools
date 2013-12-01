@@ -1,6 +1,7 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import net.chrisdolan.pcgen.drools.input.PC;
 import net.chrisdolan.pcgen.drools.input.StatInput;
@@ -80,6 +81,8 @@ public class TestPC {
         PCAssert.assertNoSkill(session, "UseMagicDevice");
         PCAssert.assertSpeed(session, 30);
 
+        PCAssert.assertCircumstances(session, Collections.<String>emptySet());
+
         // test DarkFear custom rule:
         PCAssert.assertHasAbility(session, "LowLightVision");
         PCAssert.assertHasLanguage(session, "Undercommon");
@@ -154,6 +157,8 @@ public class TestPC {
         PCAssert.assertSkill(session, "Survival", 6);
         PCAssert.assertSkill(session, "Swim", 6);
         PCAssert.assertNoSkill(session, "UseMagicDevice");
+
+        PCAssert.assertCircumstances(session, Collections.<String>emptySet());
 
         session.destroy();
     }
