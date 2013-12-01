@@ -11,6 +11,9 @@ end
 declare Condition
     type : String
 end
+declare Immunity
+    type : String
+end
 
 rule "Condition.UserInput"
     when
@@ -79,9 +82,7 @@ rule "Condition.Panicked"
     when
         not(not Condition(type == ConditionInput.TYPE_PANICKED))
     then
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, "Panicked", -2));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, "Panicked", -2));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Panicked", -2));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.ALL, "Panicked", -2));
         insertLogical(new Input("Attack", "Panicked", -2));
         // ...
 end
@@ -118,9 +119,7 @@ rule "Condition.Shaken"
         not(not Condition(type == ConditionInput.TYPE_SHAKEN))
         not Condition(type == ConditionInput.TYPE_PANICKED) // they don't stack
     then
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, "Shaken", -2));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, "Shaken", -2));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Shaken", -2));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.ALL, "Shaken", -2));
         insertLogical(new Input("Attack", "Shaken", -2));
         // ...
 end

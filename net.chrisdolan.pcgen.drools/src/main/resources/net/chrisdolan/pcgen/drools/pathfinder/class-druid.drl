@@ -16,6 +16,7 @@ rule "Class.Druid.Init"
         insertLogical(new SaveProgression("Druid", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Druid", SavingThrow.WILL, "Fast"));
         insertLogical(new SkillPointsPerLevel("Druid", 4));
+        insertLogical(new SpellCasterClass("Druid"));
 end
 rule "Class.Druid.ClassSkill.Init"
     salience 1000

@@ -9,6 +9,8 @@ public class SavingThrow {
     public static final String REFL = "Reflex";
     public static final String WILL = "Will";
 
+    public static final String ALL = "All";
+
     private String type;
     private int value;
 

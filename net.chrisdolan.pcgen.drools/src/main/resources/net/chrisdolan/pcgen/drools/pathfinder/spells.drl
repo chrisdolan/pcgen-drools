@@ -1,0 +1,30 @@
+package net.chrisdolan.pcgen.drools.pathfinder;
+    dialect "java"
+
+import net.chrisdolan.pcgen.drools.input.*;
+import net.chrisdolan.pcgen.drools.type.*;
+
+rule "Spells.SpellCaster.Init"
+    salience 1000
+    when
+        SpellCasterClass($class:classname)
+    then
+        insertLogical(new StackRule("CasterLevel", $class, "Sum"));
+end
+
+rule "Spells.CasterLevel"
+    when
+        Input(type == "ClassLevel", $class:subtype, $lvl : value)
+        SpellCasterClass($class==classname)
+    then
+        insertLogical(new Input("CasterLevel", $class, $lvl));
+end
+
+// todo: SRcheck = caster level + stack(SpellResistanceCheck)
+rule "Spells.SpellResistanceCheck"
+    when
+        Stack("CasterLevel", $class:subtype, $v:value)
+        SpellCasterClass($class==classname)
+    then
+        insertLogical(new Input("SpellResistanceCheck."+$class, "ClassLevel", $v));
+end

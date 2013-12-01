@@ -16,6 +16,7 @@ rule "Class.Cleric.Init"
         insertLogical(new SaveProgression("Cleric", SavingThrow.REFL, "Slow"));
         insertLogical(new SaveProgression("Cleric", SavingThrow.WILL, "Fast"));
         insertLogical(new SkillPointsPerLevel("Cleric", 2));
+        insertLogical(new SpellCasterClass("Cleric"));
 end
 rule "Class.Cleric.ClassSkill.Init"
     salience 1000

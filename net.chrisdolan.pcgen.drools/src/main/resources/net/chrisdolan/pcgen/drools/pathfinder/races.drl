@@ -52,14 +52,16 @@ rule "Race.Dwarf"
         insertLogical(new Input("Speed", "Base", 20));
         insertLogical(new Ability("SlowAndSteady"));
         insertLogical(new Ability("Darkvision"));
-        insertLogical(new CircumstantialInput("Opponent.Giant", new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 4)));
-        insertLogical(new Ability("Dwarf.DefensiveTraining"));
-        insertLogical(new Ability("Dwarf.Greed"));
-        insertLogical(new Ability("Dwarf.Hatred"));
-        insertLogical(new Ability("Dwarf.Hardy"));
-        insertLogical(new Input("CMD.BullRush", "Racial", 4));
-        insertLogical(new Input("CMD.Trip", "Racial", 4));
-        insertLogical(new Ability("Dwarf.Stonecunning"));
+        insertLogical(new CircumstantialInput("Opponent.Giant", new Input(ArmorClass.TYPE, ArmorClass.SUBTYPE_DODGE, 4))); // DefensiveTraining
+        insertLogical(new CircumstantialInput("Target.NonMagicMetalOrGem", new Input("SkillBonus.Appraise", "Racial", 2))); // Greed
+        insertLogical(new CircumstantialInput("Opponent.Orc", new Input("Attack", "Racial", 1))); // Hatred
+        insertLogical(new CircumstantialInput("Opponent.Goblin", new Input("Attack", "Racial", 1))); // Hatred
+        insertLogical(new CircumstantialInput("Target.Poison", new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 2))); // .Hardy
+        insertLogical(new CircumstantialInput("Target.Spell", new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 2))); // Hardy
+        insertLogical(new CircumstantialInput("Target.Spelllike", new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 2))); // Hardy
+        insertLogical(new CircumstantialInput("Action.StandingOnGround", new Input("CMD.BullRush", "Racial", 4))); // Stability
+        insertLogical(new CircumstantialInput("Action.StandingOnGround", new Input("CMD.Trip", "Racial", 4))); // Stability
+        insertLogical(new CircumstantialInput("Target.UnusualStonework", new Input("SkillBonus.Perception", "Racial", 2))); // Stonecunning
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
         insertLogical(new Language("Dwarven"));
@@ -82,9 +84,11 @@ rule "Race.Elf"
         insertLogical(new Size("Medium"));
         insertLogical(new Input("Speed", "Base", 30));
         insertLogical(new Ability("LowLightVision"));
-        insertLogical(new Ability("Elf.Immunities"));
-        insertLogical(new Input("CasterLevel.SR", "Racial", 2));
-        insertLogical(new Ability("Elf.Magic.Spellcraft"));
+        insertLogical(new Immunity("MagicSleep")); // Elven Immunities
+        insertLogical(new CircumstantialInput("Target.Spell.Enchantment", new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 2))); // Elven Immunities
+        insertLogical(new CircumstantialInput("Target.Spelllike.Enchantment", new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 2))); // Elven Immunities
+        insertLogical(new Ability("Elf.Magic.SpellResistanceCheck")); // Elven Magic
+        insertLogical(new CircumstantialInput("Target.MagicItem", new Input("SkillBonus.Spellcraft", "Racial", 2))); // Elven Magic
         insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
         // todo: weapon familiarity
         insertLogical(new Language("Common"));
@@ -97,6 +101,15 @@ rule "Race.Elf"
         insertLogical(new RacialBonusLanguage("Goblin"));
         insertLogical(new RacialBonusLanguage("Orc"));
         insertLogical(new RacialBonusLanguage("Sylvan"));
+end
+
+rule "Race.Elf.SpellResistanceCheck"
+    when
+        Ability(name=="Elf.Magic.SpellResistanceCheck")
+        SpellCasterClass($class:classname)
+        not(not(Input(type == "SpellResistanceCheck."+$class, subtype=="ClassLevel")))
+    then
+        insertLogical(new Input("SpellResistanceCheck."+$class, "Racial", 2));
 end
 
 rule "Race.Gnome"
@@ -179,9 +192,7 @@ rule "Race.Halfling"
         insertLogical(new Size("Small"));
         insertLogical(new Input("Speed", "Base", 20));
         // todo: fearless
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.FORT, "Racial", 1));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.REFL, "Racial", 1));
-        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, "Racial", 1));
+        insertLogical(new Input(SavingThrow.TYPE + SavingThrow.ALL, "Racial", 1));
         insertLogical(new Input("SkillBonus.Perception", "Racial", 2));
         insertLogical(new Input("SkillBonus.Acrobatics", "Racial", 2));
         insertLogical(new Input("SkillBonus.Climb", "Racial", 2));

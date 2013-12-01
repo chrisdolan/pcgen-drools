@@ -103,9 +103,7 @@ public class TestPC {
         session.insert(new TestInput(StatInput.TYPE + StatInput.WIS, "MagicItem", 6)); // headband
         session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_ARMOR, 8)); // bracers
         session.insert(new TestInput(ArmorClass.TYPE, ArmorClass.SUBTYPE_DEFLECTION, 5)); // ring
-        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.FORT, "MagicItem", 5)); // cloak
-        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.REFL, "MagicItem", 5)); // cloak
-        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.WILL, "MagicItem", 5)); // cloak
+        session.insert(new TestInput(SavingThrow.TYPE + SavingThrow.ALL, "MagicItem", 5)); // cloak
         
         session.run();
 

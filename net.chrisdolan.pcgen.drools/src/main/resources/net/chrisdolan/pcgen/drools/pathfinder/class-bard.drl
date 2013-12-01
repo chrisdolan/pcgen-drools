@@ -16,6 +16,7 @@ rule "Class.Bard.Init"
         insertLogical(new SaveProgression("Bard", SavingThrow.REFL, "Fast"));
         insertLogical(new SaveProgression("Bard", SavingThrow.WILL, "Fast"));
         insertLogical(new SkillPointsPerLevel("Bard", 6));
+        insertLogical(new SpellCasterClass("Bard"));
 end
 rule "Class.Bard.ClassSkill.Init"
     salience 1000

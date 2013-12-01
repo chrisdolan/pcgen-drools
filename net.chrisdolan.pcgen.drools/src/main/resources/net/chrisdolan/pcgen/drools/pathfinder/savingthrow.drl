@@ -50,6 +50,13 @@ rule "SavingThrow.WIS"
     then
         insertLogical(new Input(SavingThrow.TYPE + SavingThrow.WILL, SavingThrow.SUBTYPE_ABILITY, $wis));
 end
+rule "SavingThrow.BonusToAll"
+    when
+        SavingThrowType($t:name)
+        Input(type == SavingThrow.TYPE + SavingThrow.ALL, $st:subtype, $v:value)
+    then
+        insertLogical(new Input(SavingThrow.TYPE + $t, $st, $v));
+end
 rule "SavingThrow.Totals"
     when
         SavingThrowType($t:name)

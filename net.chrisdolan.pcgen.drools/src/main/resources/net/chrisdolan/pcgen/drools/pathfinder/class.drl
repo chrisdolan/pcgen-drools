@@ -40,6 +40,9 @@ declare Archetype
     classname : String
     name : String
 end
+declare SpellCasterClass
+    classname : String
+end
 
 rule "Class.Level.Total"
     when
