@@ -3,6 +3,8 @@ package net.chrisdolan.pcgen.drools.pathfinder;
 
 import net.chrisdolan.pcgen.drools.input.*;
 import net.chrisdolan.pcgen.drools.type.*;
+import java.util.Map;
+import java.util.HashMap;
 
 query "Query.Property" (String key)
     PropertyInput(name == key, value : value)
@@ -73,3 +75,15 @@ rule "PC.Level.UserInput"
             insertLogical(l);
 end
 
+/*
+rule "PC.Output"
+    when
+        $pc:PCDerived()
+        Property($name:name, $v:value)
+    then
+        $pc.getProperties()
+        if (!$pc.elements.containsKey("properties"))
+            $pc.elements.put("properties", new HashMap<String,String>());
+        ((Map<String,String>)$pc.elements.get("properties")).put($name,$v);
+end
+*/

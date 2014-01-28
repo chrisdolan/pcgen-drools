@@ -41,7 +41,7 @@
             <hitpoints value="8" />
             <skill ranks="1" name="Acrobatics" />
             <skill ranks="1" name="Climb" />
-            <skill ranks="1" name="EscapeArtist" />
+            <skill ranks="1" name="Knowledge.Local" />
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
@@ -52,8 +52,8 @@
         <level class="Monk"> <!-- 2 -->
             <hitpoints value="4" />
             <skill ranks="1" name="Acrobatics" />
-            <skill ranks="1" name="Climb" />
-            <skill ranks="1" name="EscapeArtist" />
+            <skill ranks="1" name="Stealth" />
+            <skill ranks="1" name="Survival" />
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
@@ -62,12 +62,12 @@
         <level class="Monk"> <!-- 3 -->
             <hitpoints value="5" />
             <skill ranks="1" name="Acrobatics" />
-            <skill ranks="1" name="Climb" />
-            <skill ranks="1" name="EscapeArtist" />
+            <skill ranks="1" name="Knowledge.Local" />
+            <skill ranks="1" name="Stealth" />
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
-            <feat name="PowerAttack" />
+            <feat name="SnakeStyle" />
          </level>
         <level class="Monk"> <!-- 4 -->
             <hitpoints value="4" />
@@ -87,7 +87,7 @@
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
-            <feat name="SnakeStyle" />
+            <feat name="PowerAttack" />
         </level>
         <level class="Monk"> <!-- 6 -->
             <hitpoints value="4" />
@@ -97,7 +97,7 @@
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
-            <feat source="class" name="ImprovedDisarm" />
+            <feat source="class" name="ImprovedTrip" />
         </level>
         <level class="Monk"> <!-- 7 -->
             <hitpoints value="5" />
@@ -177,7 +177,7 @@
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
-            <feat source="class" name="Mobility" />
+            <feat source="class" name="SpringAttack" />
         </level>
         <level class="Monk"> <!-- 15 -->
             <hitpoints value="5" />
@@ -217,7 +217,7 @@
             <skill ranks="1" name="Perception" />
             <skill ranks="1" name="SenseMotive" />
             <favoredclassbonus name="Hitpoint" />
-            <feat source="class" name="ImprovedTrip" />
+            <feat source="class" name="ImprovedDisarm" />
         </level>
         <level class="Monk"> <!-- 19 -->
             <hitpoints value="5" />

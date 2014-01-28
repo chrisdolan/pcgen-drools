@@ -1,9 +1,11 @@
 package net.chrisdolan.pcgen.drools;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
 
 import net.chrisdolan.pcgen.drools.input.PC;
+import net.chrisdolan.pcgen.drools.input.PCDerived;
 import net.chrisdolan.pcgen.drools.input.StatInput;
 import net.chrisdolan.pcgen.drools.test.PCAssert;
 import net.chrisdolan.pcgen.drools.test.TestInput;
@@ -22,6 +24,7 @@ public class TestPC {
     @Test
     public void testMonkLevel1() throws ParseException, IOException {
         PCReader pcReader = new PCReader();
+        pcReader.setIgnoreAllUnknowns(true);
         PC pc = pcReader.read(getClass().getResource("testmonk.xml"));
         Assert.assertNotNull(pc);
 
@@ -86,6 +89,14 @@ public class TestPC {
         // test DarkFear custom rule:
         PCAssert.assertHasAbility(session, "LowLightVision");
         PCAssert.assertHasLanguage(session, "Undercommon");
+
+        PCDerived out = new PCDerived();
+        session.insert(out);
+        session.run();
+        pc.setDerived(out);
+        StringWriter sw = new StringWriter();
+        pcReader.write(pc, sw);
+        System.out.print(sw.toString());
 
         session.destroy();
     }

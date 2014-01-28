@@ -22,7 +22,7 @@
         <property name="RandomUnicode" value="éö¢"/>
         
         <alignment name="LawfulEvil"/>
-    
+
         <stat value="14" name="Strength"/>
         <stat value="14" name="Dexterity"/>
         <stat value="12" name="Constitution"/>

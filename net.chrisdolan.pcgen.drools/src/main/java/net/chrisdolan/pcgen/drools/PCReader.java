@@ -2,6 +2,7 @@ package net.chrisdolan.pcgen.drools;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 
 import net.chrisdolan.pcgen.drools.input.PC;
@@ -24,6 +25,14 @@ public class PCReader {
                 throw new IOException("Unmarshalled XML is not a PC, but is: " + o.getClass());
             PC pc = (PC) o;
             return pc;
+        } catch (XStreamException e) {
+            throw new IOException(e);
+        }
+    }
+    public void write(PC pc, Writer w) throws IOException {
+        try {
+            XStream xstream = makeXstream();
+            xstream.toXML(pc, w);
         } catch (XStreamException e) {
             throw new IOException(e);
         }
